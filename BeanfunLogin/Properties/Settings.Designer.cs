@@ -106,5 +106,17 @@ namespace BeanfunLogin.Properties {
                 this["entropy"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string gamePath {
+            get {
+                return ((string)(this["gamePath"]));
+            }
+            set {
+                this["gamePath"] = value;
+            }
+        }
     }
 }
