@@ -8,7 +8,10 @@ Login to Beanfun and MapleStory without browsers, using 3DES to encrypt the stor
 [Download](https://github.com/kevin940726/BeanfunLogin/raw/master/BeanfunLogin.exe): Current Version 1.2.1.
 
 ========================
-Version 1.2 (Current)
+Version 1.2.1 (Current)
+- Bug fixed.
+
+Version 1.2 
 - Adjust UI and UX.
 - Seperate code.
 - Fix bugs.
