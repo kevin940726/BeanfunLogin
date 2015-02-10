@@ -78,6 +78,8 @@ namespace BeanfunLogin
                 this.accountList = new List<AccountListClass>();
                 foreach (Match match in regex.Matches(response))
                 {
+                    if (match.Groups[1].Value == "" || match.Groups[2].Value == "" || match.Groups[3].Value == "")
+                        return errexit("Login Fail", "登入失敗，無法取得帳號列表。\nNo match for account list.", 1);
                     this.accountList.Add(new AccountListClass(match.Groups[1].Value, match.Groups[2].Value, match.Groups[3].Value));
                 }
                 if (this.accountList.Count == 0)
@@ -169,7 +171,7 @@ namespace BeanfunLogin
                 e.Result = index;
                 foreach (Process process in Process.GetProcesses())
                 {
-                    if (process.ProcessName == "MapleStory2")
+                    if (process.ProcessName == "MapleStory")
                         return;
                 }
                 ProcessStartInfo gamestart = new ProcessStartInfo();

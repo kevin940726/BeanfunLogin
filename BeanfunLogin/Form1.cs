@@ -129,7 +129,7 @@ namespace BeanfunLogin
                 this.panel2.SendToBack();
         }    
 
-        // The  get OTP button. 
+        // The get OTP button. 
         private void textBox3_OnClick(object sender, EventArgs e)
         {
             if (textBox3.Text == "") return; 
@@ -142,6 +142,7 @@ namespace BeanfunLogin
         {
             panel1.SendToBack();
             panel2.BringToFront();
+            Properties.Settings.Default.autoLogin = false;
             init();
         }
 

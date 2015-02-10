@@ -113,7 +113,9 @@
             this.Account});
             this.listView1.Cursor = System.Windows.Forms.Cursors.Arrow;
             this.listView1.FullRowSelect = true;
+            this.listView1.GridLines = true;
             this.listView1.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
+            this.listView1.HideSelection = false;
             this.listView1.LabelEdit = true;
             this.listView1.Location = new System.Drawing.Point(14, 46);
             this.listView1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
