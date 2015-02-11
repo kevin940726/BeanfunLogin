@@ -9,7 +9,7 @@ Login to Beanfun and MapleStory without browsers, using 3DES to encrypt the stor
 
 ========================
 Version 1.3 (Current)
-- Now can login with keypasco(ª÷Æ_¤@­ô).
+- Now can login with keypasco(é‡‘é‘°ä¸€å“¥).
 - Add login backgroundworker.
 - Bug fixed.
 
