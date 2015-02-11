@@ -15,6 +15,7 @@ namespace BeanfunLogin
     {
         private string viewstate;
         private string eventvalidation;
+        private string captchaId;
         private string akey;
         private string webtoken;
 
@@ -31,18 +32,18 @@ namespace BeanfunLogin
             return date.ToString("yyyyMMddHHmmss.fff");
         }
 
-        private bool login(string userID, string pass)
+        private string regularLogin(string userID, string pass)
         {
             try
             {
                 string response = this.web.DownloadString("https://tw.newlogin.beanfun.com/login/id-pass_form.aspx?skey=" + skey);
                 Regex regex = new Regex("id=\"__VIEWSTATE\" value=\"(.*)\" />");
                 if (!regex.IsMatch(response))
-                    return errexit("Login Fail", "登入失敗。\nCannot find \"__VIEWSTATE\".", 1);
+                    return "登入失敗。\nCannot find \"__VIEWSTATE\".";
                 this.viewstate = regex.Match(response).Groups[1].Value;
                 regex = new Regex("id=\"__EVENTVALIDATION\" value=\"(.*)\" />");
                 if (!regex.IsMatch(response))
-                    return errexit("Login Fail", "登入失敗。\nCannot find \"__EVENTVALIDATION\".", 1);
+                    return "登入失敗。\nCannot find \"__EVENTVALIDATION\".";
                 this.eventvalidation = regex.Match(response).Groups[1].Value;
 
                 NameValueCollection payload = new NameValueCollection();
@@ -59,31 +60,167 @@ namespace BeanfunLogin
                 response = Encoding.UTF8.GetString(this.web.UploadValues("https://tw.newlogin.beanfun.com/login/id-pass_form.aspx?skey=" + skey, payload));
                 this.webtoken = this.web.getCookie("bfWebToken");
                 if (this.webtoken == "")
-                    return errexit("Login Fail", "登入失敗。\nNo response for webtoken.", 1);
+                    return "登入失敗。\nNo response for webtoken.";
                 regex = new Regex("akey=(.*)");
                 if (!regex.IsMatch(this.web.ResponseUri.ToString()))
-                    return errexit("Login Fail", "登入失敗，帳號或密碼錯誤。\nNo response for authentication key.", 1);
+                    return "登入失敗，帳號或密碼錯誤。\nNo response for authentication key.";
                 this.akey = regex.Match(this.web.ResponseUri.ToString()).Groups[1].Value;
 
+                return "OK";
+            }
+            catch
+            {
+                return "登入失敗，未知的錯誤。\nUnknown Error.";
+            }
+        }
+
+        private bool vaktenAuthenticate(string lblSID)
+        {
+            try
+            {
+                string[] ports = { "14057", "16057", "17057" };
+                foreach (string port in ports)
+                {
+                    string response = this.web.DownloadString("https://localhost:" + port + "/api/1/status.jsonp?api=YXBpLmtleXBhc2NvaWQuY29tOjQ0My9SZXN0L0FwaVNlcnZpY2Uv&callback=_jqjsp&alt=json-in-script");
+                    response = this.web.DownloadString("https://localhost:" + port + "/api/1/aut.jsonp?sid=GAMANIA" + lblSID + "&api=YXBpLmtleXBhc2NvaWQuY29tOjQ0My9SZXN0L0FwaVNlcnZpY2Uv&callback=_jqjsp&alt=json-in-script");
+                    if (response == "_jqjsp( {\"statusCode\":200} );") return true;
+                }
+                return false;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        private string keypascoLogin(string userID, string pass)
+        {
+            try
+            { 
+                string response = this.web.DownloadString("https://tw.newlogin.beanfun.com/login/keypasco_form.aspx?skey=" + skey);
+                Regex regex = new Regex("id=\"__VIEWSTATE\" value=\"(.*)\" />");
+                if (!regex.IsMatch(response))
+                    return "登入失敗。\nCannot find \"__VIEWSTATE\".";
+                this.viewstate = regex.Match(response).Groups[1].Value;
+                regex = new Regex("id=\"__EVENTVALIDATION\" value=\"(.*)\" />");
+                if (!regex.IsMatch(response))
+                    return "登入失敗。\nCannot find \"__EVENTVALIDATION\".";
+                this.eventvalidation = regex.Match(response).Groups[1].Value;
+                regex = new Regex("samplecaptcha\" value=\"(\\w+)\" />");
+                if (!regex.IsMatch(response))
+                    return "登入失敗。\nCannot find \"samplecaptcha\".";
+                this.captchaId = regex.Match(response).Groups[1].Value;
+                regex = new Regex("lblSID\"><font color=\"White\">(\\w+)</font></span>");
+                if (!regex.IsMatch(response))
+                    return "登入失敗。\nCannot find \"lblSID\".";
+                string lblSID = regex.Match(response).Groups[1].Value;
+                if (!vaktenAuthenticate(lblSID))
+                    return "登入失敗，與伺服器驗證失敗，請檢查是否安裝vakten程式。\nNo response with keypasco api.";
+
+                NameValueCollection payload = new NameValueCollection();
+                payload.Add("__EVENTTARGET", "");
+                payload.Add("__EVENTARGUMENT", "");
+                payload.Add("__VIEWSTATE", this.viewstate);
+                payload.Add("__EVENTVALIDATION", this.eventvalidation);
+                payload.Add("t_AccountID", userID);
+                payload.Add("t_Password", pass);
+                payload.Add("CodeTextBox", "");
+                payload.Add("btn_login.x", "46");
+                payload.Add("btn_login.y", "31");
+                payload.Add("LBD_VCID_c_login_keypasco_form_samplecaptcha", captchaId);
+                response = Encoding.UTF8.GetString(this.web.UploadValues("https://tw.newlogin.beanfun.com/login/keypasco_form.aspx?skey=" + skey, payload));
+                this.webtoken = this.web.getCookie("bfWebToken");
+                if (this.webtoken == "")
+                    return "登入失敗。\nNo response for webtoken.";
+                regex = new Regex("akey=(.*)");
+                if (!regex.IsMatch(this.web.ResponseUri.ToString()))
+                    return "登入失敗，帳號或密碼錯誤。\nNo response for authentication key.";
+                this.akey = regex.Match(this.web.ResponseUri.ToString()).Groups[1].Value;
+
+                return "OK";
+            }
+            catch
+            {
+                return "登入失敗，未知的錯誤。\nUnknown Error.";
+            }
+        }
+
+        // Login do work.
+        private void backgroundWorker2_DoWork(object sender, DoWorkEventArgs e)
+        {
+            e.Result = "";
+            try
+            {
+                int loginMethod = (int)e.Argument;
+                string userID = this.textBox1.Text;
+                string pass = this.textBox2.Text;                
+                string result;
+
+                if (loginMethod == 0)
+                {
+                    result = regularLogin(userID, pass);
+                    if (result != "OK")
+                        { e.Result = result; return; }
+                }
+                else if (loginMethod == 1)
+                {
+                    result = keypascoLogin(userID, pass);
+                    if (result != "OK")
+                        { e.Result = result; return; }
+                }
+                else
+                {
+                    e.Result = "登入失敗，未選擇登入方式。\nFailed to select login method.";
+                    return;
+                }
+
+                NameValueCollection payload = new NameValueCollection();
                 payload = new NameValueCollection();
                 payload.Add("SessionKey", this.skey);
                 payload.Add("AuthKey", this.akey);
-                response = Encoding.UTF8.GetString(this.web.UploadValues("https://tw.beanfun.com/beanfun_block/bflogin/return.aspx", payload));
+                string response = Encoding.UTF8.GetString(this.web.UploadValues("https://tw.beanfun.com/beanfun_block/bflogin/return.aspx", payload));
                 response = this.web.DownloadString("http://tw.beanfun.com/beanfun_block/auth.aspx?channel=game_zone&page_and_query=game_start.aspx%3Fservice_code_and_region%3D610074_T9&web_token=" + webtoken, Encoding.UTF8);
                 if (response == "")
-                    return errexit("Login Fail", "登入失敗，無法取得帳號列表。\nNo response for account list.", 1);
+                    { e.Result = "登入失敗，無法取得帳號列表。\nNo response for account list."; return; }
 
                 // Add account list to ListView.
-                regex = new Regex("<div id=\"(\\w+)\" sn=\"(\\d+)\" name=\"([^\"]+)\"");
+                Regex regex = new Regex("<div id=\"(\\w+)\" sn=\"(\\d+)\" name=\"([^\"]+)\"");
                 this.accountList = new List<AccountListClass>();
                 foreach (Match match in regex.Matches(response))
                 {
                     if (match.Groups[1].Value == "" || match.Groups[2].Value == "" || match.Groups[3].Value == "")
-                        return errexit("Login Fail", "登入失敗，無法取得帳號列表。\nNo match for account list.", 1);
+                        { e.Result = "登入失敗，無法取得帳號列表。\nNo match for account list."; return; }
                     this.accountList.Add(new AccountListClass(match.Groups[1].Value, match.Groups[2].Value, match.Groups[3].Value));
                 }
                 if (this.accountList.Count == 0)
-                    return errexit("Login Fail", "登入失敗，找不到遊戲帳號。\nNo account found.", 1);
+                    { e.Result = "登入失敗，找不到遊戲帳號。\nNo account found."; return; }
+                
+            }
+            catch
+            {
+                e.Result = "登入失敗，未知的錯誤。\nUnknown Error."; 
+            }
+        }
+
+        // Login completed.
+        private void backgroundWorker2_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            this.panel2.Enabled = true;
+            this.UseWaitCursor = false;
+            this.button1.Text = "登入";
+            if (e.Error != null)
+            {
+                errexit("Login Failed", e.Error.Message, 1);
+                return;
+            }
+            if ((string)e.Result != "")
+            {
+                errexit("Login Failed", (string)e.Result, 1);
+                return;
+            }
+
+            try
+            {
                 listView1.Items.Clear();
                 foreach (AccountListClass account in accountList)
                 {
@@ -94,6 +231,7 @@ namespace BeanfunLogin
 
                 // Handle panel switching.
                 this.ActiveControl = null;
+                this.panel2.SendToBack();
                 this.panel1.BringToFront();
                 this.AcceptButton = this.button3;
                 if (Properties.Settings.Default.autoSelect == true)
@@ -103,13 +241,12 @@ namespace BeanfunLogin
                     this.copyOrNot = true;
                     this.backgroundWorker1.RunWorkerAsync(Properties.Settings.Default.autoSelectIndex);
                 }
-                return true;
             }
             catch
             {
-                errexit("Login Fail", "登入失敗，未知的錯誤。\nUnknown Error.", 1);
-                return false;
+                errexit("Login Failed", "登入失敗，無法取得帳號列表。\nAccount list or panel failed.", 1);
             }
+            
         }
 
         private bool getOTP(int index)
@@ -161,6 +298,7 @@ namespace BeanfunLogin
             }
         }
 
+        // getOTP do work.
         private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
         {
             int index = (int)e.Argument;
@@ -188,6 +326,7 @@ namespace BeanfunLogin
             }
         }
 
+        // getOTP completed.
         private void backgroundWorker1_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             this.button3.Text = "獲取密碼";

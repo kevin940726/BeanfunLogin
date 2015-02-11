@@ -126,6 +126,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="ms2.ico" />
+    <None Include="Resources\image_811415.gif" />
+    <None Include="Resources\image_811410.gif" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.0">

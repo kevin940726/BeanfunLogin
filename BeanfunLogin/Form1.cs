@@ -79,8 +79,10 @@ namespace BeanfunLogin
                 }
                 if (Properties.Settings.Default.autoLogin == true)
                 {
-                    if (login(this.textBox1.Text, this.textBox2.Text))
-                        this.panel2.SendToBack();
+                    this.UseWaitCursor = true;
+                    this.panel2.Enabled = false;
+                    this.button1.Text = "請稍後...";
+                    this.backgroundWorker2.RunWorkerAsync(Properties.Settings.Default.loginMethod);
                 }
                 if (Properties.Settings.Default.gamePath == "")
                 {
@@ -90,6 +92,8 @@ namespace BeanfunLogin
                     if (myRegistry.Read("Path") != "")
                         Properties.Settings.Default.gamePath = myRegistry.Read("Path");
                 }
+                this.comboBox1.SelectedIndex = Properties.Settings.Default.loginMethod;
+                this.textBox3.Text = "";
 
                 if (this.textBox1.Text == "")
                     this.ActiveControl = this.textBox1;
@@ -124,17 +128,27 @@ namespace BeanfunLogin
                 File.Delete("UserState.dat");
             }
             Properties.Settings.Default.Save();
-            
-            if (login(this.textBox1.Text, this.textBox2.Text))
-                this.panel2.SendToBack();
+
+            this.UseWaitCursor = true;
+            this.panel2.Enabled = false;
+            this.button1.Text = "請稍後...";
+            this.backgroundWorker2.RunWorkerAsync(Properties.Settings.Default.loginMethod);
         }    
 
-        // The get OTP button. 
-        private void textBox3_OnClick(object sender, EventArgs e)
+        // The get OTP button.
+        private void button3_Click(object sender, EventArgs e)
         {
-            if (textBox3.Text == "") return; 
-            Clipboard.SetText(textBox3.Text);
-            this.button3.Text = "已複製";
+            if (listView1.SelectedItems.Count <= 0) return;
+            if (Properties.Settings.Default.autoSelect == true)
+            {
+                Properties.Settings.Default.autoSelectIndex = listView1.SelectedItems[0].Index;
+                Properties.Settings.Default.Save();
+            }
+
+            this.textBox3.Text = "獲取密碼中...";
+            this.listView1.Enabled = false;
+            this.copyOrNot = true;
+            this.backgroundWorker1.RunWorkerAsync(listView1.SelectedItems[0].Index);
         }
 
         /* Handle other elements' statements. */
@@ -209,19 +223,11 @@ namespace BeanfunLogin
             Properties.Settings.Default.Save();
         }
 
-        private void button3_Click(object sender, EventArgs e)
+        private void textBox3_OnClick(object sender, EventArgs e)
         {
-            if (listView1.SelectedItems.Count <= 0) return;
-            if (Properties.Settings.Default.autoSelect == true)
-            {
-                Properties.Settings.Default.autoSelectIndex = listView1.SelectedItems[0].Index;
-                Properties.Settings.Default.Save();
-            }
-
-            this.textBox3.Text = "獲取密碼中...";
-            this.listView1.Enabled = false;
-            this.copyOrNot = true;
-            this.backgroundWorker1.RunWorkerAsync(listView1.SelectedItems[0].Index);
+            if (textBox3.Text == "") return;
+            Clipboard.SetText(textBox3.Text);
+            this.button3.Text = "已複製";
         }
 
         private void listView1_DoubleClick(object sender, EventArgs e)
@@ -240,7 +246,14 @@ namespace BeanfunLogin
         {
             if (listView1.SelectedItems.Count == 1)
                 this.button3.Text = "獲取密碼";
-        } 
+        }
+
+        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            Properties.Settings.Default.loginMethod = this.comboBox1.SelectedIndex;
+        }
+
+        
 
     }
 }
