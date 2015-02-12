@@ -145,6 +145,58 @@ namespace BeanfunLogin
             }
         }
 
+        private string gamaotpLogin(string userID, string pass)
+        {
+            try
+            {
+                string response = this.web.DownloadString("https://tw.newlogin.beanfun.com/login/gamaotp_form.aspx?skey=" + skey);
+                Regex regex = new Regex("id=\"__VIEWSTATE\" value=\"(.*)\" />");
+                if (!regex.IsMatch(response))
+                    return "登入失敗。\nCannot find \"__VIEWSTATE\".";
+                this.viewstate = regex.Match(response).Groups[1].Value;
+                regex = new Regex("id=\"__EVENTVALIDATION\" value=\"(.*)\" />");
+                if (!regex.IsMatch(response))
+                    return "登入失敗。\nCannot find \"__EVENTVALIDATION\".";
+                this.eventvalidation = regex.Match(response).Groups[1].Value;
+                regex = new Regex("motp_challenge_code\" value=\"(\\d+)\" />");
+                if (!regex.IsMatch(response))
+                    return "登入失敗。\nCannot find \"motp\".";
+                string motp = regex.Match(response).Groups[1].Value;
+                response = this.web.DownloadString("https://tw.newlogin.beanfun.com/generic_handlers/get_security_otp.ashx?d=" + getCurrentTime());
+                regex = new Regex("<playsafe_otp>(\\w+)</playsafe_otp>");
+                if (!regex.IsMatch(response))
+                    return "登入失敗。\nCannot find \"sOtp\".";
+                string sotp = regex.Match(response).Groups[1].Value;
+
+                NameValueCollection payload = new NameValueCollection();
+                payload.Add("__EVENTTARGET", "");
+                payload.Add("__EVENTARGUMENT", "");
+                payload.Add("__VIEWSTATE", this.viewstate);
+                payload.Add("__EVENTVALIDATION", this.eventvalidation);
+                payload.Add("original", "M~" + sotp + "~" + userID + "~" + pass + "|" + motp);
+                payload.Add("signature", "");
+                payload.Add("serverotp", sotp);
+                payload.Add("motp_challenge_code", motp);
+                payload.Add("t_AccountID", userID);
+                payload.Add("t_Password", pass);
+                payload.Add("btn_login", "Login");
+                response = Encoding.UTF8.GetString(this.web.UploadValues("https://tw.newlogin.beanfun.com/login/gamaotp_form.aspx?skey=" + skey, payload));
+                this.webtoken = this.web.getCookie("bfWebToken");
+                if (this.webtoken == "")
+                    return "登入失敗。\nNo response for webtoken.";
+                regex = new Regex("akey=(.*)");
+                if (!regex.IsMatch(this.web.ResponseUri.ToString()))
+                    return "登入失敗，帳號或密碼錯誤。\nNo response for authentication key.";
+                this.akey = regex.Match(this.web.ResponseUri.ToString()).Groups[1].Value;
+
+                return "OK";
+            }
+            catch
+            {
+                return "登入失敗，未知的錯誤。\nUnknown Error.";
+            }
+        }
+
         // Login do work.
         private void backgroundWorker2_DoWork(object sender, DoWorkEventArgs e)
         {
@@ -165,6 +217,12 @@ namespace BeanfunLogin
                 else if (loginMethod == 1)
                 {
                     result = keypascoLogin(userID, pass);
+                    if (result != "OK")
+                        { e.Result = result; return; }
+                }
+                else if (loginMethod == 2)
+                {
+                    result = gamaotpLogin(userID, pass);
                     if (result != "OK")
                         { e.Result = result; return; }
                 }
