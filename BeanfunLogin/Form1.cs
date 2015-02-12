@@ -251,6 +251,28 @@ namespace BeanfunLogin
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
             Properties.Settings.Default.loginMethod = this.comboBox1.SelectedIndex;
+            if (Properties.Settings.Default.loginMethod == 4)
+            {
+                this.checkBox1.Location = new Point(49, 155);
+                this.checkBox2.Location = new Point(165, 155);
+                this.label4.Visible = true;
+                this.textBox4.Visible = true;
+            }
+            else
+            {
+                this.checkBox1.Location = new Point(107, 127);
+                this.checkBox2.Location = new Point(107, 155);
+                this.label4.Visible = false;
+                this.textBox4.Visible = false;
+            }
+            if (Properties.Settings.Default.loginMethod == 2 || Properties.Settings.Default.loginMethod == 3)
+            {
+                this.label3.Text = "安全密碼";
+            }
+            else
+            {
+                this.label3.Text = "密碼";
+            }
         }
 
         

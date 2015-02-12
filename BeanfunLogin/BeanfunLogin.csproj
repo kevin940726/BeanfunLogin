@@ -84,6 +84,9 @@
     <Compile Include="Form1.Cryptography.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Form1.LoginMethod.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="ModifyRegistry.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="SpWebClient.cs">
@@ -126,8 +129,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="ms2.ico" />
-    <None Include="Resources\image_811415.gif" />
-    <None Include="Resources\image_811410.gif" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.0">
