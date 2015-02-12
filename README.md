@@ -10,14 +10,14 @@ Login to Beanfun and MapleStory without browsers, using 3DES to encrypt the stor
 ========================
 Version 1.3.2 (Current)
 - Now can login with OTP (untested).
-- Now can login with OTP type:E(Áo©úÂê) (untested).
+- Now can login with OTP type:E(è°æ˜é–) (untested).
 - Fix login UI responsed to login method.
 
 Version 1.3.1
 - Now can login with GAMAOTP (untested).
 
 Version 1.3
-- Now can login with keypasco(ª÷Æ_¤@­ô).
+- Now can login with keypasco(é‡‘é‘°ä¸€å“¥).
 - Add login backgroundworker.
 - Bug fixed.
 
