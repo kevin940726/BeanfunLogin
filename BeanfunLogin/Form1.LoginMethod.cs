@@ -7,11 +7,106 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Collections.Specialized;
 using System.Net;
+using System.Runtime.InteropServices;
+using System.Reflection;
+using System.Diagnostics;
+using FSFISCATLLib;
+using FSSCUTILATLLib;
+using FSCAPIATLLib;
+using FSP11CRYPTATLLib;
 
 namespace BeanfunLogin
 {
     public partial class main : Form
     {
+        // Working progress, waiting for playsafe card to debug.
+        /*public void GetReader()
+        {
+            FSFISCClass fs = new FSFISCClass();
+            try
+            {
+                Debug.WriteLine(fs.FSFISC_GetErrorCode());
+            }
+            catch { Debug.WriteLine("what"); }
+
+            Debug.WriteLine("done");
+
+            char readername = '\0';
+            string aaa;
+            try
+            {
+                aaa = FSFISC_GetReaderNames(0);
+                Debug.WriteLine(aaa);
+            }
+            catch
+            {
+                return 'X';
+            }
+            if (aaa == null)
+                return 'Z';
+            else
+            {
+                var readers = aaa.ToArray();
+                foreach (var reader in readers)
+                {
+                    var cardflag = FSFISC_GetCardType2(reader);
+                    Debug.WriteLine(cardflag);
+                    if (FSFISC_GetErrorCode() != 0)
+                        cardflag = "";
+                    else if (cardflag == "0")
+                    {
+                        readername = reader;
+                        cardType = "F";
+                    }
+                    else if (cardflag == "1")
+                    {
+                        readername = reader;
+                        cardType = "G";
+                    }
+
+                }
+                if (readername != '\0')
+                {
+                    CardReader = readername;
+                }
+                else
+                    return 'F';
+
+                return readername;
+            }
+        }
+
+        private string GetPublicCN(char reader)
+        {
+            if (reader == '\0')
+                return "Fail";
+            string rtn = FSFISC_GetPublicCN(reader, 0);
+            if (FSFISC_GetErrorCode() != 0)
+                return "Fail";
+            return rtn;
+        }
+
+        private string GetOPInfo(char reader, string pin)
+        {
+            if (reader == '\0')
+                return "Fail";
+            string rtn = FSFISC_GetOPInfo(reader, pin, 0);
+            if (FSFISC_GetErrorCode() != 0)
+                return "Fail";
+            return rtn;
+        }
+
+        private string EncryptData(char reader, string pin, string data)
+        {
+            if (reader == '\0')
+                return "Fail";
+            string rtn = FSFISC_GetTAC(reader, pin, data, 0, 0);
+            if (FSFISC_GetErrorCode() != 0)
+                return "Fail";
+            return rtn;
+        }*/
+
+
         private string getServerTime()
         {
             DateTime date = DateTime.Now;
@@ -269,6 +364,56 @@ namespace BeanfunLogin
                 if (!regex.IsMatch(this.web.ResponseUri.ToString()))
                     return "登入失敗，帳號或密碼錯誤。\nNo response for authentication key.";
                 this.akey = regex.Match(this.web.ResponseUri.ToString()).Groups[1].Value;
+
+                return "OK";
+            }
+            catch
+            {
+                return "登入失敗，未知的錯誤。\nUnknown Error.";
+            }
+        }
+
+        private string playsafeLogin(string userID, string pass)
+        {
+            try
+            {
+                string response = this.web.DownloadString("https://tw.newlogin.beanfun.com/login/playsafe_form.aspx?skey=" + skey);
+                Regex regex = new Regex("id=\"__VIEWSTATE\" value=\"(.*)\" />");
+                if (!regex.IsMatch(response))
+                    return "登入失敗。\nCannot find \"__VIEWSTATE\".";
+                this.viewstate = regex.Match(response).Groups[1].Value;
+                regex = new Regex("id=\"__EVENTVALIDATION\" value=\"(.*)\" />");
+                if (!regex.IsMatch(response))
+                    return "登入失敗。\nCannot find \"__EVENTVALIDATION\".";
+                this.eventvalidation = regex.Match(response).Groups[1].Value;
+                response = this.web.DownloadString("https://tw.newlogin.beanfun.com/generic_handlers/get_security_otp.ashx?d=" + getServerTime());
+                regex = new Regex("<playsafe_otp>(\\w+)</playsafe_otp>");
+                if (!regex.IsMatch(response))
+                    return "登入失敗。\nCannot find \"sOtp\".";
+                string sotp = regex.Match(response).Groups[1].Value;
+
+                /*var readername = GetReader();
+                var original = cardType + "~" + sotp + "~" + userID + "~" + GetOPInfo(readername, pass);
+                NameValueCollection payload = new NameValueCollection();
+                payload.Add("__EVENTTARGET", "");
+                payload.Add("__EVENTARGUMENT", "");
+                payload.Add("__VIEWSTATE", this.viewstate);
+                payload.Add("__EVENTVALIDATION", this.eventvalidation);
+                payload.Add("card_check_id", GetPublicCN(readername));
+                payload.Add("original", original);
+                payload.Add("signature", EncryptData(readername, pass, original));
+                payload.Add("serverotp", sotp);
+                payload.Add("t_AccountID", userID);
+                payload.Add("t_Password", pass);
+                payload.Add("btn_login", "Login");
+                response = Encoding.UTF8.GetString(this.web.UploadValues("https://tw.newlogin.beanfun.com/login/playsafe_form.aspx?skey=" + skey, payload));
+                this.webtoken = this.web.getCookie("bfWebToken");
+                if (this.webtoken == "")
+                    return "登入失敗。\nNo response for webtoken.";
+                regex = new Regex("akey=(.*)");
+                if (!regex.IsMatch(this.web.ResponseUri.ToString()))
+                    return "登入失敗，帳號或密碼錯誤。\nNo response for authentication key.";
+                this.akey = regex.Match(this.web.ResponseUri.ToString()).Groups[1].Value;*/
 
                 return "OK";
             }

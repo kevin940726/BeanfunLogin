@@ -30,6 +30,7 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(main));
             this.panel1 = new System.Windows.Forms.Panel();
+            this.keepLogged = new System.Windows.Forms.CheckBox();
             this.button3 = new System.Windows.Forms.Button();
             this.checkBox4 = new System.Windows.Forms.CheckBox();
             this.textBox3 = new System.Windows.Forms.TextBox();
@@ -54,6 +55,7 @@
             this.button1 = new System.Windows.Forms.Button();
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.backgroundWorker2 = new System.ComponentModel.BackgroundWorker();
+            this.ping = new System.ComponentModel.BackgroundWorker();
             this.panel1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -61,6 +63,7 @@
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.keepLogged);
             this.panel1.Controls.Add(this.button3);
             this.panel1.Controls.Add(this.checkBox4);
             this.panel1.Controls.Add(this.textBox3);
@@ -72,6 +75,19 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(282, 256);
             this.panel1.TabIndex = 0;
+            // 
+            // keepLogged
+            // 
+            this.keepLogged.AutoSize = true;
+            this.keepLogged.Checked = global::BeanfunLogin.Properties.Settings.Default.keepLogged;
+            this.keepLogged.DataBindings.Add(new System.Windows.Forms.Binding("Checked", global::BeanfunLogin.Properties.Settings.Default, "keepLogged", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.keepLogged.Location = new System.Drawing.Point(130, 24);
+            this.keepLogged.Name = "keepLogged";
+            this.keepLogged.Size = new System.Drawing.Size(75, 20);
+            this.keepLogged.TabIndex = 8;
+            this.keepLogged.Text = "保持登入";
+            this.keepLogged.UseVisualStyleBackColor = true;
+            this.keepLogged.CheckedChanged += new System.EventHandler(this.keepLogged_CheckedChanged);
             // 
             // button3
             // 
@@ -345,6 +361,12 @@
             this.backgroundWorker2.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorker2_DoWork);
             this.backgroundWorker2.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundWorker2_RunWorkerCompleted);
             // 
+            // ping
+            // 
+            this.ping.WorkerReportsProgress = true;
+            this.ping.WorkerSupportsCancellation = true;
+            this.ping.DoWork += new System.ComponentModel.DoWorkEventHandler(this.ping_DoWork);
+            // 
             // main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 16F);
@@ -397,6 +419,8 @@
         private System.ComponentModel.BackgroundWorker backgroundWorker2;
         private System.Windows.Forms.TextBox textBox4;
         private System.Windows.Forms.Label label4;
+        private System.ComponentModel.BackgroundWorker ping;
+        private System.Windows.Forms.CheckBox keepLogged;
 
 
     }

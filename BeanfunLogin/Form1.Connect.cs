@@ -147,6 +147,8 @@ namespace BeanfunLogin
                     this.copyOrNot = true;
                     this.backgroundWorker1.RunWorkerAsync(Properties.Settings.Default.autoSelectIndex);
                 }
+                if (Properties.Settings.Default.keepLogged)
+                    this.ping.RunWorkerAsync();
             }
             catch
             {
@@ -199,7 +201,6 @@ namespace BeanfunLogin
             }
             catch
             {
-                this.listView1.Enabled = true;
                 return errexit("Get OTP Fail", "密碼獲取失敗，未知的錯誤。\nUnknown Error.", 2);
             }
         }

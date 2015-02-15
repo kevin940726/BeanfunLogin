@@ -66,7 +66,7 @@ namespace BeanfunLogin
                     if (cookie.Name == name) return cookie.Value;
                 }
             }
-            return "Fail";
+            return "";
         }
 
         public Uri ResponseUri { get; private set; }

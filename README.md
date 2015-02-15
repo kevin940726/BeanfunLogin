@@ -1,14 +1,18 @@
-# BeanfunLogin
+﻿# BeanfunLogin
 New Beanfun MapleStory OTP login.
 
 #### This project is for self practicing/learning ``C#`` ``.NET`` on Windows.
 ========================
 Login to Beanfun and MapleStory without browsers, using 3DES to encrypt the storing password. Use DES to decrypt and get the OTP.
 
-[Download](https://github.com/kevin940726/BeanfunLogin/raw/master/BeanfunLogin.exe): Current Version 1.3.2.
+[Download](https://github.com/kevin940726/BeanfunLogin/raw/master/BeanfunLogin.exe): Current Version 1.3.3.
 
 ========================
-Version 1.3.2 (Current)
+Version 1.3.3 (current)
+- Bug fixed for re-login.
+- Add feature to keep logged in.
+
+Version 1.3.2
 - Now can login with OTP (untested).
 - Now can login with OTP type:E(聰明鎖) (untested).
 - Fix login UI responsed to login method.
@@ -16,7 +20,7 @@ Version 1.3.2 (Current)
 Version 1.3.1
 - Now can login with GAMAOTP (untested).
 
-Version 1.3
+Version 1.3 (latest)
 - Now can login with keypasco(金鑰一哥).
 - Add login backgroundworker.
 - Bug fixed.

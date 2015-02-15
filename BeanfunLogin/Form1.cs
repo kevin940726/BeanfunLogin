@@ -15,6 +15,7 @@ using System.Security.Cryptography;
 using System.IO;
 using Utility.ModifyRegistry;
 using Microsoft.Win32;
+using System.Diagnostics;
 
 namespace BeanfunLogin
 {
@@ -40,6 +41,7 @@ namespace BeanfunLogin
             {
                 this.panel1.SendToBack();
                 this.panel2.BringToFront();
+                Properties.Settings.Default.autoLogin = false;
                 init();
             }
             return false;
@@ -273,6 +275,31 @@ namespace BeanfunLogin
             {
                 this.label3.Text = "密碼";
             }
+        }
+
+        private void ping_DoWork(object sender, DoWorkEventArgs e)
+        {
+            while (!this.ping.CancellationPending && Properties.Settings.Default.keepLogged)
+            {
+                try
+                {
+                    this.web.DownloadString("http://tw.beanfun.com/");
+                    System.Threading.Thread.Sleep(1000 * 60 * 20);                    
+                }
+                catch
+                { return; }
+            }
+        }
+
+        private void keepLogged_CheckedChanged(object sender, EventArgs e)
+        {
+            if (keepLogged.Checked)
+                if (!this.ping.IsBusy)
+                    this.ping.RunWorkerAsync();
+            else
+                if (this.ping.IsBusy)
+                    this.ping.CancelAsync();
+            Properties.Settings.Default.Save();
         }
 
         
