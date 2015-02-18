@@ -158,9 +158,6 @@ namespace BeanfunLogin
                 payload.Add("btn_login.y", "31");
                 payload.Add("LBD_VCID_c_login_idpass_form_samplecaptcha", "");
                 response = Encoding.UTF8.GetString(this.web.UploadValues("https://tw.newlogin.beanfun.com/login/id-pass_form.aspx?skey=" + skey, payload));
-                this.webtoken = this.web.getCookie("bfWebToken");
-                if (this.webtoken == "")
-                    return "登入失敗。\nNo response for webtoken.";
                 regex = new Regex("akey=(.*)");
                 if (!regex.IsMatch(this.web.ResponseUri.ToString()))
                     return "登入失敗，帳號或密碼錯誤。\nNo response for authentication key.";
@@ -210,9 +207,6 @@ namespace BeanfunLogin
                 payload.Add("btn_login.y", "31");
                 payload.Add("LBD_VCID_c_login_keypasco_form_samplecaptcha", captchaId);
                 response = Encoding.UTF8.GetString(this.web.UploadValues("https://tw.newlogin.beanfun.com/login/keypasco_form.aspx?skey=" + skey, payload));
-                this.webtoken = this.web.getCookie("bfWebToken");
-                if (this.webtoken == "")
-                    return "登入失敗。\nNo response for webtoken.";
                 regex = new Regex("akey=(.*)");
                 if (!regex.IsMatch(this.web.ResponseUri.ToString()))
                     return "登入失敗，帳號或密碼錯誤。\nNo response for authentication key.";
@@ -262,9 +256,6 @@ namespace BeanfunLogin
                 payload.Add("t_Password", pass);
                 payload.Add("btn_login", "Login");
                 response = Encoding.UTF8.GetString(this.web.UploadValues("https://tw.newlogin.beanfun.com/login/gamaotp_form.aspx?skey=" + skey, payload));
-                this.webtoken = this.web.getCookie("bfWebToken");
-                if (this.webtoken == "")
-                    return "登入失敗。\nNo response for webtoken.";
                 regex = new Regex("akey=(.*)");
                 if (!regex.IsMatch(this.web.ResponseUri.ToString()))
                     return "登入失敗，帳號或密碼錯誤。\nNo response for authentication key.";
@@ -309,9 +300,6 @@ namespace BeanfunLogin
                 payload.Add("t_Password", pass);
                 payload.Add("btn_login", "Login");
                 response = Encoding.UTF8.GetString(this.web.UploadValues("https://tw.newlogin.beanfun.com/login/otp_form.aspx?skey=" + skey, payload));
-                this.webtoken = this.web.getCookie("bfWebToken");
-                if (this.webtoken == "")
-                    return "登入失敗。\nNo response for webtoken.";
                 regex = new Regex("akey=(.*)");
                 if (!regex.IsMatch(this.web.ResponseUri.ToString()))
                     return "登入失敗，帳號或密碼錯誤。\nNo response for authentication key.";
@@ -357,9 +345,6 @@ namespace BeanfunLogin
                 payload.Add("t_Password", securePass);
                 payload.Add("btn_login", "Login");
                 response = Encoding.UTF8.GetString(this.web.UploadValues("https://tw.newlogin.beanfun.com/login/otp_form.aspx?type=E&skey=" + skey, payload));
-                this.webtoken = this.web.getCookie("bfWebToken");
-                if (this.webtoken == "")
-                    return "登入失敗。\nNo response for webtoken.";
                 regex = new Regex("akey=(.*)");
                 if (!regex.IsMatch(this.web.ResponseUri.ToString()))
                     return "登入失敗，帳號或密碼錯誤。\nNo response for authentication key.";

@@ -85,6 +85,9 @@ namespace BeanfunLogin
                 payload.Add("SessionKey", this.skey);
                 payload.Add("AuthKey", this.akey);
                 string response = Encoding.UTF8.GetString(this.web.UploadValues("https://tw.beanfun.com/beanfun_block/bflogin/return.aspx", payload));
+                this.webtoken = this.web.getCookie("bfWebToken");
+                if (this.webtoken == "")
+                    { e.Result = "登入失敗。\nNo response for webtoken."; return; }
                 response = this.web.DownloadString("http://tw.beanfun.com/beanfun_block/auth.aspx?channel=game_zone&page_and_query=game_start.aspx%3Fservice_code_and_region%3D610074_T9&web_token=" + webtoken, Encoding.UTF8);
                 if (response == "")
                     { e.Result = "登入失敗，無法取得帳號列表。\nNo response for account list."; return; }
