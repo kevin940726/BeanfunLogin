@@ -39,12 +39,17 @@ namespace BeanfunLogin
                 Application.Exit();
             else if (method == 1)
             {
-                this.panel1.SendToBack();
-                this.panel2.BringToFront();
-                Properties.Settings.Default.autoLogin = false;
-                init();
+                BackToLogin();
             }
             return false;
+        }
+
+        public void BackToLogin()
+        {
+            panel1.SendToBack();
+            panel2.BringToFront();
+            Properties.Settings.Default.autoLogin = false;
+            init();
         }
 
         public bool init()
@@ -158,10 +163,7 @@ namespace BeanfunLogin
         /* Handle other elements' statements. */
         private void BackToLogin_ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            panel1.SendToBack();
-            panel2.BringToFront();
-            Properties.Settings.Default.autoLogin = false;
-            init();
+            BackToLogin();
         }
 
         private void SetGamePath_ToolStripMenuItem1_Click(object sender, EventArgs e)
@@ -231,7 +233,6 @@ namespace BeanfunLogin
         {
             if (textBox3.Text == "") return;
             Clipboard.SetText(textBox3.Text);
-            this.button3.Text = "已複製";
         }
 
         private void listView1_DoubleClick(object sender, EventArgs e)

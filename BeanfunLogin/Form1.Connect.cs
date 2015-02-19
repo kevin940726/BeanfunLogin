@@ -175,7 +175,7 @@ namespace BeanfunLogin
                     this.copyOrNot = true;
                     this.backgroundWorker1.RunWorkerAsync(Properties.Settings.Default.autoSelectIndex);
                 }
-                if (Properties.Settings.Default.keepLogged)
+                if (Properties.Settings.Default.keepLogged && !this.ping.IsBusy)
                     this.ping.RunWorkerAsync();
             }
             catch

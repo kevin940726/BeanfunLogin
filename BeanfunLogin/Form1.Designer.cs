@@ -80,6 +80,7 @@
             // 
             this.keepLogged.AutoSize = true;
             this.keepLogged.Checked = global::BeanfunLogin.Properties.Settings.Default.keepLogged;
+            this.keepLogged.CheckState = System.Windows.Forms.CheckState.Checked;
             this.keepLogged.DataBindings.Add(new System.Windows.Forms.Binding("Checked", global::BeanfunLogin.Properties.Settings.Default, "keepLogged", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.keepLogged.Location = new System.Drawing.Point(130, 24);
             this.keepLogged.Name = "keepLogged";
