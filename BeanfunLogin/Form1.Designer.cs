@@ -251,7 +251,8 @@
             "金鑰一哥",
             "GAMAOTP",
             "OTP",
-            "聰明鎖"});
+            "聰明鎖",
+            "PLAYSAFE"});
             this.comboBox1.Location = new System.Drawing.Point(114, 17);
             this.comboBox1.Name = "comboBox1";
             this.comboBox1.Size = new System.Drawing.Size(126, 24);

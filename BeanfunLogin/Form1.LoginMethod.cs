@@ -11,101 +11,11 @@ using System.Runtime.InteropServices;
 using System.Reflection;
 using System.Diagnostics;
 using FSFISCATLLib;
-using FSSCUTILATLLib;
-using FSCAPIATLLib;
-using FSP11CRYPTATLLib;
 
 namespace BeanfunLogin
 {
     public partial class main : Form
     {
-        // Working progress, waiting for playsafe card to debug.
-        /*public void GetReader()
-        {
-            FSFISCClass fs = new FSFISCClass();
-            try
-            {
-                Debug.WriteLine(fs.FSFISC_GetErrorCode());
-            }
-            catch { Debug.WriteLine("what"); }
-
-            Debug.WriteLine("done");
-
-            char readername = '\0';
-            string aaa;
-            try
-            {
-                aaa = FSFISC_GetReaderNames(0);
-                Debug.WriteLine(aaa);
-            }
-            catch
-            {
-                return 'X';
-            }
-            if (aaa == null)
-                return 'Z';
-            else
-            {
-                var readers = aaa.ToArray();
-                foreach (var reader in readers)
-                {
-                    var cardflag = FSFISC_GetCardType2(reader);
-                    Debug.WriteLine(cardflag);
-                    if (FSFISC_GetErrorCode() != 0)
-                        cardflag = "";
-                    else if (cardflag == "0")
-                    {
-                        readername = reader;
-                        cardType = "F";
-                    }
-                    else if (cardflag == "1")
-                    {
-                        readername = reader;
-                        cardType = "G";
-                    }
-
-                }
-                if (readername != '\0')
-                {
-                    CardReader = readername;
-                }
-                else
-                    return 'F';
-
-                return readername;
-            }
-        }
-
-        private string GetPublicCN(char reader)
-        {
-            if (reader == '\0')
-                return "Fail";
-            string rtn = FSFISC_GetPublicCN(reader, 0);
-            if (FSFISC_GetErrorCode() != 0)
-                return "Fail";
-            return rtn;
-        }
-
-        private string GetOPInfo(char reader, string pin)
-        {
-            if (reader == '\0')
-                return "Fail";
-            string rtn = FSFISC_GetOPInfo(reader, pin, 0);
-            if (FSFISC_GetErrorCode() != 0)
-                return "Fail";
-            return rtn;
-        }
-
-        private string EncryptData(char reader, string pin, string data)
-        {
-            if (reader == '\0')
-                return "Fail";
-            string rtn = FSFISC_GetTAC(reader, pin, data, 0, 0);
-            if (FSFISC_GetErrorCode() != 0)
-                return "Fail";
-            return rtn;
-        }*/
-
 
         private string getServerTime()
         {
@@ -377,28 +287,39 @@ namespace BeanfunLogin
                     return "登入失敗。\nCannot find \"sOtp\".";
                 string sotp = regex.Match(response).Groups[1].Value;
 
-                /*var readername = GetReader();
-                var original = cardType + "~" + sotp + "~" + userID + "~" + GetOPInfo(readername, pass);
+                this.fs = new FSFISCClass();
+                var readername = GetReader();
+                if (readername == "Fail")
+                    return "登入失敗，找不到讀卡機。\nFailed to get reader.";
+                if (cardType == "")
+                    return "登入失敗，晶片卡讀取失敗。\nFailed to get card type.";
+                this.cardid = GetPublicCN(readername);
+                if (cardid == "Fail")
+                    return "登入失敗，找不到讀卡機。\nFailed to get reader's public CN.";
+                var opinfo = GetOPInfo(readername, pass);
+                if (opinfo == "Fail")
+                    return "登入失敗，讀卡機讀取失敗。\nFailed to get OP Info.";                
+                var original = cardType + "~" + sotp + "~" + userID + "~" + opinfo;
+                var encryptedData = EncryptData(readername, pass, original);
+                if (encryptedData == "Fail")
+                    return "登入失敗，晶片卡讀取失敗。\nFailed to encrypt data.";
                 NameValueCollection payload = new NameValueCollection();
                 payload.Add("__EVENTTARGET", "");
                 payload.Add("__EVENTARGUMENT", "");
                 payload.Add("__VIEWSTATE", this.viewstate);
                 payload.Add("__EVENTVALIDATION", this.eventvalidation);
-                payload.Add("card_check_id", GetPublicCN(readername));
+                payload.Add("card_check_id", cardid);
                 payload.Add("original", original);
-                payload.Add("signature", EncryptData(readername, pass, original));
+                payload.Add("signature", encryptedData);
                 payload.Add("serverotp", sotp);
                 payload.Add("t_AccountID", userID);
                 payload.Add("t_Password", pass);
                 payload.Add("btn_login", "Login");
                 response = Encoding.UTF8.GetString(this.web.UploadValues("https://tw.newlogin.beanfun.com/login/playsafe_form.aspx?skey=" + skey, payload));
-                this.webtoken = this.web.getCookie("bfWebToken");
-                if (this.webtoken == "")
-                    return "登入失敗。\nNo response for webtoken.";
                 regex = new Regex("akey=(.*)");
                 if (!regex.IsMatch(this.web.ResponseUri.ToString()))
                     return "登入失敗，帳號或密碼錯誤。\nNo response for authentication key.";
-                this.akey = regex.Match(this.web.ResponseUri.ToString()).Groups[1].Value;*/
+                this.akey = regex.Match(this.web.ResponseUri.ToString()).Groups[1].Value;
 
                 return "OK";
             }

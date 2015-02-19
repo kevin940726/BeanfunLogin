@@ -55,7 +55,8 @@ namespace BeanfunLogin
                 this.AcceptButton = this.button1;
                 this.web = new SpWebClient(new CookieContainer());
                 this.web.Headers.Add("User-Agent", "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/28.0.1500.72 Safari/537.36");
-                
+                //Properties.Settings.Default.Reset(); //SetToDefault.                
+
                 string response = this.web.DownloadString("http://tw.beanfun.com/beanfun_block/bflogin/default.aspx?service=999999_T0");
                 if (response == "")
                     return errexit("Initial Error", "初始化失敗，請檢查網路連線。\nInternet error.", 0);
@@ -93,6 +94,7 @@ namespace BeanfunLogin
                     myRegistry.SubKey = "Software\\Gamania\\MapleStory";
                     if (myRegistry.Read("Path") != "")
                         Properties.Settings.Default.gamePath = myRegistry.Read("Path");
+                    Debug.WriteLine("in");
                 }
                 this.comboBox1.SelectedIndex = Properties.Settings.Default.loginMethod;
                 this.textBox3.Text = "";
@@ -270,6 +272,10 @@ namespace BeanfunLogin
             if (Properties.Settings.Default.loginMethod == 2 || Properties.Settings.Default.loginMethod == 3)
             {
                 this.label3.Text = "安全密碼";
+            }
+            else if (Properties.Settings.Default.loginMethod == 5)
+            {
+                this.label3.Text = "PIN碼";
             }
             else
             {

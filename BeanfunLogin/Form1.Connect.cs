@@ -74,6 +74,12 @@ namespace BeanfunLogin
                     if (result != "OK")
                         { e.Result = result; return; }
                 }
+                else if (loginMethod == 5)
+                {
+                    result = playsafeLogin(userID, pass);
+                    if (result != "OK")
+                        { e.Result = result; return; }
+                }
                 else
                 {
                     e.Result = "登入失敗，未選擇登入方式。\nFailed to select login method.";
@@ -81,19 +87,38 @@ namespace BeanfunLogin
                 }
 
                 NameValueCollection payload = new NameValueCollection();
-                payload = new NameValueCollection();
                 payload.Add("SessionKey", this.skey);
                 payload.Add("AuthKey", this.akey);
                 string response = Encoding.UTF8.GetString(this.web.UploadValues("https://tw.beanfun.com/beanfun_block/bflogin/return.aspx", payload));
                 this.webtoken = this.web.getCookie("bfWebToken");
                 if (this.webtoken == "")
                     { e.Result = "登入失敗。\nNo response for webtoken."; return; }
-                response = this.web.DownloadString("http://tw.beanfun.com/beanfun_block/auth.aspx?channel=game_zone&page_and_query=game_start.aspx%3Fservice_code_and_region%3D610074_T9&web_token=" + webtoken, Encoding.UTF8);
+                if (loginMethod == 5)
+                    response = this.web.DownloadString("http://tw.beanfun.com/beanfun_block/auth.aspx?channel=game_zone&page_and_query=game_start.aspx%3Fservice_code_and_region%3D610074_T9&web_token=" + webtoken + "&cardid=" + this.cardid, Encoding.UTF8);
+                else
+                    response = this.web.DownloadString("http://tw.beanfun.com/beanfun_block/auth.aspx?channel=game_zone&page_and_query=game_start.aspx%3Fservice_code_and_region%3D610074_T9&web_token=" + webtoken, Encoding.UTF8);
                 if (response == "")
                     { e.Result = "登入失敗，無法取得帳號列表。\nNo response for account list."; return; }
+                Regex regex;
+                if (loginMethod == 5)
+                {
+                    regex = new Regex("id=\"__VIEWSTATE\" value=\"(.*)\" />");
+                    if (!regex.IsMatch(response))
+                    { e.Result = "登入失敗。\nCannot find \"__VIEWSTATE\"."; return; }
+                    this.viewstate = regex.Match(response).Groups[1].Value;
+                    regex = new Regex("id=\"__EVENTVALIDATION\" value=\"(.*)\" />");
+                    if (!regex.IsMatch(response))
+                    { e.Result = "登入失敗。\nCannot find \"__EVENTVALIDATION\"."; return; }
+                    this.eventvalidation = regex.Match(response).Groups[1].Value;
+                    payload = new NameValueCollection();
+                    payload.Add("__VIEWSTATE", this.viewstate);
+                    payload.Add("__EVENTVALIDATION", this.eventvalidation);
+                    payload.Add("btnCheckPLASYSAFE", "Hidden+Button");
+                    response = Encoding.UTF8.GetString(this.web.UploadValues("http://tw.beanfun.com/beanfun_block/auth.aspx?channel=game_zone&page_and_query=game_start.aspx%3Fservice_code_and_region%3D610074_T9&web_token=" + webtoken + "&cardid=" + this.cardid, payload));
+                }                
 
                 // Add account list to ListView.
-                Regex regex = new Regex("<div id=\"(\\w+)\" sn=\"(\\d+)\" name=\"([^\"]+)\"");
+                regex = new Regex("<div id=\"(\\w+)\" sn=\"(\\d+)\" name=\"([^\"]+)\"");
                 this.accountList = new List<AccountListClass>();
                 foreach (Match match in regex.Matches(response))
                 {
@@ -164,7 +189,11 @@ namespace BeanfunLogin
         {
             try
             {
-                string response = this.web.DownloadString("http://tw.beanfun.com/beanfun_block/auth.aspx?channel=game_zone&page_and_query=game_start_step2.aspx%3Fservice_code%3D" + s_code + "%26service_region%3D" + s_region + "%26sotp%3D" + accountList[index].s_otp + "&web_token=" + webtoken);
+                string response;
+                if (Properties.Settings.Default.loginMethod == 5)
+                    response = this.web.DownloadString("http://tw.beanfun.com/beanfun_block/game_zone/game_start_step2.aspx?service_code=610074&service_region=T9&sotp=" + accountList[index].s_otp + "&dt=" + getServerTime2());
+                else
+                    response = this.web.DownloadString("http://tw.beanfun.com/beanfun_block/auth.aspx?channel=game_zone&page_and_query=game_start_step2.aspx%3Fservice_code%3D" + s_code + "%26service_region%3D" + s_region + "%26sotp%3D" + accountList[index].s_otp + "&web_token=" + webtoken);
                 if (response == "")
                     return errexit("Get OTP Fail", "密碼獲取失敗。\nNo response by \"s_otp\".", 2);
                 Regex regex = new Regex("GetResultByLongPolling&key=(.*)\"");
