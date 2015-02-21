@@ -31,8 +31,11 @@ namespace BeanfunLogin
                 foreach (string port in ports)
                 {
                     string response = this.web.DownloadString("https://localhost:" + port + "/api/1/status.jsonp?api=YXBpLmtleXBhc2NvaWQuY29tOjQ0My9SZXN0L0FwaVNlcnZpY2Uv&callback=_jqjsp&alt=json-in-script");
-                    response = this.web.DownloadString("https://localhost:" + port + "/api/1/aut.jsonp?sid=GAMANIA" + lblSID + "&api=YXBpLmtleXBhc2NvaWQuY29tOjQ0My9SZXN0L0FwaVNlcnZpY2Uv&callback=_jqjsp&alt=json-in-script");
-                    if (response == "_jqjsp( {\"statusCode\":200} );") return true;
+                    if (response == "_jqjsp( {\"statusCode\":200} );")
+                    {
+                        response = this.web.DownloadString("https://localhost:" + port + "/api/1/aut.jsonp?sid=GAMANIA" + lblSID + "&api=YXBpLmtleXBhc2NvaWQuY29tOjQ0My9SZXN0L0FwaVNlcnZpY2Uv&callback=_jqjsp&alt=json-in-script");
+                        if (response == "_jqjsp( {\"statusCode\":200} );") return true;
+                    }
                 }
                 return false;
             }
@@ -103,7 +106,7 @@ namespace BeanfunLogin
                     return "登入失敗。\nCannot find \"lblSID\".";
                 string lblSID = regex.Match(response).Groups[1].Value;
                 if (!vaktenAuthenticate(lblSID))
-                    return "登入失敗，與伺服器驗證失敗，請檢查是否安裝vakten程式。\nNo response with keypasco api.";
+                    return "登入失敗，與伺服器驗證失敗，請檢查是否安裝且已執行vakten程式。\nNo response with keypasco api.";
 
                 NameValueCollection payload = new NameValueCollection();
                 payload.Add("__EVENTTARGET", "");
@@ -290,7 +293,7 @@ namespace BeanfunLogin
                 this.fs = new FSFISCClass();
                 var readername = GetReader();
                 if (readername == "Fail")
-                    return "登入失敗，找不到讀卡機。\nFailed to get reader.";
+                    return "登入失敗，找不到晶片卡或讀卡機，請檢查晶片卡是否插入讀卡機，且讀卡機運作正常。\nFailed to get reader.";
                 if (cardType == "")
                     return "登入失敗，晶片卡讀取失敗。\nFailed to get card type.";
                 this.cardid = GetPublicCN(readername);

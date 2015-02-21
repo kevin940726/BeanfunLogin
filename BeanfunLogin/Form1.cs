@@ -24,7 +24,7 @@ namespace BeanfunLogin
         private SpWebClient web;
         private string skey;
 
-        public List<AccountListClass> accountList;
+        public List<AccountListClass> accountList; 
 
         public main()
         {
@@ -60,17 +60,9 @@ namespace BeanfunLogin
                 this.AcceptButton = this.button1;
                 this.web = new SpWebClient(new CookieContainer());
                 this.web.Headers.Add("User-Agent", "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/28.0.1500.72 Safari/537.36");
-                //Properties.Settings.Default.Reset(); //SetToDefault.                
+                //Properties.Settings.Default.Reset(); //SetToDefault.                  
 
-                string response = this.web.DownloadString("http://tw.beanfun.com/beanfun_block/bflogin/default.aspx?service=999999_T0");
-                if (response == "")
-                    return errexit("Initial Error", "初始化失敗，請檢查網路連線。\nInternet error.", 0);
-                response = this.web.ResponseUri.ToString();
-                Regex regex = new Regex("skey=(.*)&display");
-                if (!regex.IsMatch(response))
-                    return errexit("Initial Error", "初始化失敗。\nCannot find session key.", 0);
-                this.skey = regex.Match(response).Groups[1].Value;
-
+                // Handle settings.
                 if (Properties.Settings.Default.rememberAccount == true)
                     this.textBox1.Text = Properties.Settings.Default.AccountID;
                 if (Properties.Settings.Default.rememberPwd == true)
@@ -99,8 +91,11 @@ namespace BeanfunLogin
                     myRegistry.SubKey = "Software\\Gamania\\MapleStory";
                     if (myRegistry.Read("Path") != "")
                         Properties.Settings.Default.gamePath = myRegistry.Read("Path");
-                    Debug.WriteLine("in");
                 }
+                if (Properties.Settings.Default.keepLogged)
+                    if (!this.ping.IsBusy)
+                        this.ping.RunWorkerAsync();
+
                 this.comboBox1.SelectedIndex = Properties.Settings.Default.loginMethod;
                 this.textBox3.Text = "";
 
@@ -240,10 +235,6 @@ namespace BeanfunLogin
             if (listView1.SelectedItems.Count == 1)
             {
                 Clipboard.SetText(accountList[this.listView1.SelectedItems[0].Index].s_acc);
-                this.textBox3.Text = "獲取密碼中...";
-                this.listView1.Enabled = false;
-                this.copyOrNot = false;
-                this.backgroundWorker1.RunWorkerAsync(listView1.SelectedItems[0].Index);
             }
         }
 

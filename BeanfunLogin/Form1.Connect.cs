@@ -44,6 +44,15 @@ namespace BeanfunLogin
                 string securePass = this.textBox4.Text;
                 string result;
 
+                string response = this.web.DownloadString("http://tw.beanfun.com/beanfun_block/bflogin/default.aspx?service=999999_T0");
+                if (response == "")
+                    { e.Result = "初始化失敗，請檢查網路連線。\nInternet error."; return;}
+                response = this.web.ResponseUri.ToString();
+                Regex regex = new Regex("skey=(.*)&display");
+                if (!regex.IsMatch(response))
+                    { e.Result = "初始化失敗。\nCannot find session key."; return; }
+                this.skey = regex.Match(response).Groups[1].Value;
+
                 if (loginMethod == 0)
                 {
                     result = regularLogin(userID, pass);
@@ -89,7 +98,7 @@ namespace BeanfunLogin
                 NameValueCollection payload = new NameValueCollection();
                 payload.Add("SessionKey", this.skey);
                 payload.Add("AuthKey", this.akey);
-                string response = Encoding.UTF8.GetString(this.web.UploadValues("https://tw.beanfun.com/beanfun_block/bflogin/return.aspx", payload));
+                response = Encoding.UTF8.GetString(this.web.UploadValues("https://tw.beanfun.com/beanfun_block/bflogin/return.aspx", payload));
                 this.webtoken = this.web.getCookie("bfWebToken");
                 if (this.webtoken == "")
                     { e.Result = "登入失敗。\nNo response for webtoken."; return; }
@@ -99,7 +108,6 @@ namespace BeanfunLogin
                     response = this.web.DownloadString("http://tw.beanfun.com/beanfun_block/auth.aspx?channel=game_zone&page_and_query=game_start.aspx%3Fservice_code_and_region%3D610074_T9&web_token=" + webtoken, Encoding.UTF8);
                 if (response == "")
                     { e.Result = "登入失敗，無法取得帳號列表。\nNo response for account list."; return; }
-                Regex regex;
                 if (loginMethod == 5)
                 {
                     regex = new Regex("id=\"__VIEWSTATE\" value=\"(.*)\" />");
@@ -149,7 +157,10 @@ namespace BeanfunLogin
             }
             if ((string)e.Result != "")
             {
-                errexit("Login Failed", (string)e.Result, 1);
+                if (((string)e.Result).Substring(0, 1) == "初")
+                    errexit("Initial Failed", (string)e.Result, 0);
+                else
+                    errexit("Login Failed", (string)e.Result, 1);
                 return;
             }
 
@@ -198,7 +209,10 @@ namespace BeanfunLogin
                     return errexit("Get OTP Fail", "密碼獲取失敗。\nNo response by \"s_otp\".", 2);
                 Regex regex = new Regex("GetResultByLongPolling&key=(.*)\"");
                 if (!regex.IsMatch(response))
-                    return errexit("Get OTP Fail", "密碼獲取失敗，請嘗試重新登入。\nCannot find \"longPullingKey\".", 1);
+                    if (Properties.Settings.Default.loginMethod == 5)
+                        return errexit("Get OTP Fail", "密碼獲取失敗，請檢查晶片卡是否插入讀卡機，且讀卡機運作正常。\nCannot find \"longPullingKey\".", 2);
+                    else
+                        return errexit("Get OTP Fail", "密碼獲取失敗，請嘗試重新登入。\nCannot find \"longPullingKey\".", 1);
                 this.longPollingKey = regex.Match(response).Groups[1].Value;
                 regex = new Regex("ServiceAccountCreateTime: \"([^\"]+)\"");
                 if (!regex.IsMatch(response))
