@@ -92,9 +92,6 @@ namespace BeanfunLogin
                     if (myRegistry.Read("Path") != "")
                         Properties.Settings.Default.gamePath = myRegistry.Read("Path");
                 }
-                if (Properties.Settings.Default.keepLogged)
-                    if (!this.ping.IsBusy)
-                        this.ping.RunWorkerAsync();
 
                 this.comboBox1.SelectedIndex = Properties.Settings.Default.loginMethod;
                 this.textBox3.Text = "";
@@ -103,6 +100,10 @@ namespace BeanfunLogin
                     this.ActiveControl = this.textBox1;
                 else if (this.textBox2.Text == "")
                     this.ActiveControl = this.textBox2;
+
+                // .NET textbox full mode bug.
+                this.textBox1.ImeMode = ImeMode.OnHalf;
+                this.textBox2.ImeMode = ImeMode.OnHalf;
                 return true;
             }
             catch { return errexit("Initial Error", "初始化失敗，未知的錯誤。\nUnknown error.", 0); }
@@ -153,6 +154,21 @@ namespace BeanfunLogin
             this.listView1.Enabled = false;
             this.copyOrNot = true;
             this.backgroundWorker1.RunWorkerAsync(listView1.SelectedItems[0].Index);
+        }
+
+        // Ping to Beanfun website.
+        private void ping_DoWork(object sender, DoWorkEventArgs e)
+        {
+            while (!this.ping.CancellationPending && Properties.Settings.Default.keepLogged)
+            {
+                try
+                {
+                    this.web.DownloadString("http://tw.beanfun.com/beanfun_block/game_zone/game_start_step2.aspx?service_code=610074&service_region=T9");
+                    System.Threading.Thread.Sleep(1000 * 60 * 20);
+                }
+                catch
+                { return; }
+            }
         }
 
         /* Handle other elements' statements. */
@@ -272,20 +288,6 @@ namespace BeanfunLogin
             else
             {
                 this.label3.Text = "密碼";
-            }
-        }
-
-        private void ping_DoWork(object sender, DoWorkEventArgs e)
-        {
-            while (!this.ping.CancellationPending && Properties.Settings.Default.keepLogged)
-            {
-                try
-                {
-                    this.web.DownloadString("http://tw.beanfun.com/");
-                    System.Threading.Thread.Sleep(1000 * 60 * 20);                    
-                }
-                catch
-                { return; }
             }
         }
 
