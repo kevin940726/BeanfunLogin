@@ -8,19 +8,21 @@ Login to Beanfun and MapleStory without browsers, using 3DES to encrypt the stor
 [Download](https://github.com/kevin940726/BeanfunLogin/raw/master/BeanfunLogin.rar): Current Version 1.4.3.
 
 ========================
+### Version Log
+
 Version 1.4.3 (Current)
 - Changed ping url and fixed keeplogged bug.
 - Fixed .NET textbox full mode bug.
 - Fixed session key bug.
 
-Version 1.4.2 (Current)
+Version 1.4.2
 - Remove auto generate OTP with double click event on listview.
 - Fixed long delay session key bug.
 
 Version 1.4.1
 - Fixed re-login bug.
 
-Version 1.4 (Latest)
+Version 1.4
 - Now can login with PlaySafe (2nd generation only).
 
 Version 1.3.4
@@ -61,3 +63,8 @@ Version 1.1
 
 Version 1.0
 - First deployment.
+
+==============================
+### TODO
+
+- Add tooltip.
