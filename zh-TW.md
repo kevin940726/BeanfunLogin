@@ -1,6 +1,6 @@
 ## 新楓之谷Beanfun登入器 v.1.4.3
 
-[程式下載](../../raw/master/BeanfunLogin.rar) - Version 1.4.3
+[**程式下載**](../../raw/master/BeanfunLogin.rar) - Version 1.4.3
 
 此版本更新
 * 改變讀取Beanfun頁面的連結，並修正保持登入的錯誤。
@@ -51,6 +51,10 @@
 
 ====================================
 ### 常見問題
+
+> Q: 如何打開`.rar`檔案，或不知道怎麼解壓縮？
+
+`.rar`是壓縮檔的附檔名，請下載並安裝[**WinRAR**](http://www.rar.com.tw/download.html)、[**7-Zip**](http://www.7-zip.org/)或其他解壓縮工具進行解壓縮。詳細的解壓縮教學請參照他們官網或自行Google。
 
 > Q: 遊戲沒有正常開啟，程式顯示請手動以系統管理員身分開啟？
 
