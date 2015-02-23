@@ -68,3 +68,8 @@ Version 1.0
 ### TODO
 
 - Add tooltip.
+
+==============================
+### License
+
+This project use a [MIT license](LICENSE.md).
