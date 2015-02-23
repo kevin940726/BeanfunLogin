@@ -142,5 +142,17 @@ namespace BeanfunLogin.Properties {
                 this["keepLogged"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool showTip {
+            get {
+                return ((bool)(this["showTip"]));
+            }
+            set {
+                this["showTip"] = value;
+            }
+        }
     }
 }

@@ -44,7 +44,7 @@ namespace BeanfunLogin
                 string securePass = this.textBox4.Text;
                 string result;
 
-                string response = this.web.DownloadString("http://tw.beanfun.com/beanfun_block/bflogin/default.aspx?service=999999_T0");
+                string response = this.web.DownloadString("https://tw.beanfun.com/beanfun_block/bflogin/default.aspx?service=999999_T0");
                 if (response == "")
                     { e.Result = "初始化失敗，請檢查網路連線。\nInternet error."; return;}
                 response = this.web.ResponseUri.ToString();
@@ -103,9 +103,9 @@ namespace BeanfunLogin
                 if (this.webtoken == "")
                     { e.Result = "登入失敗。\nNo response for webtoken."; return; }
                 if (loginMethod == 5)
-                    response = this.web.DownloadString("http://tw.beanfun.com/beanfun_block/auth.aspx?channel=game_zone&page_and_query=game_start.aspx%3Fservice_code_and_region%3D610074_T9&web_token=" + webtoken + "&cardid=" + this.cardid, Encoding.UTF8);
+                    response = this.web.DownloadString("https://tw.beanfun.com/beanfun_block/auth.aspx?channel=game_zone&page_and_query=game_start.aspx%3Fservice_code_and_region%3D610074_T9&web_token=" + webtoken + "&cardid=" + this.cardid, Encoding.UTF8);
                 else
-                    response = this.web.DownloadString("http://tw.beanfun.com/beanfun_block/auth.aspx?channel=game_zone&page_and_query=game_start.aspx%3Fservice_code_and_region%3D610074_T9&web_token=" + webtoken, Encoding.UTF8);
+                    response = this.web.DownloadString("https://tw.beanfun.com/beanfun_block/auth.aspx?channel=game_zone&page_and_query=game_start.aspx%3Fservice_code_and_region%3D610074_T9&web_token=" + webtoken, Encoding.UTF8);
                 if (response == "")
                     { e.Result = "登入失敗，無法取得帳號列表。\nNo response for account list."; return; }
                 //Regex regex;
@@ -123,7 +123,7 @@ namespace BeanfunLogin
                     payload.Add("__VIEWSTATE", this.viewstate);
                     payload.Add("__EVENTVALIDATION", this.eventvalidation);
                     payload.Add("btnCheckPLASYSAFE", "Hidden+Button");
-                    response = Encoding.UTF8.GetString(this.web.UploadValues("http://tw.beanfun.com/beanfun_block/auth.aspx?channel=game_zone&page_and_query=game_start.aspx%3Fservice_code_and_region%3D610074_T9&web_token=" + webtoken + "&cardid=" + this.cardid, payload));
+                    response = Encoding.UTF8.GetString(this.web.UploadValues("https://tw.beanfun.com/beanfun_block/auth.aspx?channel=game_zone&page_and_query=game_start.aspx%3Fservice_code_and_region%3D610074_T9&web_token=" + webtoken + "&cardid=" + this.cardid, payload));
                 }                
 
                 // Add account list to ListView.
@@ -189,6 +189,13 @@ namespace BeanfunLogin
                 }
                 if (Properties.Settings.Default.keepLogged && !this.ping.IsBusy)
                     this.ping.RunWorkerAsync();
+                ShowToolTip(listView1, "步驟1", "選擇欲開啟的遊戲帳號，雙擊以複製帳號。");
+                ShowToolTip(button3, "步驟2", "按下以在右側產生並自動複製密碼，至遊戲中貼上帳密登入。");
+                Tip.SetToolTip(button3, "點擊獲取密碼");
+                Tip.SetToolTip(listView1, "雙擊即自動複製");
+                Tip.SetToolTip(textBox3, "點擊一次即自動複製");
+                Properties.Settings.Default.showTip = false;
+                Properties.Settings.Default.Save();
             }
             catch
             {
@@ -203,15 +210,15 @@ namespace BeanfunLogin
             {
                 string response;
                 if (Properties.Settings.Default.loginMethod == 5)
-                    response = this.web.DownloadString("http://tw.beanfun.com/beanfun_block/game_zone/game_start_step2.aspx?service_code=610074&service_region=T9&sotp=" + accountList[index].s_otp + "&dt=" + getServerTime2());
+                    response = this.web.DownloadString("https://tw.beanfun.com/beanfun_block/game_zone/game_start_step2.aspx?service_code=610074&service_region=T9&sotp=" + accountList[index].s_otp + "&dt=" + getServerTime2());
                 else
-                    response = this.web.DownloadString("http://tw.beanfun.com/beanfun_block/auth.aspx?channel=game_zone&page_and_query=game_start_step2.aspx%3Fservice_code%3D" + s_code + "%26service_region%3D" + s_region + "%26sotp%3D" + accountList[index].s_otp + "&web_token=" + webtoken);
+                    response = this.web.DownloadString("https://tw.beanfun.com/beanfun_block/auth.aspx?channel=game_zone&page_and_query=game_start_step2.aspx%3Fservice_code%3D" + s_code + "%26service_region%3D" + s_region + "%26sotp%3D" + accountList[index].s_otp + "&web_token=" + webtoken);
                 if (response == "")
                     return errexit("Get OTP Fail", "密碼獲取失敗。\nNo response by \"s_otp\".", 2);
                 Regex regex = new Regex("GetResultByLongPolling&key=(.*)\"");
                 if (!regex.IsMatch(response))
                     if (Properties.Settings.Default.loginMethod == 5)
-                        return errexit("Get OTP Fail", "密碼獲取失敗，請檢查晶片卡是否插入讀卡機，且讀卡機運作正常。\nCannot find \"longPullingKey\".", 2);
+                        return errexit("Get OTP Fail", "密碼獲取失敗，請檢查晶片卡是否插入讀卡機，且讀卡機運作正常。\n若仍出現此訊息，請嘗試重新登入。\nCannot find \"longPullingKey\".", 2);
                     else
                         return errexit("Get OTP Fail", "密碼獲取失敗，請嘗試重新登入。\nCannot find \"longPullingKey\".", 1);
                 this.longPollingKey = regex.Match(response).Groups[1].Value;
@@ -219,7 +226,7 @@ namespace BeanfunLogin
                 if (!regex.IsMatch(response))
                     return errexit("Get OTP Fail", "密碼獲取失敗。\nCannot find \"createTime\".", 2);
                 this.accountList[index].s_createTime = regex.Match(response).Groups[1].Value;
-                response = this.web.DownloadString("http://tw.newlogin.beanfun.com/generic_handlers/get_cookies.ashx");
+                response = this.web.DownloadString("https://tw.newlogin.beanfun.com/generic_handlers/get_cookies.ashx");
                 if (response == "")
                     return errexit("Get OTP Fail", "密碼獲取失敗。\nNo response from cookies.", 2);
                 regex = new Regex("var m_strSecretCode = '(.*)';");
@@ -234,9 +241,9 @@ namespace BeanfunLogin
                 payload.Add("service_sotp", accountList[index].s_otp);
                 payload.Add("service_display_name", accountList[index].s_name);
                 payload.Add("service_create_time", accountList[index].s_createTime);
-                response = Encoding.UTF8.GetString(this.web.UploadValues("http://tw.new.beanfun.com/beanfun_block/generic_handlers/record_service_start.ashx", payload));
-                response = this.web.DownloadString("http://tw.new.beanfun.com/generic_handlers/get_result.ashx?meth=GetResultByLongPolling&key=" + longPollingKey + "&_=" + getCurrentTime());
-                response = this.web.DownloadString("http://tw.new.beanfun.com/beanfun_block/generic_handlers/get_webstart_otp.ashx?SN=" + longPollingKey + "&WebToken=" + webtoken + "&SecretCode=" + secretCode + "&ppppp=FE40250C435D81475BF8F8009348B2D7F56A5FFB163A12170AD615BBA534B932&ServiceCode=610074&ServiceRegion=T9&ServiceAccount=" + accountList[index].s_acc + "&CreateTime=" + accountList[index].s_createTime.Replace(" ", "%20"));
+                response = Encoding.UTF8.GetString(this.web.UploadValues("https://tw.new.beanfun.com/beanfun_block/generic_handlers/record_service_start.ashx", payload));
+                response = this.web.DownloadString("https://tw.new.beanfun.com/generic_handlers/get_result.ashx?meth=GetResultByLongPolling&key=" + longPollingKey + "&_=" + getCurrentTime());
+                response = this.web.DownloadString("https://tw.new.beanfun.com/beanfun_block/generic_handlers/get_webstart_otp.ashx?SN=" + longPollingKey + "&WebToken=" + webtoken + "&SecretCode=" + secretCode + "&ppppp=FE40250C435D81475BF8F8009348B2D7F56A5FFB163A12170AD615BBA534B932&ServiceCode=610074&ServiceRegion=T9&ServiceAccount=" + accountList[index].s_acc + "&CreateTime=" + accountList[index].s_createTime.Replace(" ", "%20"));
                 if (response == "")
                     return errexit("Get OTP Fail", "密碼獲取失敗，無法取得OTP密碼。\nNo response for OTP.", 2);
                 response = response.Substring(2);

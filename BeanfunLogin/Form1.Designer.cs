@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(main));
             this.panel1 = new System.Windows.Forms.Panel();
             this.keepLogged = new System.Windows.Forms.CheckBox();
@@ -56,6 +57,8 @@
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.backgroundWorker2 = new System.ComponentModel.BackgroundWorker();
             this.ping = new System.ComponentModel.BackgroundWorker();
+            this.Tip = new System.Windows.Forms.ToolTip(this.components);
+            this.Notification = new System.Windows.Forms.ToolTip(this.components);
             this.panel1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -369,6 +372,19 @@
             this.ping.WorkerSupportsCancellation = true;
             this.ping.DoWork += new System.ComponentModel.DoWorkEventHandler(this.ping_DoWork);
             // 
+            // Tip
+            // 
+            this.Tip.AutoPopDelay = 5000;
+            this.Tip.InitialDelay = 500;
+            this.Tip.IsBalloon = true;
+            this.Tip.ReshowDelay = 100;
+            // 
+            // Notification
+            // 
+            this.Notification.AutoPopDelay = 5000;
+            this.Notification.InitialDelay = 0;
+            this.Notification.ReshowDelay = 100;
+            // 
             // main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 16F);
@@ -423,6 +439,8 @@
         private System.Windows.Forms.Label label4;
         private System.ComponentModel.BackgroundWorker ping;
         private System.Windows.Forms.CheckBox keepLogged;
+        private System.Windows.Forms.ToolTip Tip;
+        private System.Windows.Forms.ToolTip Notification;
 
 
     }

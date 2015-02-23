@@ -293,7 +293,7 @@ namespace BeanfunLogin
                 this.fs = new FSFISCClass();
                 var readername = GetReader();
                 if (readername == "Fail")
-                    return "登入失敗，找不到晶片卡或讀卡機，請檢查晶片卡是否插入讀卡機，且讀卡機運作正常。\nFailed to get reader.";
+                    return "登入失敗，找不到晶片卡或讀卡機，請檢查晶片卡是否插入讀卡機，且讀卡機運作正常。\n若還是發生此情形，請嘗試重新登入。\nFailed to get reader.";
                 if (cardType == "")
                     return "登入失敗，晶片卡讀取失敗。\nFailed to get card type.";
                 this.cardid = GetPublicCN(readername);

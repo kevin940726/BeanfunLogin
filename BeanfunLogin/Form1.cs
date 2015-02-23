@@ -32,6 +32,22 @@ namespace BeanfunLogin
             init();
         }
 
+        public void ShowToolTip(IWin32Window ui, string title, string des, int iniDelay = 2000, bool repeat = false)
+        {
+            if (Properties.Settings.Default.showTip || repeat)
+            {
+                ToolTip toolTip = new ToolTip();
+                toolTip.ToolTipTitle = title;
+                toolTip.UseFading = true;
+                toolTip.UseAnimation = true;
+                toolTip.IsBalloon = true;
+                toolTip.InitialDelay = iniDelay;
+
+                toolTip.Show(string.Empty, ui, 3000);
+                toolTip.Show(des, ui);
+            }
+        }
+
         public bool errexit(string title, string msg, int method)
         {
             MessageBox.Show(msg, title);
@@ -160,11 +176,11 @@ namespace BeanfunLogin
         private void ping_DoWork(object sender, DoWorkEventArgs e)
         {
             while (!this.ping.CancellationPending && Properties.Settings.Default.keepLogged)
-            {
+            { 
                 try
                 {
-                    this.web.DownloadString("http://tw.beanfun.com/beanfun_block/game_zone/game_start_step2.aspx?service_code=610074&service_region=T9");
-                    System.Threading.Thread.Sleep(1000 * 60 * 20);
+                    this.web.DownloadString("https://tw.new.beanfun.com/beanfun_block/generic_handlers/record_service_start.ashx", Encoding.UTF8);
+                    System.Threading.Thread.Sleep(1000 * 60 * 10);
                 }
                 catch
                 { return; }
@@ -242,7 +258,7 @@ namespace BeanfunLogin
 
         private void textBox3_OnClick(object sender, EventArgs e)
         {
-            if (textBox3.Text == "") return;
+            if (textBox3.Text == "" || textBox3.Text == "獲取失敗") return;
             Clipboard.SetText(textBox3.Text);
         }
 
