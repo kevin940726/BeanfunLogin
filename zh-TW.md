@@ -1,11 +1,10 @@
-## 新楓之谷Beanfun登入器 v.1.4.3
+﻿## 新楓之谷Beanfun登入器
 
-[**程式下載**](../../raw/master/BeanfunLogin.rar) - Version 1.4.3
+[**程式下載**](../../raw/master/BeanfunLogin.rar) - Version 1.4.4
 
 此版本更新
-* 改變讀取Beanfun頁面的連結，並修正保持登入的錯誤。
-* 修正.NET在textbox上輸入會自動切換全形模式的錯誤。
-* 修正閒置在登入畫面太久時會登入失敗的錯誤。
+* 修正保持登入功能在PlaySafe下的錯誤(不穩定)。
+* 增加小提醒。
 
 ### 目錄
 * [程式介紹](#程式介紹)
