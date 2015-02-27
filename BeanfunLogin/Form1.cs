@@ -27,6 +27,7 @@ namespace BeanfunLogin
         {
             InitializeComponent();
             init();
+            CheckForUpdate();
         }
 
         public void ShowToolTip(IWin32Window ui, string title, string des, int iniDelay = 2000, bool repeat = false)
@@ -168,6 +169,29 @@ namespace BeanfunLogin
                 return true;
             }
             catch { return errexit("初始化失敗，未知的錯誤。", 0); }
+        }
+
+        public void CheckForUpdate()
+        {
+            try
+            {
+                string response = this.bfClient.DownloadString("https://github.com/kevin940726/BeanfunLogin");
+                Regex regex = new Regex("Current Version (\\d\\.\\d\\.\\d)");
+                if (!regex.IsMatch(response))
+                    return;
+                int latest = Convert.ToInt32(Regex.Replace(regex.Match(response).Groups[1].Value, "\\.", ""));
+                if (latest > Properties.Settings.Default.currentVersion)
+                {
+                    DialogResult result = MessageBox.Show("有新的更新可以下載，是否前往下載？\n(此對話窗只會顯示一次)", "檢查更新", MessageBoxButtons.YesNo);
+                    if (result == System.Windows.Forms.DialogResult.Yes)
+                    {
+                        System.Diagnostics.Process.Start("https://github.com/kevin940726/BeanfunLogin/blob/master/zh-TW.md");
+                    }
+                    Properties.Settings.Default.currentVersion = latest;
+                    Properties.Settings.Default.Save();
+                }
+            }
+            catch { return; }
         }
 
         // The login botton.
