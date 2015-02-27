@@ -78,24 +78,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AccountListClass.cs" />
+    <Compile Include="BeanfunClient.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="BeanfunClient.Login.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="BeanfunClient.OTP.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Form1.Connect.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Form1.Cryptography.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Form1.LoginMethod.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Form1.PlaySafe.cs">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Include="ModifyRegistry.cs" />
+    <Compile Include="PlaySafe.cs" />
     <Compile Include="Settings.cs" />
-    <Compile Include="SpWebClient.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>

@@ -21,15 +21,13 @@ namespace BeanfunLogin
 {
     public partial class main : Form
     {
-        private SpWebClient web;
-        private string skey;
-
-        public List<AccountListClass> accountList; 
+        private BeanfunClient bfClient;
 
         public main()
         {
             InitializeComponent();
             init();
+            CheckForUpdate();
         }
 
         public void ShowToolTip(IWin32Window ui, string title, string des, int iniDelay = 2000, bool repeat = false)
@@ -48,9 +46,58 @@ namespace BeanfunLogin
             }
         }
 
-        public bool errexit(string title, string msg, int method)
+        public bool errexit(string msg, int method)
         {
-            MessageBox.Show(msg, title);
+            switch (msg)
+            {
+                case "LoginNoResponse":
+                    msg = "初始化失敗，請檢查網路連線。";
+                    method = 0;
+                    break;
+                case "LoginNoSkey":
+                    method = 0;
+                    break;
+                case "LoginNoAkey":
+                    msg = "登入失敗，帳號或密碼錯誤。";
+                    break;
+                case "LoginNoAccountMatch":
+                    msg = "登入失敗，無法取得帳號列表。";
+                    break;
+                case "LoginNoAccount":
+                    msg = "登入失敗，找不到遊戲帳號。";
+                    break;
+                case "LoginNoResponseVakten":
+                    msg = "登入失敗，與伺服器驗證失敗，請檢查是否安裝且已執行vakten程式。";
+                    break;
+                case "OTPNoLongPollingKey":
+                    if (Properties.Settings.Default.loginMethod == 5)
+                        msg = "密碼獲取失敗，請檢查晶片卡是否插入讀卡機，且讀卡機運作正常。\n若仍出現此訊息，請嘗試重新登入。";
+                    else
+                    {
+                        msg = "密碼獲取失敗，請嘗試重新登入。";
+                        method = 1;
+                    }
+                    break;
+                case "LoginNoReaderName":
+                    msg = "登入失敗，找不到晶片卡或讀卡機，請檢查晶片卡是否插入讀卡機，且讀卡機運作正常。\n若還是發生此情形，請嘗試重新登入。";
+                    break;
+                case "LoginNoCardType":
+                    msg = "登入失敗，晶片卡讀取失敗。";
+                    break;
+                case "LoginNoCardId":
+                    msg = "登入失敗，找不到讀卡機。";
+                    break;
+                case "LoginNoOpInfo":
+                    msg = "登入失敗，讀卡機讀取失敗。";
+                    break;
+                case "LoginNoEncryptedData":
+                    msg = "登入失敗，晶片卡讀取失敗。";
+                    break;
+                default:
+                    break;
+            }
+
+            MessageBox.Show(msg, null);
             if (method == 0)
                 Application.Exit();
             else if (method == 1)
@@ -74,8 +121,7 @@ namespace BeanfunLogin
             {
                 this.Text = "BeanfunLogin - By Kai";
                 this.AcceptButton = this.button1;
-                this.web = new SpWebClient(new CookieContainer());
-                this.web.Headers.Add("User-Agent", "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/28.0.1500.72 Safari/537.36");
+                this.bfClient = new BeanfunClient();
                 //Properties.Settings.Default.Reset(); //SetToDefault.                  
 
                 // Handle settings.
@@ -122,7 +168,30 @@ namespace BeanfunLogin
                 this.textBox2.ImeMode = ImeMode.OnHalf;
                 return true;
             }
-            catch { return errexit("Initial Error", "初始化失敗，未知的錯誤。\nUnknown error.", 0); }
+            catch { return errexit("初始化失敗，未知的錯誤。", 0); }
+        }
+
+        public void CheckForUpdate()
+        {
+            try
+            {
+                string response = this.bfClient.DownloadString("https://github.com/kevin940726/BeanfunLogin");
+                Regex regex = new Regex("Current Version (\\d\\.\\d\\.\\d)");
+                if (!regex.IsMatch(response))
+                    return;
+                int latest = Convert.ToInt32(Regex.Replace(regex.Match(response).Groups[1].Value, "\\.", ""));
+                if (latest > Properties.Settings.Default.currentVersion)
+                {
+                    DialogResult result = MessageBox.Show("有新的更新可以下載，是否前往下載？\n(此對話窗只會顯示一次)", "檢查更新", MessageBoxButtons.YesNo);
+                    if (result == System.Windows.Forms.DialogResult.Yes)
+                    {
+                        System.Diagnostics.Process.Start("https://github.com/kevin940726/BeanfunLogin/blob/master/zh-TW.md");
+                    }
+                    Properties.Settings.Default.currentVersion = latest;
+                    Properties.Settings.Default.Save();
+                }
+            }
+            catch { return; }
         }
 
         // The login botton.
@@ -168,7 +237,6 @@ namespace BeanfunLogin
 
             this.textBox3.Text = "獲取密碼中...";
             this.listView1.Enabled = false;
-            this.copyOrNot = true;
             this.backgroundWorker1.RunWorkerAsync(listView1.SelectedItems[0].Index);
         }
 
@@ -179,13 +247,22 @@ namespace BeanfunLogin
             { 
                 try
                 {
-                    this.web.DownloadString("https://tw.new.beanfun.com/beanfun_block/generic_handlers/record_service_start.ashx", Encoding.UTF8);
+                    this.bfClient.Ping();
                     System.Threading.Thread.Sleep(1000 * 60 * 10);
                 }
                 catch
                 { return; }
             }
         }
+
+        // Building ciphertext by 3DES.
+        private byte[] ciphertext(string plaintext, string key)
+        {
+            byte[] plainByte = Encoding.UTF8.GetBytes(plaintext);
+            byte[] entropy = Encoding.UTF8.GetBytes(key);
+            return ProtectedData.Protect(plainByte, entropy, DataProtectionScope.CurrentUser);
+        }
+
 
         /* Handle other elements' statements. */
         private void BackToLogin_ToolStripMenuItem_Click(object sender, EventArgs e)
@@ -245,7 +322,7 @@ namespace BeanfunLogin
         {
             if (listView1.SelectedItems.Count > 0)
             {
-                if (this.checkBox4.Checked == true && this.listView1.SelectedItems[0].Index != -1 && this.listView1.SelectedItems[0].Index <= accountList.Count)
+                if (this.checkBox4.Checked == true && this.listView1.SelectedItems[0].Index != -1 && this.listView1.SelectedItems[0].Index <= this.bfClient.accountList.Count())
                 {
                     Properties.Settings.Default.autoSelectIndex = this.listView1.SelectedItems[0].Index;
                     Properties.Settings.Default.autoSelect = true;
@@ -266,7 +343,7 @@ namespace BeanfunLogin
         {
             if (listView1.SelectedItems.Count == 1)
             {
-                Clipboard.SetText(accountList[this.listView1.SelectedItems[0].Index].s_acc);
+                Clipboard.SetText(this.bfClient.accountList[this.listView1.SelectedItems[0].Index].sacc);
             }
         }
 

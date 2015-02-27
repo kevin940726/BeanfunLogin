@@ -154,5 +154,17 @@ namespace BeanfunLogin.Properties {
                 this["showTip"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("151")]
+        public int currentVersion {
+            get {
+                return ((int)(this["currentVersion"]));
+            }
+            set {
+                this["currentVersion"] = value;
+            }
+        }
     }
 }
