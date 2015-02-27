@@ -1,23 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Windows.Forms;
 using System.Linq;
 using System.Text;
 using FSFISCATLLib;
 
 namespace BeanfunLogin
 {
-    public partial class main : Form
+    public class PlaySafe
     {
-        private string cardType = "";
-        private string CardReader = "";
-        private string cardid = "";
+        public string cardType;
+        public string CardReader;
+        public string cardid;
         FSFISCClass fs;
 
-        private string getServerTime2()
+        public PlaySafe()
         {
-            DateTime date = DateTime.Now;
-            return date.Year.ToString() + (date.Month - 1).ToString() + date.ToString("ddHHmmssfff");
+            this.fs = new FSFISCClass();
+            this.cardType = null;
+            this.CardReader = null;
+            this.cardid = null;
         }
 
         public string GetReader()
@@ -30,10 +31,10 @@ namespace BeanfunLogin
             }
             catch
             {
-                return "Fail";
+                return null;
             }
             if (aaa == null)
-                return "Fail";
+                return null;
             else
             {
                 var readers = ((System.Collections.IEnumerable)aaa).Cast<object>().Select(x => x.ToString()).ToArray();
@@ -59,39 +60,39 @@ namespace BeanfunLogin
                     CardReader = readername;
                 }
                 else
-                    return "Fail";
+                    return null;
 
                 return readername;
             }
         }
 
-        private string GetPublicCN(string reader)
+        public string GetPublicCN(string reader)
         {
             if (reader == "" || reader == null)
-                return "Fail";
+                return null;
             string rtn = fs.FSFISC_GetPublicCN(reader, 0);
             if (fs.FSFISC_GetErrorCode() != 0)
-                return "Fail";
+                return null;
             return rtn;
         }
 
-        private string GetOPInfo(string reader, string pin)
+        public string GetOPInfo(string reader, string pin)
         {
             if (reader == "" || reader == null)
-                return "Fail";
+                return null;
             string rtn = fs.FSFISC_GetOPInfo(reader, pin, 0);
             if (fs.FSFISC_GetErrorCode() != 0)
-                return "Fail";
+                return null;
             return rtn;
         }
 
-        private string EncryptData(string reader, string pin, string data)
+        public string EncryptData(string reader, string pin, string data)
         {
             if (reader == "" || reader == null)
-                return "Fail";
+                return null;
             string rtn = fs.FSFISC_GetTAC(reader, pin, data, 0, 0);
             if (fs.FSFISC_GetErrorCode() != 0)
-                return "Fail";
+                return null;
             return rtn;
         }
     }
