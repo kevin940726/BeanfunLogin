@@ -1,9 +1,9 @@
 ﻿## 新楓之谷Beanfun登入器
 
-[**程式下載**](../../raw/master/BeanfunLogin.rar) - Version 1.5
+[**程式下載**](../../raw/master/BeanfunLogin.rar) - Version 1.5.1
 
 此版本更新
-* 重新編寫Client端程式碼，使其更益於維護和重新利用。
+* 加入檢查更新的功能。
 
 ### 目錄
 * [程式介紹](#程式介紹)
