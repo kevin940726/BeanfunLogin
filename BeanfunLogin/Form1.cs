@@ -175,7 +175,8 @@ namespace BeanfunLogin
         {
             try
             {
-                string response = this.bfClient.DownloadString("https://github.com/kevin940726/BeanfunLogin");
+                BeanfunClient bf = new BeanfunClient();
+                string response = bf.DownloadString("https://github.com/kevin940726/BeanfunLogin");
                 Regex regex = new Regex("Current Version (\\d\\.\\d\\.\\d)");
                 if (!regex.IsMatch(response))
                     return;

@@ -5,6 +5,7 @@ using System.Text;
 using System.Net;
 using System.Text.RegularExpressions;
 using System.Collections.Specialized;
+using System.Diagnostics;
 
 namespace BeanfunLogin
 {
@@ -321,6 +322,7 @@ namespace BeanfunLogin
                 if (response == "")
                 { this.errmsg = "LoginNoResponse"; return; }
                 response = this.ResponseUri.ToString();
+                Debug.WriteLine(response);
                 Regex regex = new Regex("skey=(.*)&display");
                 if (!regex.IsMatch(response))
                 { this.errmsg = "LoginNoSkey"; return; }
