@@ -118,28 +118,51 @@ namespace BeanfunLogin
             }
         }
 
-        private string GamaotpLogin(string id, string pass, string skey)
+        public class GamaotpClass
+        {
+            public string skey;
+            public string sotp;
+            public string motp;
+            public string viewstate;
+            public string eventvalidation;
+
+            public GamaotpClass(string skey, string sotp, string motp, string viewstate, string eventvalidation)
+            { this.skey = skey; this.sotp = sotp; this.motp = motp; this.viewstate = viewstate; this.eventvalidation = eventvalidation; }
+        }
+
+        public GamaotpClass GetGamaotpPassCode(string skey)
+        {
+            string response = this.DownloadString("https://tw.newlogin.beanfun.com/login/gamaotp_form.aspx?skey=" + skey);
+            Regex regex = new Regex("id=\"__VIEWSTATE\" value=\"(.*)\" />");
+            if (!regex.IsMatch(response))
+            { this.errmsg = "LoginNoViewstate"; return null; }
+            string viewstate = regex.Match(response).Groups[1].Value;
+            regex = new Regex("id=\"__EVENTVALIDATION\" value=\"(.*)\" />");
+            if (!regex.IsMatch(response))
+            { this.errmsg = "LoginNoEventvalidation"; return null; }
+            string eventvalidation = regex.Match(response).Groups[1].Value;
+            regex = new Regex("motp_challenge_code\" value=\"(\\d+)\" />");
+            if (!regex.IsMatch(response))
+            { this.errmsg = "LoginNoMotp"; return null; }
+            string motp = regex.Match(response).Groups[1].Value;
+            response = this.DownloadString("https://tw.newlogin.beanfun.com/generic_handlers/get_security_otp.ashx?d=" + GetCurrentTime(1));
+            regex = new Regex("<playsafe_otp>(\\w+)</playsafe_otp>");
+            if (!regex.IsMatch(response))
+            { this.errmsg = "LoginNoSotp"; return null; }
+            string sotp = regex.Match(response).Groups[1].Value;
+
+            return new GamaotpClass(skey, sotp, motp, viewstate, eventvalidation);
+        }
+
+        private string GamaotpLogin(string id, string pass, GamaotpClass gamaotpClass)
         {
             try
             {
-                string response = this.DownloadString("https://tw.newlogin.beanfun.com/login/gamaotp_form.aspx?skey=" + skey);
-                Regex regex = new Regex("id=\"__VIEWSTATE\" value=\"(.*)\" />");
-                if (!regex.IsMatch(response))
-                { this.errmsg = "LoginNoViewstate"; return null; }
-                string viewstate = regex.Match(response).Groups[1].Value;
-                regex = new Regex("id=\"__EVENTVALIDATION\" value=\"(.*)\" />");
-                if (!regex.IsMatch(response))
-                { this.errmsg = "LoginNoEventvalidation"; return null; }
-                string eventvalidation = regex.Match(response).Groups[1].Value;
-                regex = new Regex("motp_challenge_code\" value=\"(\\d+)\" />");
-                if (!regex.IsMatch(response))
-                { this.errmsg = "LoginNoMotp"; return null; }
-                string motp = regex.Match(response).Groups[1].Value;
-                response = this.DownloadString("https://tw.newlogin.beanfun.com/generic_handlers/get_security_otp.ashx?d=" + GetCurrentTime(1));
-                regex = new Regex("<playsafe_otp>(\\w+)</playsafe_otp>");
-                if (!regex.IsMatch(response))
-                { this.errmsg = "LoginNoSotp"; return null; }
-                string sotp = regex.Match(response).Groups[1].Value;
+                string skey = gamaotpClass.skey;
+                string sotp = gamaotpClass.sotp;
+                string motp = gamaotpClass.motp;
+                string viewstate = gamaotpClass.viewstate;
+                string eventvalidation = gamaotpClass.eventvalidation;
 
                 NameValueCollection payload = new NameValueCollection();
                 payload.Add("__EVENTTARGET", "");
@@ -153,10 +176,11 @@ namespace BeanfunLogin
                 payload.Add("t_AccountID", id);
                 payload.Add("t_Password", pass);
                 payload.Add("btn_login", "Login");
-                response = Encoding.UTF8.GetString(this.UploadValues("https://tw.newlogin.beanfun.com/login/gamaotp_form.aspx?skey=" + skey, payload));
-                regex = new Regex("akey=(.*)");
+                string response = Encoding.UTF8.GetString(this.UploadValues("https://tw.newlogin.beanfun.com/login/gamaotp_form.aspx?skey=" + skey, payload));
+                Regex regex = new Regex("akey=(.*)");
                 if (!regex.IsMatch(this.ResponseUri.ToString()))
                 { this.errmsg = "LoginNoAkey"; return null; }
+
                 return regex.Match(this.ResponseUri.ToString()).Groups[1].Value;
             }
             catch
@@ -233,7 +257,7 @@ namespace BeanfunLogin
                 payload.Add("__EVENTARGUMENT", "");
                 payload.Add("__VIEWSTATE", viewstate);
                 payload.Add("__EVENTVALIDATION", eventvalidation);
-                payload.Add("original", "E~" + sotp + "~" + id + "~" + pass);
+                payload.Add("original", "E~" + sotp + "~" + id + "~" + securePass);
                 payload.Add("signature", "");
                 payload.Add("serverotp", sotp);
                 payload.Add("t_AccountID", id);
@@ -314,21 +338,31 @@ namespace BeanfunLogin
             }
         }
 
-        public void Login(string id, string pass, int loginMethod, string securePass = null)
+        public string GetSessionkey()
+        {
+            string response = this.DownloadString("https://tw.beanfun.com/beanfun_block/bflogin/default.aspx?service=999999_T0");
+            if (response == null)
+            { this.errmsg = "LoginNoResponse"; return null; }
+            response = this.ResponseUri.ToString();
+            Regex regex = new Regex("skey=(.*)&display");
+            if (!regex.IsMatch(response))
+            { this.errmsg = "LoginNoSkey"; return null; }
+            return regex.Match(response).Groups[1].Value;
+        }
+
+        public void Login(string id, string pass, int loginMethod, string securePass = null, GamaotpClass gamaotpClass = null)
         {
             try
             {
-                string response = this.DownloadString("https://tw.beanfun.com/beanfun_block/bflogin/default.aspx?service=999999_T0");
-                if (response == "")
-                { this.errmsg = "LoginNoResponse"; return; }
-                response = this.ResponseUri.ToString();
-                Debug.WriteLine(response);
-                Regex regex = new Regex("skey=(.*)&display");
-                if (!regex.IsMatch(response))
-                { this.errmsg = "LoginNoSkey"; return; }
-                string skey = regex.Match(response).Groups[1].Value;
+                string response = null;
+                Regex regex;
+                string skey = null;
                 string akey = null;
                 string cardid = null;
+                if (loginMethod != 2)
+                {
+                    skey = GetSessionkey();
+                }
 
                 switch (loginMethod)
                 {
@@ -339,7 +373,7 @@ namespace BeanfunLogin
                         akey = KeypascoLogin(id, pass, skey);
                         break;
                     case 2:
-                        akey = GamaotpLogin(id, pass, skey);
+                        akey = GamaotpLogin(id, pass, gamaotpClass);
                         break;
                     case 3:
                         akey = OtpLogin(id, pass, skey);

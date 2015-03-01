@@ -21,7 +21,8 @@ namespace BeanfunLogin
             e.Result = "";
             try
             {
-                this.bfClient.Login(this.textBox1.Text, this.textBox2.Text, Properties.Settings.Default.loginMethod, this.textBox4.Text);
+                this.bfClient = new BeanfunClient();
+                this.bfClient.Login(this.textBox1.Text, this.textBox2.Text, Properties.Settings.Default.loginMethod, this.textBox4.Text, this.gamaotpClass);
                 if (this.bfClient.errmsg != null)
                     e.Result = this.bfClient.errmsg;
                 else
@@ -123,6 +124,7 @@ namespace BeanfunLogin
         {
             this.button3.Text = "獲取密碼";
             this.listView1.Enabled = true;
+            this.button3.Enabled = true;
             if (e.Error != null)
             {
                 this.textBox3.Text = "獲取失敗";

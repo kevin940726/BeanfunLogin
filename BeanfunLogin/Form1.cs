@@ -22,6 +22,7 @@ namespace BeanfunLogin
     public partial class main : Form
     {
         private BeanfunClient bfClient;
+        public BeanfunClient.GamaotpClass gamaotpClass;
 
         public main()
         {
@@ -46,7 +47,7 @@ namespace BeanfunLogin
             }
         }
 
-        public bool errexit(string msg, int method)
+        public bool errexit(string msg, int method, string title = null)
         {
             switch (msg)
             {
@@ -68,6 +69,10 @@ namespace BeanfunLogin
                     break;
                 case "LoginNoResponseVakten":
                     msg = "登入失敗，與伺服器驗證失敗，請檢查是否安裝且已執行vakten程式。";
+                    break;
+                case "LoginUnknown":
+                    msg = "登入失敗，請稍後再試";
+                    method = 0;
                     break;
                 case "OTPNoLongPollingKey":
                     if (Properties.Settings.Default.loginMethod == 5)
@@ -93,11 +98,14 @@ namespace BeanfunLogin
                 case "LoginNoEncryptedData":
                     msg = "登入失敗，晶片卡讀取失敗。";
                     break;
+                case "OTPUnknown":
+                    msg = "獲取密碼失敗，請嘗試重新登入";
+                    break;
                 default:
                     break;
             }
 
-            MessageBox.Show(msg, null);
+            MessageBox.Show(msg, title);
             if (method == 0)
                 Application.Exit();
             else if (method == 1)
@@ -121,13 +129,13 @@ namespace BeanfunLogin
             {
                 this.Text = "BeanfunLogin - By Kai";
                 this.AcceptButton = this.button1;
-                this.bfClient = new BeanfunClient();
+                this.bfClient = null;
                 //Properties.Settings.Default.Reset(); //SetToDefault.                  
 
                 // Handle settings.
                 if (Properties.Settings.Default.rememberAccount == true)
                     this.textBox1.Text = Properties.Settings.Default.AccountID;
-                if (Properties.Settings.Default.rememberPwd == true)
+                if (Properties.Settings.Default.rememberPwd == true && Properties.Settings.Default.loginMethod != 2)
                 {
                     this.checkBox1.Enabled = false;
                     // Load password.
@@ -139,7 +147,7 @@ namespace BeanfunLogin
                         this.textBox2.Text = System.Text.Encoding.UTF8.GetString(plaintext);
                     }
                 }
-                if (Properties.Settings.Default.autoLogin == true)
+                if (Properties.Settings.Default.autoLogin == true && Properties.Settings.Default.loginMethod != 2 && Properties.Settings.Default.loginMethod != 4)
                 {
                     this.UseWaitCursor = true;
                     this.panel2.Enabled = false;
@@ -175,8 +183,8 @@ namespace BeanfunLogin
         {
             try
             {
-                BeanfunClient bf = new BeanfunClient();
-                string response = bf.DownloadString("https://github.com/kevin940726/BeanfunLogin");
+                WebClient wc = new WebClient();
+                string response = wc.DownloadString("https://github.com/kevin940726/BeanfunLogin");
                 Regex regex = new Regex("Current Version (\\d\\.\\d\\.\\d)");
                 if (!regex.IsMatch(response))
                     return;
@@ -238,6 +246,7 @@ namespace BeanfunLogin
 
             this.textBox3.Text = "獲取密碼中...";
             this.listView1.Enabled = false;
+            this.button3.Enabled = false;
             this.backgroundWorker1.RunWorkerAsync(listView1.SelectedItems[0].Index);
         }
 
@@ -248,7 +257,12 @@ namespace BeanfunLogin
             { 
                 try
                 {
-                    this.bfClient.Ping();
+                    if (this.backgroundWorker1.IsBusy)
+                    {
+                        System.Threading.Thread.Sleep(1000 * 1);
+                        continue;
+                    }
+                    Debug.WriteLine(this.bfClient.Ping());
                     System.Threading.Thread.Sleep(1000 * 60 * 10);
                 }
                 catch
@@ -371,7 +385,17 @@ namespace BeanfunLogin
                 this.label4.Visible = false;
                 this.textBox4.Visible = false;
             }
-            if (Properties.Settings.Default.loginMethod == 2 || Properties.Settings.Default.loginMethod == 3)
+            if (Properties.Settings.Default.loginMethod == 2)
+            {
+                this.label3.Text = "安全密碼";
+                this.bfClient = new BeanfunClient();
+                this.gamaotpClass = this.bfClient.GetGamaotpPassCode(this.bfClient.GetSessionkey());
+                if (this.bfClient.errmsg != null)
+                    errexit(this.bfClient.errmsg, 2);
+                else
+                    errexit("通行密碼： " + this.gamaotpClass.motp, 2, "GAMAOTP");
+            }         
+            else if (Properties.Settings.Default.loginMethod == 3)
             {
                 this.label3.Text = "安全密碼";
             }

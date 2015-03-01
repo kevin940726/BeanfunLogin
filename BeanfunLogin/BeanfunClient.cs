@@ -87,9 +87,9 @@ namespace BeanfunLogin
             }
         }
 
-        public void Ping()
+        public string Ping()
         {
-            this.DownloadString("https://tw.new.beanfun.com/beanfun_block/generic_handlers/record_service_start.ashx");
+            return this.DownloadString("https://tw.new.beanfun.com/beanfun_block/generic_handlers/record_service_start.ashx");
         }
 
 
