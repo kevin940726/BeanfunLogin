@@ -65,7 +65,8 @@
 
 `.rar`是壓縮檔的附檔名，請下載並安裝[**WinRAR**](http://www.rar.com.tw/download.html)、[**7-Zip**](http://www.7-zip.org/)或其他解壓縮工具進行解壓縮。詳細的解壓縮教學請參照他們官網或自行Google。
 
-> Q: 程式顯示要我安裝`.NET Framwork 4`？
+> Q: 程式顯示要我安裝`.NET Framework 4`？
+> "to run this application you first install one of the following versions of the .NET Framework v4.0.30319 CONTACT YOUR application publisher for instructions about obtaining the appropriate version of the .NET Framework."
 
 這個程式即是使用`.NET`撰寫而成，使用者必須安裝微軟提供的執行框架才能正常執行，程式的執行環境目標為[`Microsoft .NET Framework 4`](http://www.microsoft.com/zh-tw/download/details.aspx?id=17718)，詳細安裝步驟請參閱微軟官網。
 
