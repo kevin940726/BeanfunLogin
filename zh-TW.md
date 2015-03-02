@@ -67,7 +67,7 @@
 
 > Q: 程式顯示要我安裝`.NET Framwork 4`？
 
-這個程式即是使用`.NET`撰寫而成，使用者必須安裝微軟提供的執行框架才能正常執行，程式的執行環境目標為`[Microsoft .NET Framework 4](http://www.microsoft.com/zh-tw/download/details.aspx?id=17718)`，詳細安裝步驟請參閱微軟官網。
+這個程式即是使用`.NET`撰寫而成，使用者必須安裝微軟提供的執行框架才能正常執行，程式的執行環境目標為[`Microsoft .NET Framework 4`](http://www.microsoft.com/zh-tw/download/details.aspx?id=17718)，詳細安裝步驟請參閱微軟官網。
 
 > Q: 遊戲沒有正常開啟，程式顯示請手動以系統管理員身分開啟？
 
