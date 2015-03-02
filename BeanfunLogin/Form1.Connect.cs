@@ -28,9 +28,9 @@ namespace BeanfunLogin
                 else
                     e.Result = null;
             }
-            catch
+            catch (Exception ex)
             {
-                e.Result = "登入失敗，未知的錯誤。"; 
+                e.Result = "登入失敗，未知的錯誤。\n\n" + ex.Message + "\n" + ex.StackTrace; 
             }
         }
 

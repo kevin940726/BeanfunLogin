@@ -5,12 +5,17 @@ New Beanfun MapleStory OTP login.
 ========================
 Login to Beanfun and MapleStory without browsers, using 3DES to encrypt the storing password. Use DES to decrypt and get the OTP.
 
-[Download](https://github.com/kevin940726/BeanfunLogin/raw/master/BeanfunLogin.rar): Current Version 1.5.3.
+[Download](https://github.com/kevin940726/BeanfunLogin/raw/master/BeanfunLogin.rar): Current Version 1.5.4.
 
 ========================
 ### Version Log
 
-Version 1.5.3 (Current)
+Version 1.5.4 (Current)
+- Added exception messages(Help me debug).
+- Added some if-else statement in backgroundworker.
+- Temporary disable the keeplogged feature.
+
+Version 1.5.3
 - Fixed OTPUnknown bug.
 - Fixed OTP and GAMAOTP login bug.
 - Now can scroll the account list.

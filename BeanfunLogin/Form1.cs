@@ -99,7 +99,7 @@ namespace BeanfunLogin
                     msg = "登入失敗，晶片卡讀取失敗。";
                     break;
                 case "OTPUnknown":
-                    msg = "獲取密碼失敗，請嘗試重新登入";
+                    msg = "獲取密碼失敗，請嘗試重新登入。";
                     break;
                 default:
                     break;
@@ -206,6 +206,8 @@ namespace BeanfunLogin
         // The login botton.
         private void button1_Click(object sender, EventArgs e)
         {
+            if (this.ping.IsBusy)
+                this.ping.CancelAsync();
             if (this.checkBox1.Checked == true)
                 Properties.Settings.Default.AccountID = this.textBox1.Text;
             if (this.checkBox2.Checked == true)
@@ -237,7 +239,9 @@ namespace BeanfunLogin
         // The get OTP button.
         private void button3_Click(object sender, EventArgs e)
         {
-            if (listView1.SelectedItems.Count <= 0) return;
+            if (this.ping.IsBusy)
+                this.ping.CancelAsync();
+            if (listView1.SelectedItems.Count <= 0 || this.backgroundWorker2.IsBusy) return;
             if (Properties.Settings.Default.autoSelect == true)
             {
                 Properties.Settings.Default.autoSelectIndex = listView1.SelectedItems[0].Index;

@@ -45,9 +45,9 @@ namespace BeanfunLogin
 
                 return akey;
             }
-            catch
+            catch (Exception e)
             {
-                this.errmsg = "LoginUnknown";
+                this.errmsg = "LoginUnknown\n\n" + e.Message + "\n" + e.StackTrace;
                 return null;
             }
         }
@@ -111,9 +111,9 @@ namespace BeanfunLogin
                 { this.errmsg = "LoginNoAkey"; return null; }
                 return regex.Match(this.ResponseUri.ToString()).Groups[1].Value;
             }
-            catch
+            catch (Exception e)
             {
-                this.errmsg = "LoginUnknown";
+                this.errmsg = "LoginUnknown\n\n" + e.Message + "\n" + e.StackTrace;
                 return null;
             }
         }
@@ -183,9 +183,9 @@ namespace BeanfunLogin
 
                 return regex.Match(this.ResponseUri.ToString()).Groups[1].Value;
             }
-            catch
+            catch (Exception e)
             {
-                this.errmsg = "LoginUnknown"; 
+                this.errmsg = "LoginUnknown\n\n" + e.Message + "\n" + e.StackTrace;
                 return null;
             }
         }
@@ -226,9 +226,9 @@ namespace BeanfunLogin
                 { this.errmsg = "LoginNoAkey"; return null; }
                 return regex.Match(this.ResponseUri.ToString()).Groups[1].Value;
             }
-            catch
+            catch (Exception e)
             {
-                this.errmsg = "LoginUnknown";
+                this.errmsg = "LoginUnknown\n\n" + e.Message + "\n" + e.StackTrace;
                 return null;
             }
         }
@@ -270,9 +270,9 @@ namespace BeanfunLogin
                 { this.errmsg = "LoginNoAkey"; return null; }
                 return regex.Match(this.ResponseUri.ToString()).Groups[1].Value;
             }
-            catch
+            catch (Exception e)
             {
-                this.errmsg = "LoginUnknown"; 
+                this.errmsg = "LoginUnknown\n\n" + e.Message + "\n" + e.StackTrace; 
                 return null;
             }
         }
@@ -331,9 +331,9 @@ namespace BeanfunLogin
                 { this.errmsg = "LoginNoAkey"; return null; }
                 return ps.cardid + " " + regex.Match(this.ResponseUri.ToString()).Groups[1].Value;
             }
-            catch
+            catch (Exception e)
             {
-                this.errmsg = "LoginUnknown";
+                this.errmsg = "LoginUnknown\n\n" + e.Message + "\n" + e.StackTrace;
                 return null;
             }
         }
@@ -382,7 +382,10 @@ namespace BeanfunLogin
                         akey = OtpELogin(id, pass, securePass, skey);
                         break;
                     case 5:
-                        string[] temp = playsafeLogin(id, pass, skey).Split(' ');
+                        string r = playsafeLogin(id, pass, skey);
+                        if (r == null)
+                            return;
+                        string[] temp = r.Split(' ');
                         if (temp.Count() != 2)
                         { this.errmsg = "LoginPlaySafeResultError"; return; }
                         cardid = temp[0];
@@ -438,9 +441,9 @@ namespace BeanfunLogin
 
                 this.errmsg = null;
             }
-            catch
+            catch (Exception e)
             {
-                this.errmsg = "LoginUnknown"; 
+                this.errmsg = "LoginUnknown\n\n" + e.Message + "\n" + e.StackTrace; 
                 return;
             }
         }

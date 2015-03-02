@@ -31,9 +31,9 @@ namespace BeanfunLogin
                 ICryptoTransform desencrypt = des.CreateDecryptor();
                 return Encoding.ASCII.GetString(desencrypt.TransformFinalBlock(s, 0, s.Length));
             }
-            catch
+            catch (Exception e)
             {
-                this.errmsg = "DecryptDESError";
+                this.errmsg = "DecryptDESError\n\n" + e.Message + "\n" + e.StackTrace;
                 return null;
             }
         }
@@ -85,9 +85,9 @@ namespace BeanfunLogin
            
                 return otp;
             }
-            catch
+            catch (Exception e)
             {
-                this.errmsg = "OTPUnknown"; 
+                this.errmsg = "獲取密碼失敗，請嘗試重新登入。\n\n" + e.Message + "\n" + e.StackTrace; 
                 return null;
             }
         }
