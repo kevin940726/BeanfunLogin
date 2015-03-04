@@ -30,13 +30,13 @@
       <Value Profile="(Default)">0</Value>
     </Setting>
     <Setting Name="keepLogged" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">True</Value>
+      <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="showTip" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
     <Setting Name="currentVersion" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">154</Value>
+      <Value Profile="(Default)">155</Value>
     </Setting>
   </Settings>
 </SettingsFile>

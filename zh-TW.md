@@ -1,10 +1,9 @@
 ﻿## 新楓之谷Beanfun登入器
 
-[**程式下載**](../../raw/master/BeanfunLogin.rar) - Version 1.5.4
+[**程式下載**](../../raw/master/BeanfunLogin.rar) - Version 1.5.5
 
 此版本更新
-* 增加一些錯誤訊息的顯示(幫助我判斷)。
-* 增加一些針對後台執行緒的判斷式。
+* 修正無法獲取密碼的錯誤。
 * 暫時關閉保持登入的功能。
 
 ### 目錄

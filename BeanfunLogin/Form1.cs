@@ -21,7 +21,8 @@ namespace BeanfunLogin
 {
     public partial class main : Form
     {
-        private BeanfunClient bfClient;
+        public BeanfunClient bfClient;
+
         public BeanfunClient.GamaotpClass gamaotpClass;
 
         public main()
@@ -127,7 +128,7 @@ namespace BeanfunLogin
         {
             try
             {
-                this.Text = "BeanfunLogin - By Kai";
+                this.Text = "BeanfunLogin - v" + Properties.Settings.Default.currentVersion.ToString().Insert(1, ".").Insert(3, ".");
                 this.AcceptButton = this.button1;
                 this.bfClient = null;
                 //Properties.Settings.Default.Reset(); //SetToDefault.                  
