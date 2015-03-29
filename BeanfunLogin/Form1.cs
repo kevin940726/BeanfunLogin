@@ -185,7 +185,7 @@ namespace BeanfunLogin
             try
             {
                 WebClient wc = new WebClient();
-                string response = wc.DownloadString("https://github.com/kevin940726/BeanfunLogin");
+                string response = wc.DownloadString("https://raw.githubusercontent.com/kevin940726/BeanfunLogin/master/README.md");
                 Regex regex = new Regex("Current Version (\\d\\.\\d\\.\\d)");
                 if (!regex.IsMatch(response))
                     return;
@@ -347,7 +347,7 @@ namespace BeanfunLogin
                     Properties.Settings.Default.autoSelectIndex = this.listView1.SelectedItems[0].Index;
                     Properties.Settings.Default.autoSelect = true;
                 }
-                else if (this.checkBox4.Checked == false)
+                else
                     Properties.Settings.Default.autoSelect = false;
             }
             Properties.Settings.Default.Save();

@@ -10,7 +10,10 @@ Login to Beanfun and MapleStory without browsers, using 3DES to encrypt the stor
 ========================
 ### Version Log
 
-Version 1.5.5 (Current, Development version)
+Version 1.5.6 (Development version)
+- Testing PlaySafe PKI API.
+
+Version 1.5.5 (Current)
 - Fixed cannot get OTP bug.
 - Disable keeplogged temporary.
 

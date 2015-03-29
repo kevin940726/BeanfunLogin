@@ -302,17 +302,27 @@ namespace BeanfunLogin
                 { this.errmsg = "LoginNoReaderName"; return null; }
                 if (ps.cardType == null)
                 { this.errmsg = "LoginNoCardType"; return null; }
-                ps.cardid = ps.GetPublicCN(readername);
-                if (ps.cardid == null)
-                { this.errmsg = "LoginNoCardId"; return null; }
-                var opinfo = ps.GetOPInfo(readername, pass);
-                if (opinfo == null)
-                { this.errmsg = "LoginNoOpInfo"; return null; }
-                var original = ps.cardType + "~" + sotp + "~" + id + "~" + opinfo;
-                var encryptedData = ps.EncryptData(readername, pass, original);
-                if (encryptedData == null)
-                { this.errmsg = "LoginNoEncryptedData"; return null; }
 
+                string original = null;
+                string signature = null;
+                if (ps.cardType == "F")
+                {
+                    ps.cardid = ps.GetPublicCN(readername);
+                    if (ps.cardid == null)
+                    { this.errmsg = "LoginNoCardId"; return null; }
+                    var opinfo = ps.GetOPInfo(readername, pass);
+                    if (opinfo == null)
+                    { this.errmsg = "LoginNoOpInfo"; return null; }
+                    original = ps.cardType + "~" + sotp + "~" + id + "~" + opinfo;
+                    signature = ps.EncryptData(readername, pass, original);
+                    if (signature == null)
+                    { this.errmsg = "LoginNoEncryptedData"; return null; }
+                }
+                else if (ps.cardType == "G")
+                {
+                    original = ps.cardType + "~" + sotp + "~" + id + "~";
+                    signature = ps.FSCAPISign(pass, original);
+                }
                 NameValueCollection payload = new NameValueCollection();
                 payload.Add("__EVENTTARGET", "");
                 payload.Add("__EVENTARGUMENT", "");
@@ -320,11 +330,12 @@ namespace BeanfunLogin
                 payload.Add("__EVENTVALIDATION", eventvalidation);
                 payload.Add("card_check_id", ps.cardid);
                 payload.Add("original", original);
-                payload.Add("signature", encryptedData);
+                payload.Add("signature", signature);
                 payload.Add("serverotp", sotp);
                 payload.Add("t_AccountID", id);
                 payload.Add("t_Password", pass);
                 payload.Add("btn_login", "Login");
+                
                 response = Encoding.UTF8.GetString(this.UploadValues("https://tw.newlogin.beanfun.com/login/playsafe_form.aspx?skey=" + skey, payload));
                 regex = new Regex("akey=(.*)");
                 if (!regex.IsMatch(this.ResponseUri.ToString()))

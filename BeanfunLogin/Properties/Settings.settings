@@ -36,7 +36,7 @@
       <Value Profile="(Default)">True</Value>
     </Setting>
     <Setting Name="currentVersion" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">155</Value>
+      <Value Profile="(Default)">156</Value>
     </Setting>
   </Settings>
 </SettingsFile>
