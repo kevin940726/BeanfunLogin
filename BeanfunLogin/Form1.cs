@@ -185,14 +185,15 @@ namespace BeanfunLogin
             try
             {
                 WebClient wc = new WebClient();
-                string response = wc.DownloadString("https://raw.githubusercontent.com/kevin940726/BeanfunLogin/master/README.md");
-                Regex regex = new Regex("Current Version (\\d\\.\\d\\.\\d)");
+                string response = wc.DownloadString("https://raw.githubusercontent.com/kevin940726/BeanfunLogin/master/zh-TW.md");
+                Regex regex = new Regex("Version (\\d\\.\\d\\.\\d)");
                 if (!regex.IsMatch(response))
                     return;
                 int latest = Convert.ToInt32(Regex.Replace(regex.Match(response).Groups[1].Value, "\\.", ""));
                 if (latest > Properties.Settings.Default.currentVersion)
                 {
-                    DialogResult result = MessageBox.Show("有新的更新可以下載，是否前往下載？\n(此對話窗只會顯示一次)", "檢查更新", MessageBoxButtons.YesNo);
+                    Regex versionlog = new Regex(".*此版本更新(.*)### 目錄.*", RegexOptions.Multiline | RegexOptions.Singleline);
+                    DialogResult result = MessageBox.Show("有新的版本(" + regex.Match(response).Groups[1].Value + ")可以下載，是否前往下載？\n(此對話窗只會顯示一次)\n\n此版本更新：" + versionlog.Match(response).Groups[1].Value, "檢查更新", MessageBoxButtons.YesNo);
                     if (result == System.Windows.Forms.DialogResult.Yes)
                     {
                         System.Diagnostics.Process.Start("https://github.com/kevin940726/BeanfunLogin/blob/master/zh-TW.md");
