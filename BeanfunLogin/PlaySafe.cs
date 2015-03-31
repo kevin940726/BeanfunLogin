@@ -160,7 +160,7 @@ namespace BeanfunLogin
                 }
             }
 
-            rtn = fsPKI.FSP11_GetPinFlag();
+            /*rtn = fsPKI.FSP11_GetPinFlag();
             var ErrorCode = fsPKI.GetErrorCode();
             if (ErrorCode != 0)
             {
@@ -175,7 +175,7 @@ namespace BeanfunLogin
                 fsPKI.FSXP11SessionClose();
                 fsPKI.FSXP11Final();
                 return "憑證卡讀取資料失敗(" + fsPKI.GetErrorCode() + ")";
-            }
+            }*/
 
             return FSP11CheckCert(original);
         }
