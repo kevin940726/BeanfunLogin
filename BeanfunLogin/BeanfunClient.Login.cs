@@ -339,7 +339,7 @@ namespace BeanfunLogin
                 response = Encoding.UTF8.GetString(this.UploadValues("https://tw.newlogin.beanfun.com/login/playsafe_form.aspx?skey=" + skey, payload));
                 regex = new Regex("akey=(.*)");
                 if (!regex.IsMatch(this.ResponseUri.ToString()))
-                { this.errmsg = "LoginNoAkey"; return null; }
+                { this.errmsg = signature; return null; }
                 return ps.cardid + " " + regex.Match(this.ResponseUri.ToString()).Groups[1].Value;
             }
             catch (Exception e)
