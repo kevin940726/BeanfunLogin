@@ -1,6 +1,6 @@
 ﻿## 新楓之谷Beanfun登入器
 
-[**程式下載**](../../raw/master/BeanfunLogin.rar) - Version 1.5.6
+[**程式下載**](../../raw/Development/BeanfunLogin.rar) - Version 1.5.6
 
 此版本更新
 * 測試PlaySafe一代卡API
