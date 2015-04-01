@@ -105,12 +105,10 @@ namespace BeanfunLogin
                     if (process.ProcessName == "MapleStory")
                         return;
                 }
-                ProcessStartInfo gamestart = new ProcessStartInfo();
-                gamestart.FileName = Properties.Settings.Default.gamePath;
-                gamestart.Verb = "runas";
+                
                 try
                 {
-                    Process.Start(gamestart);
+                    Process.Start(Properties.Settings.Default.gamePath, "tw.login.maplestory.gamania.com 8484 BeanFun " + this.bfClient.accountList[index].sacc + " " + this.otp);
                 }
                 catch
                 {

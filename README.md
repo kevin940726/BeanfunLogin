@@ -5,16 +5,20 @@ New Beanfun MapleStory OTP login.
 ========================
 Login to Beanfun and MapleStory without browsers, using 3DES to encrypt the storing password. Use DES to decrypt and get the OTP.
 
-[Download](https://github.com/kevin940726/BeanfunLogin/raw/master/BeanfunLogin.rar): Current Version 1.5.5.
+[Download](https://github.com/kevin940726/BeanfunLogin/raw/master/BeanfunLogin.rar): Current Version 1.6.0.
 
 ========================
 ### Version Log
 
-Version 1.5.6 (Development version)
+Versiom 1.6.0 (Current, Development version)
+- Support PlaySafe PKI API.
+- Now can auto-login (responsed to the latest update of MapleStory).
+
+Version 1.5.6 
 - Testing PlaySafe PKI API.
 - Added version log to the checking dialog.
 
-Version 1.5.5 (Current)
+Version 1.5.5 
 - Fixed cannot get OTP bug.
 - Disable keeplogged temporary.
 

@@ -160,6 +160,7 @@ namespace BeanfunLogin
                 }
             }
 
+            // Without checking makes it good, why~?
             /*rtn = fsPKI.FSP11_GetPinFlag();
             var ErrorCode = fsPKI.GetErrorCode();
             if (ErrorCode != 0)
