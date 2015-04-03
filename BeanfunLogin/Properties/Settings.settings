@@ -36,7 +36,10 @@
       <Value Profile="(Default)">True</Value>
     </Setting>
     <Setting Name="currentVersion" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">160</Value>
+      <Value Profile="(Default)">161</Value>
+    </Setting>
+    <Setting Name="loginGame" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">0</Value>
     </Setting>
   </Settings>
 </SettingsFile>

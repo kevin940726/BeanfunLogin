@@ -25,6 +25,8 @@ namespace BeanfunLogin
 
         public BeanfunClient.GamaotpClass gamaotpClass;
 
+        private string service_code = "610074" , service_region = "T9";
+
         public main()
         {
             InitializeComponent();
@@ -165,6 +167,7 @@ namespace BeanfunLogin
                 }
 
                 this.comboBox1.SelectedIndex = Properties.Settings.Default.loginMethod;
+                this.comboBox2.SelectedIndex = Properties.Settings.Default.loginGame;
                 this.textBox3.Text = "";
 
                 if (this.textBox1.Text == "")
@@ -424,6 +427,131 @@ namespace BeanfunLogin
                 if (this.ping.IsBusy)
                     this.ping.CancelAsync();
             Properties.Settings.Default.Save();
+        }
+
+        private void comboBox2_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            switch (this.comboBox2.SelectedItem.ToString())
+            {
+                case "新楓之谷":
+                    service_code = "610074";
+                    service_region = "T9";
+                    break;
+                case "天堂":
+                    service_code = "600035";
+                    service_region = "T7";
+                    break;
+                case "天堂。健康伺服器":
+                    service_code = "600037";
+                    service_region = "T7";
+                    break;
+                case "天堂。免費伺服器":
+                    service_code = "600041";
+                    service_region = "BE";
+                    break;
+                case "絕對武力 online":
+                    service_code = "610153";
+                    service_region = "TN";
+                    break;
+                case "夢幻之星ONLINE 2":
+                    service_code = "611187";
+                    service_region = "BC";
+                    break;
+                case "英雄三國(HOK)":
+                    service_code = "611413";
+                    service_region = "BJ";
+                    break;
+                case "跑跑卡丁車":
+                    service_code = "610096";
+                    service_region = "TE";
+                    break;
+                case "艾爾之光":
+                    service_code = "300148";
+                    service_region = "AF";
+                    break;
+                case "新瑪奇mabinogi":
+                    service_code = "600309";
+                    service_region = "A2";
+                    break;
+                case "蠟筆小新 Online":
+                    service_code = "611143";
+                    service_region = "B8";
+                    break;
+                case "C9第九大陸":
+                    service_code = "611154";
+                    service_region = "B9";
+                    break;
+                case "瑪奇英雄傳":
+                    service_code = "610670";
+                    service_region = "DX";
+                    break;
+                case "爆爆王":
+                    service_code = "610085";
+                    service_region = "TC";
+                    break;
+                case "泡泡大亂鬥":
+                    service_code = "610502";
+                    service_region = "DN";
+                    break;
+                case "楓之谷體驗伺服器":
+                    service_code = "610075";
+                    service_region = "T9";
+                    break;
+                case "火爆小鬥士":
+                    service_code = "610917";
+                    service_region = "EN";
+                    break;
+                case "夢境":
+                    service_code = "610648";
+                    service_region = "D7";
+                    break;
+                case "戲谷麻將":
+                    service_code = "610478";
+                    service_region = "AX";
+                    break;
+                case "戲谷大老二":
+                    service_code = "610481";
+                    service_region = "AX";
+                    break;
+                case "戲谷自摸":
+                    service_code = "610479";
+                    service_region = "AX";
+                    break;
+                case "戲谷十三支":
+                    service_code = "610482";
+                    service_region = "AX";
+                    break;
+                case "戲谷柏青哥":
+                    service_code = "610486";
+                    service_region = "AX";
+                    break;
+                case "戲谷真接龍":
+                    service_code = "610487";
+                    service_region = "AX";
+                    break;
+                case "戲谷跑馬風雲":
+                    service_code = "610478";
+                    service_region = "AX";
+                    break;
+                case "戲谷德州撲克":
+                    service_code = "610484";
+                    service_region = "AX";
+                    break;
+                case "戲谷夢幻滿貫":
+                    service_code = "610485";
+                    service_region = "AX";
+                    break;
+                case "戲谷暗棋":
+                    service_code = "610480";
+                    service_region = "AX";
+                    break;
+                default:
+                    service_code = "610074";
+                    service_region = "T9";
+                    break;
+            }
+            Properties.Settings.Default.loginGame = this.comboBox2.SelectedIndex;
+            //Properties.Settings.Default.Save();
         }
 
         

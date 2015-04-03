@@ -23,7 +23,7 @@ namespace BeanfunLogin
             {
                 if (Properties.Settings.Default.loginMethod != 2)
                     this.bfClient = new BeanfunClient();
-                this.bfClient.Login(this.textBox1.Text, this.textBox2.Text, Properties.Settings.Default.loginMethod, this.textBox4.Text, this.gamaotpClass);
+                this.bfClient.Login(this.textBox1.Text, this.textBox2.Text, Properties.Settings.Default.loginMethod, this.textBox4.Text, this.gamaotpClass, this.service_code, this.service_region);
                 if (this.bfClient.errmsg != null)
                     e.Result = this.bfClient.errmsg;
                 else
@@ -94,7 +94,7 @@ namespace BeanfunLogin
         private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
         {
             int index = (int)e.Argument;
-            this.otp = this.bfClient.GetOTP(Properties.Settings.Default.loginMethod, this.bfClient.accountList[index]);
+            this.otp = this.bfClient.GetOTP(Properties.Settings.Default.loginMethod, this.bfClient.accountList[index], this.service_code, this.service_region);
             if (this.otp == null)
                 e.Result = -1;
             else

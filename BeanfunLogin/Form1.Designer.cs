@@ -42,6 +42,7 @@
             this.BackToLogin_ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.SetGamePath_ToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.comboBox2 = new System.Windows.Forms.ComboBox();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.textBox4 = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
@@ -91,6 +92,7 @@
             this.keepLogged.TabIndex = 8;
             this.keepLogged.Text = "保持登入";
             this.keepLogged.UseVisualStyleBackColor = true;
+            this.keepLogged.Visible = false;
             this.keepLogged.CheckedChanged += new System.EventHandler(this.keepLogged_CheckedChanged);
             // 
             // button3
@@ -191,6 +193,7 @@
             // 
             // panel2
             // 
+            this.panel2.Controls.Add(this.comboBox2);
             this.panel2.Controls.Add(this.checkBox1);
             this.panel2.Controls.Add(this.textBox4);
             this.panel2.Controls.Add(this.label4);
@@ -209,6 +212,45 @@
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(282, 256);
             this.panel2.TabIndex = 25;
+            // 
+            // comboBox2
+            // 
+            this.comboBox2.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBox2.FormattingEnabled = true;
+            this.comboBox2.Items.AddRange(new object[] {
+            "新楓之谷",
+            "天堂",
+            "天堂。健康伺服器",
+            "天堂。免費伺服器",
+            "絕對武力 online",
+            "夢幻之星ONLINE 2",
+            "英雄三國(HOK)",
+            "跑跑卡丁車",
+            "艾爾之光",
+            "新瑪奇mabinogi",
+            "蠟筆小新 Online",
+            "C9第九大陸",
+            "瑪奇英雄傳",
+            "爆爆王",
+            "泡泡大亂鬥",
+            "楓之谷體驗伺服器",
+            "火爆小鬥士",
+            "夢境",
+            "戲谷麻將",
+            "戲谷大老二",
+            "戲谷自摸",
+            "戲谷十三支",
+            "戲谷柏青哥",
+            "戲谷真接龍",
+            "戲谷跑馬風雲",
+            "戲谷德州撲克",
+            "戲谷夢幻滿貫",
+            "戲谷暗棋"});
+            this.comboBox2.Location = new System.Drawing.Point(158, 17);
+            this.comboBox2.Name = "comboBox2";
+            this.comboBox2.Size = new System.Drawing.Size(110, 24);
+            this.comboBox2.TabIndex = 36;
+            this.comboBox2.SelectedIndexChanged += new System.EventHandler(this.comboBox2_SelectedIndexChanged);
             // 
             // checkBox1
             // 
@@ -256,9 +298,9 @@
             "OTP",
             "聰明鎖",
             "PLAYSAFE"});
-            this.comboBox1.Location = new System.Drawing.Point(114, 17);
+            this.comboBox1.Location = new System.Drawing.Point(78, 17);
             this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(126, 24);
+            this.comboBox1.Size = new System.Drawing.Size(74, 24);
             this.comboBox1.TabIndex = 33;
             this.comboBox1.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
             // 
@@ -266,7 +308,7 @@
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("微軟正黑體", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.label1.Location = new System.Drawing.Point(40, 19);
+            this.label1.Location = new System.Drawing.Point(12, 19);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(60, 17);
             this.label1.TabIndex = 33;
@@ -440,6 +482,7 @@
         private System.Windows.Forms.CheckBox keepLogged;
         private System.Windows.Forms.ToolTip Tip;
         private System.Windows.Forms.ToolTip Notification;
+        private System.Windows.Forms.ComboBox comboBox2;
 
 
     }

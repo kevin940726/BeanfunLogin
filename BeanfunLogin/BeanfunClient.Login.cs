@@ -361,7 +361,7 @@ namespace BeanfunLogin
             return regex.Match(response).Groups[1].Value;
         }
 
-        public void Login(string id, string pass, int loginMethod, string securePass = null, GamaotpClass gamaotpClass = null)
+        public void Login(string id, string pass, int loginMethod, string securePass = null, GamaotpClass gamaotpClass = null, string service_code = "610074", string service_region = "T9")
         {
             try
             {
@@ -417,9 +417,9 @@ namespace BeanfunLogin
                 if (this.webtoken == "")
                 { this.errmsg = "LoginNoWebtoken"; return; }
                 if (loginMethod == 5)
-                    response = this.DownloadString("https://tw.beanfun.com/beanfun_block/auth.aspx?channel=game_zone&page_and_query=game_start.aspx%3Fservice_code_and_region%3D610074_T9&web_token=" + webtoken + "&cardid=" + cardid, Encoding.UTF8);
+                    response = this.DownloadString("https://tw.beanfun.com/beanfun_block/auth.aspx?channel=game_zone&page_and_query=game_start.aspx%3Fservice_code_and_region%3D"+service_code+"_"+service_region+"&web_token=" + webtoken + "&cardid=" + cardid, Encoding.UTF8);
                 else
-                    response = this.DownloadString("https://tw.beanfun.com/beanfun_block/auth.aspx?channel=game_zone&page_and_query=game_start.aspx%3Fservice_code_and_region%3D610074_T9&web_token=" + webtoken, Encoding.UTF8);
+                    response = this.DownloadString("https://tw.beanfun.com/beanfun_block/auth.aspx?channel=game_zone&page_and_query=game_start.aspx%3Fservice_code_and_region%3D"+service_code+"_"+service_region+"&web_token=" + webtoken, Encoding.UTF8);
 
                 if (loginMethod == 5)
                 {
@@ -435,7 +435,7 @@ namespace BeanfunLogin
                     payload.Add("__VIEWSTATE", viewstate);
                     payload.Add("__EVENTVALIDATION", eventvalidation);
                     payload.Add("btnCheckPLASYSAFE", "Hidden+Button");
-                    response = Encoding.UTF8.GetString(this.UploadValues("https://tw.beanfun.com/beanfun_block/auth.aspx?channel=game_zone&page_and_query=game_start.aspx%3Fservice_code_and_region%3D610074_T9&web_token=" + webtoken + "&cardid=" + cardid, payload));
+                    response = Encoding.UTF8.GetString(this.UploadValues("https://tw.beanfun.com/beanfun_block/auth.aspx?channel=game_zone&page_and_query=game_start.aspx%3Fservice_code_and_region%3D"+service_code+"_"+service_region+"&web_token=" + webtoken + "&cardid=" + cardid, payload));
                 }
 
                 // Add account list to ListView.
