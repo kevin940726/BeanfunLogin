@@ -10,10 +10,14 @@ Login to Beanfun and MapleStory without browsers, using 3DES to encrypt the stor
 ========================
 ### Version Log
 
-Version 1.6.1 (Development version)
+Version 1.6.2 (Current, Development version)
+- Support GAMAOTP (Thanks to 小艾).
+- Auto select after login.
+
+Version 1.6.1 
 - Support other games of Beanfun.
 
-Versiom 1.6.0 (Current)
+Versiom 1.6.0 
 - Support PlaySafe PKI API.
 - Now can auto-login (responsed to the latest update of MapleStory).
 

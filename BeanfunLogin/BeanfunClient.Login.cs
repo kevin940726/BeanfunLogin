@@ -180,8 +180,16 @@ namespace BeanfunLogin
                 Regex regex = new Regex("akey=(.*)");
                 if (!regex.IsMatch(this.ResponseUri.ToString()))
                 { this.errmsg = "LoginNoAkey"; return null; }
+                string Akey = regex.Match(this.ResponseUri.ToString()).Groups[1].Value;
 
-                return regex.Match(this.ResponseUri.ToString()).Groups[1].Value;
+                // Thanks 小艾 for the testing and code.
+                //要求寫入 Cookies 資料
+                regex = new Regex("<script type=\"text/javascript\">var strWriteUrl = \"(.*)\";</script>");
+                if (!regex.IsMatch(response))
+                { this.errmsg = "LoginNoCookies"; return null; }
+                response = DownloadString(regex.Match(response).Groups[1].Value);
+
+                return Akey;
             }
             catch (Exception e)
             {

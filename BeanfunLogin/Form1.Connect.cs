@@ -67,6 +67,8 @@ namespace BeanfunLogin
                 this.panel2.SendToBack();
                 this.panel1.BringToFront();
                 this.AcceptButton = this.button3;
+                this.listView1.Items[Properties.Settings.Default.autoSelectIndex].Selected = true;
+                this.listView1.Select();
                 if (Properties.Settings.Default.autoSelect == true && Properties.Settings.Default.autoSelectIndex < this.bfClient.accountList.Count())
                 {
                     this.textBox3.Text = "獲取密碼中...";

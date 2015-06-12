@@ -157,7 +157,7 @@ namespace BeanfunLogin.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("161")]
+        [global::System.Configuration.DefaultSettingValueAttribute("162")]
         public int currentVersion {
             get {
                 return ((int)(this["currentVersion"]));
