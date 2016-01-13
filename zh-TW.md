@@ -1,10 +1,9 @@
 ﻿## 新楓之谷Beanfun登入器
 
-[**程式下載**](../../raw/master/BeanfunLogin.rar) - Version 1.6.2
+[**程式下載**](../../raw/master/BeanfunLogin.rar) - Version 1.6.3
 
 此版本更新
-* 支援GAMAOTP (謝謝 小艾提供)
-* 現在登入後會自動選擇上次選擇的帳號
+* 金鑰版本更新
 
 ### 目錄
 * [程式介紹](#程式介紹)
