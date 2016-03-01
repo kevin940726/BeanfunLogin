@@ -394,6 +394,7 @@
             this.passwdInput.Location = new System.Drawing.Point(95, 93);
             this.passwdInput.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.passwdInput.Name = "passwdInput";
+            this.passwdInput.PasswordChar = '*';
             this.passwdInput.Size = new System.Drawing.Size(145, 23);
             this.passwdInput.TabIndex = 29;
             // 
