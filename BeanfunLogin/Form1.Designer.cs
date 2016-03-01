@@ -42,18 +42,22 @@
             this.BackToLogin_ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.SetGamePath_ToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.export = new System.Windows.Forms.Button();
+            this.import = new System.Windows.Forms.Button();
+            this.delete = new System.Windows.Forms.Button();
+            this.accounts = new System.Windows.Forms.ListBox();
             this.comboBox2 = new System.Windows.Forms.ComboBox();
-            this.checkBox1 = new System.Windows.Forms.CheckBox();
+            this.rememberAccount = new System.Windows.Forms.CheckBox();
             this.textBox4 = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
+            this.loginMethodInput = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
             this.checkBox3 = new System.Windows.Forms.CheckBox();
-            this.checkBox2 = new System.Windows.Forms.CheckBox();
-            this.textBox2 = new System.Windows.Forms.TextBox();
+            this.rememberAccPwd = new System.Windows.Forms.CheckBox();
+            this.passwdInput = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
-            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.accountInput = new System.Windows.Forms.TextBox();
             this.button1 = new System.Windows.Forms.Button();
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.backgroundWorker2 = new System.ComponentModel.BackgroundWorker();
@@ -77,7 +81,7 @@
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(282, 256);
+            this.panel1.Size = new System.Drawing.Size(477, 256);
             this.panel1.TabIndex = 0;
             // 
             // keepLogged
@@ -173,7 +177,7 @@
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.RenderMode = System.Windows.Forms.ToolStripRenderMode.Professional;
-            this.menuStrip1.Size = new System.Drawing.Size(282, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(477, 24);
             this.menuStrip1.TabIndex = 7;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -193,25 +197,68 @@
             // 
             // panel2
             // 
+            this.panel2.Controls.Add(this.export);
+            this.panel2.Controls.Add(this.import);
+            this.panel2.Controls.Add(this.delete);
+            this.panel2.Controls.Add(this.accounts);
             this.panel2.Controls.Add(this.comboBox2);
-            this.panel2.Controls.Add(this.checkBox1);
+            this.panel2.Controls.Add(this.rememberAccount);
             this.panel2.Controls.Add(this.textBox4);
             this.panel2.Controls.Add(this.label4);
-            this.panel2.Controls.Add(this.comboBox1);
+            this.panel2.Controls.Add(this.loginMethodInput);
             this.panel2.Controls.Add(this.label1);
             this.panel2.Controls.Add(this.checkBox3);
-            this.panel2.Controls.Add(this.checkBox2);
-            this.panel2.Controls.Add(this.textBox2);
+            this.panel2.Controls.Add(this.rememberAccPwd);
+            this.panel2.Controls.Add(this.passwdInput);
             this.panel2.Controls.Add(this.label3);
             this.panel2.Controls.Add(this.label2);
-            this.panel2.Controls.Add(this.textBox1);
+            this.panel2.Controls.Add(this.accountInput);
             this.panel2.Controls.Add(this.button1);
             this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel2.Location = new System.Drawing.Point(0, 0);
             this.panel2.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(282, 256);
+            this.panel2.Size = new System.Drawing.Size(477, 256);
             this.panel2.TabIndex = 25;
+            // 
+            // export
+            // 
+            this.export.Location = new System.Drawing.Point(246, 118);
+            this.export.Name = "export";
+            this.export.Size = new System.Drawing.Size(39, 23);
+            this.export.TabIndex = 40;
+            this.export.Text = "<<";
+            this.export.UseVisualStyleBackColor = true;
+            this.export.Click += new System.EventHandler(this.export_Click);
+            // 
+            // import
+            // 
+            this.import.Location = new System.Drawing.Point(246, 89);
+            this.import.Name = "import";
+            this.import.Size = new System.Drawing.Size(39, 23);
+            this.import.TabIndex = 39;
+            this.import.Text = ">>";
+            this.import.UseVisualStyleBackColor = true;
+            this.import.Click += new System.EventHandler(this.import_Click);
+            // 
+            // delete
+            // 
+            this.delete.Location = new System.Drawing.Point(291, 219);
+            this.delete.Name = "delete";
+            this.delete.Size = new System.Drawing.Size(75, 34);
+            this.delete.TabIndex = 38;
+            this.delete.Text = "刪除";
+            this.delete.UseVisualStyleBackColor = true;
+            this.delete.Click += new System.EventHandler(this.delete_Click);
+            // 
+            // accounts
+            // 
+            this.accounts.FormattingEnabled = true;
+            this.accounts.ItemHeight = 16;
+            this.accounts.Location = new System.Drawing.Point(291, 17);
+            this.accounts.Name = "accounts";
+            this.accounts.Size = new System.Drawing.Size(174, 196);
+            this.accounts.TabIndex = 37;
             // 
             // comboBox2
             // 
@@ -252,19 +299,19 @@
             this.comboBox2.TabIndex = 36;
             this.comboBox2.SelectedIndexChanged += new System.EventHandler(this.comboBox2_SelectedIndexChanged);
             // 
-            // checkBox1
+            // rememberAccount
             // 
-            this.checkBox1.AutoSize = true;
-            this.checkBox1.Checked = global::BeanfunLogin.Properties.Settings.Default.rememberAccount;
-            this.checkBox1.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox1.DataBindings.Add(new System.Windows.Forms.Binding("Checked", global::BeanfunLogin.Properties.Settings.Default, "rememberAccount", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.checkBox1.Location = new System.Drawing.Point(107, 127);
-            this.checkBox1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(75, 20);
-            this.checkBox1.TabIndex = 30;
-            this.checkBox1.Text = "記住帳號";
-            this.checkBox1.UseVisualStyleBackColor = true;
+            this.rememberAccount.AutoSize = true;
+            this.rememberAccount.Checked = global::BeanfunLogin.Properties.Settings.Default.rememberAccount;
+            this.rememberAccount.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.rememberAccount.DataBindings.Add(new System.Windows.Forms.Binding("Checked", global::BeanfunLogin.Properties.Settings.Default, "rememberAccount", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.rememberAccount.Location = new System.Drawing.Point(107, 127);
+            this.rememberAccount.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.rememberAccount.Name = "rememberAccount";
+            this.rememberAccount.Size = new System.Drawing.Size(75, 20);
+            this.rememberAccount.TabIndex = 30;
+            this.rememberAccount.Text = "記住帳號";
+            this.rememberAccount.UseVisualStyleBackColor = true;
             // 
             // textBox4
             // 
@@ -287,22 +334,22 @@
             this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.label4.Visible = false;
             // 
-            // comboBox1
+            // loginMethodInput
             // 
-            this.comboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Items.AddRange(new object[] {
+            this.loginMethodInput.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.loginMethodInput.FormattingEnabled = true;
+            this.loginMethodInput.Items.AddRange(new object[] {
             "一般登入",
             "金鑰一哥",
             "GAMAOTP",
             "OTP",
             "聰明鎖",
             "PLAYSAFE"});
-            this.comboBox1.Location = new System.Drawing.Point(78, 17);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(74, 24);
-            this.comboBox1.TabIndex = 33;
-            this.comboBox1.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
+            this.loginMethodInput.Location = new System.Drawing.Point(78, 17);
+            this.loginMethodInput.Name = "loginMethodInput";
+            this.loginMethodInput.Size = new System.Drawing.Size(74, 24);
+            this.loginMethodInput.TabIndex = 33;
+            this.loginMethodInput.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
             // 
             // label1
             // 
@@ -328,28 +375,27 @@
             this.checkBox3.UseVisualStyleBackColor = true;
             this.checkBox3.CheckedChanged += new System.EventHandler(this.checkBox3_CheckedChanged);
             // 
-            // checkBox2
+            // rememberAccPwd
             // 
-            this.checkBox2.AutoSize = true;
-            this.checkBox2.Checked = global::BeanfunLogin.Properties.Settings.Default.rememberPwd;
-            this.checkBox2.DataBindings.Add(new System.Windows.Forms.Binding("Checked", global::BeanfunLogin.Properties.Settings.Default, "rememberPwd", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.checkBox2.Location = new System.Drawing.Point(107, 155);
-            this.checkBox2.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.checkBox2.Name = "checkBox2";
-            this.checkBox2.Size = new System.Drawing.Size(75, 20);
-            this.checkBox2.TabIndex = 31;
-            this.checkBox2.Text = "記住帳密";
-            this.checkBox2.UseVisualStyleBackColor = true;
-            this.checkBox2.CheckedChanged += new System.EventHandler(this.checkBox2_CheckedChanged);
+            this.rememberAccPwd.AutoSize = true;
+            this.rememberAccPwd.Checked = global::BeanfunLogin.Properties.Settings.Default.rememberPwd;
+            this.rememberAccPwd.DataBindings.Add(new System.Windows.Forms.Binding("Checked", global::BeanfunLogin.Properties.Settings.Default, "rememberPwd", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.rememberAccPwd.Location = new System.Drawing.Point(107, 155);
+            this.rememberAccPwd.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.rememberAccPwd.Name = "rememberAccPwd";
+            this.rememberAccPwd.Size = new System.Drawing.Size(75, 20);
+            this.rememberAccPwd.TabIndex = 31;
+            this.rememberAccPwd.Text = "記住帳密";
+            this.rememberAccPwd.UseVisualStyleBackColor = true;
+            this.rememberAccPwd.CheckedChanged += new System.EventHandler(this.checkBox2_CheckedChanged);
             // 
-            // textBox2
+            // passwdInput
             // 
-            this.textBox2.Location = new System.Drawing.Point(95, 93);
-            this.textBox2.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.PasswordChar = '*';
-            this.textBox2.Size = new System.Drawing.Size(145, 23);
-            this.textBox2.TabIndex = 29;
+            this.passwdInput.Location = new System.Drawing.Point(95, 93);
+            this.passwdInput.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.passwdInput.Name = "passwdInput";
+            this.passwdInput.Size = new System.Drawing.Size(145, 23);
+            this.passwdInput.TabIndex = 29;
             // 
             // label3
             // 
@@ -372,13 +418,13 @@
             this.label2.Text = "帳號";
             this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // textBox1
+            // accountInput
             // 
-            this.textBox1.Location = new System.Drawing.Point(95, 52);
-            this.textBox1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(145, 23);
-            this.textBox1.TabIndex = 26;
+            this.accountInput.Location = new System.Drawing.Point(95, 52);
+            this.accountInput.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.accountInput.Name = "accountInput";
+            this.accountInput.Size = new System.Drawing.Size(145, 23);
+            this.accountInput.TabIndex = 26;
             // 
             // button1
             // 
@@ -430,7 +476,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(282, 256);
+            this.ClientSize = new System.Drawing.Size(477, 256);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel1);
             this.Font = new System.Drawing.Font("微軟正黑體", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
@@ -459,12 +505,12 @@
         private System.Windows.Forms.ColumnHeader Account;
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.CheckBox checkBox3;
-        private System.Windows.Forms.CheckBox checkBox2;
-        private System.Windows.Forms.CheckBox checkBox1;
-        private System.Windows.Forms.TextBox textBox2;
+        private System.Windows.Forms.CheckBox rememberAccPwd;
+        private System.Windows.Forms.CheckBox rememberAccount;
+        private System.Windows.Forms.TextBox passwdInput;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.TextBox accountInput;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.TextBox textBox3;
         private System.Windows.Forms.CheckBox checkBox4;
@@ -473,7 +519,7 @@
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem BackToLogin_ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem SetGamePath_ToolStripMenuItem1;
-        private System.Windows.Forms.ComboBox comboBox1;
+        private System.Windows.Forms.ComboBox loginMethodInput;
         private System.Windows.Forms.Label label1;
         private System.ComponentModel.BackgroundWorker backgroundWorker2;
         private System.Windows.Forms.TextBox textBox4;
@@ -483,6 +529,10 @@
         private System.Windows.Forms.ToolTip Tip;
         private System.Windows.Forms.ToolTip Notification;
         private System.Windows.Forms.ComboBox comboBox2;
+        private System.Windows.Forms.Button export;
+        private System.Windows.Forms.Button import;
+        private System.Windows.Forms.Button delete;
+        private System.Windows.Forms.ListBox accounts;
 
 
     }

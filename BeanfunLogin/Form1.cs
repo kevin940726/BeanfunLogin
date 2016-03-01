@@ -21,6 +21,8 @@ namespace BeanfunLogin
 {
     public partial class main : Form
     {
+        private AccountManager accountManager = null;
+
         public BeanfunClient bfClient;
 
         public BeanfunClient.GamaotpClass gamaotpClass;
@@ -133,21 +135,27 @@ namespace BeanfunLogin
                 this.Text = "BeanfunLogin - v" + Properties.Settings.Default.currentVersion.ToString().Insert(1, ".").Insert(3, ".");
                 this.AcceptButton = this.button1;
                 this.bfClient = null;
+                this.accountManager = new AccountManager();
+
+                bool res = accountManager.init();
+                if (res == false)
+                    errexit("帳號記錄初始化失敗，未知的錯誤。", 0);
+                refreshAccountList();
                 //Properties.Settings.Default.Reset(); //SetToDefault.                  
 
                 // Handle settings.
                 if (Properties.Settings.Default.rememberAccount == true)
-                    this.textBox1.Text = Properties.Settings.Default.AccountID;
+                    this.accountInput.Text = Properties.Settings.Default.AccountID;
                 if (Properties.Settings.Default.rememberPwd == true && Properties.Settings.Default.loginMethod != 2)
                 {
-                    this.checkBox1.Enabled = false;
+                    this.rememberAccount.Enabled = false;
                     // Load password.
                     if (File.Exists("UserState.dat"))
                     {
                         Byte[] cipher = File.ReadAllBytes("UserState.dat");
                         string entropy = Properties.Settings.Default.entropy;
                         byte[] plaintext = ProtectedData.Unprotect(cipher, Encoding.UTF8.GetBytes(entropy), DataProtectionScope.CurrentUser);
-                        this.textBox2.Text = System.Text.Encoding.UTF8.GetString(plaintext);
+                        this.passwdInput.Text = System.Text.Encoding.UTF8.GetString(plaintext);
                     }
                 }
                 if (Properties.Settings.Default.autoLogin == true && Properties.Settings.Default.loginMethod != 2 && Properties.Settings.Default.loginMethod != 4)
@@ -166,18 +174,18 @@ namespace BeanfunLogin
                         Properties.Settings.Default.gamePath = myRegistry.Read("Path");
                 }
 
-                this.comboBox1.SelectedIndex = Properties.Settings.Default.loginMethod;
+                this.loginMethodInput.SelectedIndex = Properties.Settings.Default.loginMethod;
                 this.comboBox2.SelectedIndex = Properties.Settings.Default.loginGame;
                 this.textBox3.Text = "";
 
-                if (this.textBox1.Text == "")
-                    this.ActiveControl = this.textBox1;
-                else if (this.textBox2.Text == "")
-                    this.ActiveControl = this.textBox2;
+                if (this.accountInput.Text == "")
+                    this.ActiveControl = this.accountInput;
+                else if (this.passwdInput.Text == "")
+                    this.ActiveControl = this.passwdInput;
 
                 // .NET textbox full mode bug.
-                this.textBox1.ImeMode = ImeMode.OnHalf;
-                this.textBox2.ImeMode = ImeMode.OnHalf;
+                this.accountInput.ImeMode = ImeMode.OnHalf;
+                this.passwdInput.ImeMode = ImeMode.OnHalf;
                 return true;
             }
             catch { return errexit("初始化失敗，未知的錯誤。", 0); }
@@ -208,14 +216,21 @@ namespace BeanfunLogin
             catch { return; }
         }
 
+        private void refreshAccountList()
+        {
+            string[] accArray = accountManager.getAccountList();
+            accounts.Items.Clear();
+            accounts.Items.AddRange(accArray);
+        }
+
         // The login botton.
         private void button1_Click(object sender, EventArgs e)
         {
             if (this.ping.IsBusy)
                 this.ping.CancelAsync();
-            if (this.checkBox1.Checked == true)
-                Properties.Settings.Default.AccountID = this.textBox1.Text;
-            if (this.checkBox2.Checked == true)
+            if (this.rememberAccount.Checked == true)
+                Properties.Settings.Default.AccountID = this.accountInput.Text;
+            if (this.rememberAccPwd.Checked == true)
             {
                 using (BinaryWriter writer = new BinaryWriter(File.Open("UserState.dat", FileMode.Create)))
                 {
@@ -225,7 +240,7 @@ namespace BeanfunLogin
                     string entropy = new string(Enumerable.Repeat(chars, 8).Select(s => s[random.Next(s.Length)]).ToArray());
 
                     Properties.Settings.Default.entropy = entropy;
-                    writer.Write(ciphertext(this.textBox2.Text, entropy));
+                    writer.Write(ciphertext(this.passwdInput.Text, entropy));
                 }
             }
             else
@@ -313,32 +328,32 @@ namespace BeanfunLogin
             if (this.checkBox3.Checked == true)
             {
                 Properties.Settings.Default.autoLogin = true;
-                this.checkBox1.Checked = true;
-                this.checkBox2.Checked = true;
-                this.checkBox1.Enabled = false;
-                this.checkBox2.Enabled = false;
+                this.rememberAccount.Checked = true;
+                this.rememberAccPwd.Checked = true;
+                this.rememberAccount.Enabled = false;
+                this.rememberAccPwd.Enabled = false;
             }
             else
             {
                 Properties.Settings.Default.autoLogin = false;
-                this.checkBox1.Enabled = true;
-                this.checkBox2.Enabled = true;
+                this.rememberAccount.Enabled = true;
+                this.rememberAccPwd.Enabled = true;
             }
         }
 
         private void checkBox2_CheckedChanged(object sender, EventArgs e)
         {
-            if (this.checkBox2.Checked == true)
+            if (this.rememberAccPwd.Checked == true)
             {
                 Properties.Settings.Default.rememberPwd = true;
-                this.checkBox1.Checked = true;
-                this.checkBox2.Checked = true;
-                this.checkBox1.Enabled = false;
+                this.rememberAccount.Checked = true;
+                this.rememberAccPwd.Checked = true;
+                this.rememberAccount.Enabled = false;
             }
             else
             {
                 Properties.Settings.Default.rememberPwd = false;
-                this.checkBox1.Enabled = true;
+                this.rememberAccount.Enabled = true;
             }
         }
 
@@ -379,18 +394,18 @@ namespace BeanfunLogin
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            Properties.Settings.Default.loginMethod = this.comboBox1.SelectedIndex;
+            Properties.Settings.Default.loginMethod = this.loginMethodInput.SelectedIndex;
             if (Properties.Settings.Default.loginMethod == 4)
             {
-                this.checkBox1.Location = new Point(49, 155);
-                this.checkBox2.Location = new Point(165, 155);
+                this.rememberAccount.Location = new Point(49, 155);
+                this.rememberAccPwd.Location = new Point(165, 155);
                 this.label4.Visible = true;
                 this.textBox4.Visible = true;
             }
             else
             {
-                this.checkBox1.Location = new Point(107, 127);
-                this.checkBox2.Location = new Point(107, 155);
+                this.rememberAccount.Location = new Point(107, 127);
+                this.rememberAccPwd.Location = new Point(107, 155);
                 this.label4.Visible = false;
                 this.textBox4.Visible = false;
             }
@@ -552,6 +567,52 @@ namespace BeanfunLogin
             }
             Properties.Settings.Default.loginGame = this.comboBox2.SelectedIndex;
             //Properties.Settings.Default.Save();
+        }
+
+        private void delete_Click(object sender, EventArgs e)
+        {
+            ListBox.SelectedObjectCollection selectedItems = new ListBox.SelectedObjectCollection(accounts);
+            selectedItems = accounts.SelectedItems;
+
+            if (accounts.SelectedIndex != -1)
+            {
+                for (int i = selectedItems.Count - 1; i >= 0; i--)
+                {
+                    accountManager.removeAccount(accounts.GetItemText(selectedItems[i]));
+                    refreshAccountList();
+                }
+            }
+            //else
+                 // MessageBox.Show("Debe seleccionar un email");
+        }
+
+        private void import_Click(object sender, EventArgs e)
+        {
+            bool res = accountManager.addAccount(accountInput.Text, passwdInput.Text, loginMethodInput.SelectedIndex);
+            if (res == false)
+                errexit("帳號記錄新增失敗",0);
+            refreshAccountList();
+        }
+
+        private void export_Click(object sender, EventArgs e)
+        {
+            if(accounts.SelectedIndex != -1)
+            {
+                string account = accounts.SelectedItem.ToString();
+                string passwd = accountManager.getPasswordByAccount(account);
+                int method = accountManager.getMethodByAccount(account);
+
+                if( passwd == null || method == -1 )
+                {
+                    errexit("帳號記錄讀取失敗。", 0);
+                }
+
+                accountInput.Text = account;
+                passwdInput.Text = passwd;
+                loginMethodInput.SelectedIndex = method;
+
+                comboBox1_SelectedIndexChanged(null, null);
+            }
         }
 
         
