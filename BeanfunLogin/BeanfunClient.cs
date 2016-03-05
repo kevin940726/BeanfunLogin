@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Net;
+using System.Windows.Forms;
 
 
 namespace BeanfunLogin
@@ -14,6 +15,7 @@ namespace BeanfunLogin
         public string errmsg;
         private string webtoken;
         public List<AccountList> accountList;
+        private string testKeepLogged;
 
         public class AccountList
         {
@@ -87,9 +89,23 @@ namespace BeanfunLogin
             }
         }
 
-        public string Ping()
+        public bool Ping()
         {
-            return "";
+            try
+            {
+                string ret = Encoding.GetString(this.DownloadData("http://tw.beanfun.com/beanfun_block/generic_handlers/echo_token.ashx?webtoken=1"));
+                if (ret.Contains("ResultCode:1"))
+                    testKeepLogged = DateTime.Now.ToString("HH:mm:ss");
+                System.Diagnostics.Debug.WriteLine("[Now = "+DateTime.Now.ToString("HH:mm:ss tt")+"][Last Ok = "+testKeepLogged+"] " + ret);
+                return ret.Contains("ResultCode:1");
+            }
+            catch (Exception e)
+            {
+                System.Diagnostics.Debug.WriteLine(e.Message);
+                MessageBox.Show(e.Message);
+                throw new Exception("正在處理其他的事情");
+            }
+            //return "";
         }
 
 

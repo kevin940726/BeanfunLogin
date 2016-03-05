@@ -16,6 +16,7 @@ using System.IO;
 using Utility.ModifyRegistry;
 using Microsoft.Win32;
 using System.Diagnostics;
+using System.Threading;
 
 namespace BeanfunLogin
 {
@@ -277,20 +278,27 @@ namespace BeanfunLogin
         // Ping to Beanfun website.
         private void ping_DoWork(object sender, DoWorkEventArgs e)
         {
+            if (Thread.CurrentThread.Name == null)
+                Thread.CurrentThread.Name = "Ping Worker";
+            Debug.WriteLine("Ping Worker started");
             while (!this.ping.CancellationPending && Properties.Settings.Default.keepLogged)
-            { 
+            {
+                Debug.WriteLine("Trying keep logged");
                 try
                 {
                     if (this.backgroundWorker1.IsBusy)
                     {
+                        Debug.WriteLine("busy");
                         System.Threading.Thread.Sleep(1000 * 1);
                         continue;
                     }
-                    Debug.WriteLine(this.bfClient.Ping());
+                    this.bfClient.Ping();
                     System.Threading.Thread.Sleep(1000 * 60 * 10);
                 }
                 catch
-                { return; }
+                {
+                    ;
+                }
             }
         }
 

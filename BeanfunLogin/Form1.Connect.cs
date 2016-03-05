@@ -8,6 +8,7 @@ using System.Text.RegularExpressions;
 using System.Collections.Specialized;
 using System.Net;
 using System.Diagnostics;
+using System.Threading;
 
 namespace BeanfunLogin
 {
@@ -18,6 +19,8 @@ namespace BeanfunLogin
         // Login do work.
         private void backgroundWorker2_DoWork(object sender, DoWorkEventArgs e)
         {
+            if (Thread.CurrentThread.Name == null)
+                Thread.CurrentThread.Name = "Login Worker";
             e.Result = "";
             try
             {
@@ -95,6 +98,8 @@ namespace BeanfunLogin
         // getOTP do work.
         private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
         {
+            if (Thread.CurrentThread.Name == null)
+                Thread.CurrentThread.Name = "GetOTP Worker";
             int index = (int)e.Argument;
             this.otp = this.bfClient.GetOTP(Properties.Settings.Default.loginMethod, this.bfClient.accountList[index], this.service_code, this.service_region);
             if (this.otp == null)
