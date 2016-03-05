@@ -16,6 +16,8 @@ using System.IO;
 using Utility.ModifyRegistry;
 using Microsoft.Win32;
 using System.Diagnostics;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace BeanfunLogin
 {
@@ -26,6 +28,8 @@ namespace BeanfunLogin
         public BeanfunClient.GamaotpClass gamaotpClass;
 
         private string service_code = "610074" , service_region = "T9";
+
+        public List<GameService> gameList = new List<GameService>();
 
         public main()
         {
@@ -183,11 +187,41 @@ namespace BeanfunLogin
             catch { return errexit("初始化失敗，未知的錯誤。", 0); }
         }
 
+        public class GameService
+        {
+            public string name { get; set; }
+            public string service_code { get; set; }
+            public string service_region { get; set; }
+
+            public GameService(string name, string service_code, string service_region)
+            {
+                this.name = name;
+                this.service_code = service_code;
+                this.service_region = service_region;
+            }
+        }
+
         public void CheckForUpdate()
         {
             try
             {
                 WebClient wc = new WebClient();
+                string res = Encoding.UTF8.GetString(wc.DownloadData("http://tw.beanfun.com/game_zone/"));
+                Regex reg = new Regex("Services.ServiceList = (.*);");
+                if (reg.IsMatch(res))
+                {
+                    string json = reg.Match(res).Groups[1].Value;
+                    JObject o = JObject.Parse(json);
+                    foreach (var game in o["Rows"])
+                    {
+                        Debug.Write(game["serviceCode"]);
+                        gameList.Add(new GameService((string)game["ServiceFamilyName"], (string)game["ServiceCode"], (string)game["ServiceRegion"]));
+                    }
+                }
+                this.comboBox2.DataSource = gameList;
+                this.comboBox2.DisplayMember = "name";
+                this.comboBox2.ValueMember = "name";
+
                 string response = wc.DownloadString("https://raw.githubusercontent.com/kevin940726/BeanfunLogin/master/zh-TW.md");
                 Regex regex = new Regex("Version (\\d\\.\\d\\.\\d)");
                 if (!regex.IsMatch(response))
@@ -431,126 +465,17 @@ namespace BeanfunLogin
 
         private void comboBox2_SelectedIndexChanged(object sender, EventArgs e)
         {
-            switch (this.comboBox2.SelectedItem.ToString())
+            try
             {
-                case "新楓之谷":
-                    service_code = "610074";
-                    service_region = "T9";
-                    break;
-                case "天堂":
-                    service_code = "600035";
-                    service_region = "T7";
-                    break;
-                case "天堂。健康伺服器":
-                    service_code = "600037";
-                    service_region = "T7";
-                    break;
-                case "天堂。免費伺服器":
-                    service_code = "600041";
-                    service_region = "BE";
-                    break;
-                case "絕對武力 online":
-                    service_code = "610153";
-                    service_region = "TN";
-                    break;
-                case "夢幻之星ONLINE 2":
-                    service_code = "611187";
-                    service_region = "BC";
-                    break;
-                case "英雄三國(HOK)":
-                    service_code = "611413";
-                    service_region = "BJ";
-                    break;
-                case "跑跑卡丁車":
-                    service_code = "610096";
-                    service_region = "TE";
-                    break;
-                case "艾爾之光":
-                    service_code = "300148";
-                    service_region = "AF";
-                    break;
-                case "新瑪奇mabinogi":
-                    service_code = "600309";
-                    service_region = "A2";
-                    break;
-                case "蠟筆小新 Online":
-                    service_code = "611143";
-                    service_region = "B8";
-                    break;
-                case "C9第九大陸":
-                    service_code = "611154";
-                    service_region = "B9";
-                    break;
-                case "瑪奇英雄傳":
-                    service_code = "610670";
-                    service_region = "DX";
-                    break;
-                case "爆爆王":
-                    service_code = "610085";
-                    service_region = "TC";
-                    break;
-                case "泡泡大亂鬥":
-                    service_code = "610502";
-                    service_region = "DN";
-                    break;
-                case "楓之谷體驗伺服器":
-                    service_code = "610075";
-                    service_region = "T9";
-                    break;
-                case "火爆小鬥士":
-                    service_code = "610917";
-                    service_region = "EN";
-                    break;
-                case "夢境":
-                    service_code = "610648";
-                    service_region = "D7";
-                    break;
-                case "戲谷麻將":
-                    service_code = "610478";
-                    service_region = "AX";
-                    break;
-                case "戲谷大老二":
-                    service_code = "610481";
-                    service_region = "AX";
-                    break;
-                case "戲谷自摸":
-                    service_code = "610479";
-                    service_region = "AX";
-                    break;
-                case "戲谷十三支":
-                    service_code = "610482";
-                    service_region = "AX";
-                    break;
-                case "戲谷柏青哥":
-                    service_code = "610486";
-                    service_region = "AX";
-                    break;
-                case "戲谷真接龍":
-                    service_code = "610487";
-                    service_region = "AX";
-                    break;
-                case "戲谷跑馬風雲":
-                    service_code = "610478";
-                    service_region = "AX";
-                    break;
-                case "戲谷德州撲克":
-                    service_code = "610484";
-                    service_region = "AX";
-                    break;
-                case "戲谷夢幻滿貫":
-                    service_code = "610485";
-                    service_region = "AX";
-                    break;
-                case "戲谷暗棋":
-                    service_code = "610480";
-                    service_region = "AX";
-                    break;
-                default:
-                    service_code = "610074";
-                    service_region = "T9";
-                    break;
+                service_code = gameList[this.comboBox2.SelectedIndex].service_code;
+                service_region = gameList[this.comboBox2.SelectedIndex].service_region;
+                Properties.Settings.Default.loginGame = this.comboBox2.SelectedIndex;
             }
-            Properties.Settings.Default.loginGame = this.comboBox2.SelectedIndex;
+            catch
+            {
+
+            }
+            
             //Properties.Settings.Default.Save();
         }
 
