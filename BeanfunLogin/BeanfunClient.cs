@@ -96,6 +96,8 @@ namespace BeanfunLogin
                 string ret = Encoding.GetString(this.DownloadData("http://tw.beanfun.com/beanfun_block/generic_handlers/echo_token.ashx?webtoken=1"));
                 if (ret.Contains("ResultCode:1"))
                     testKeepLogged = DateTime.Now.ToString("HH:mm:ss");
+                else
+                    MessageBox.Show(ret);
                 System.Diagnostics.Debug.WriteLine("[Now = "+DateTime.Now.ToString("HH:mm:ss tt")+"][Last Ok = "+testKeepLogged+"] " + ret);
                 return ret.Contains("ResultCode:1");
             }

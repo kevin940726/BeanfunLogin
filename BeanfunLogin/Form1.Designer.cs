@@ -81,13 +81,14 @@
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(477, 256);
+            this.panel1.Size = new System.Drawing.Size(467, 256);
             this.panel1.TabIndex = 0;
             // 
             // keepLogged
             // 
             this.keepLogged.AutoSize = true;
             this.keepLogged.Checked = global::BeanfunLogin.Properties.Settings.Default.keepLogged;
+            this.keepLogged.CheckState = System.Windows.Forms.CheckState.Checked;
             this.keepLogged.DataBindings.Add(new System.Windows.Forms.Binding("Checked", global::BeanfunLogin.Properties.Settings.Default, "keepLogged", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.keepLogged.Enabled = false;
             this.keepLogged.Location = new System.Drawing.Point(130, 24);
@@ -177,7 +178,7 @@
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.RenderMode = System.Windows.Forms.ToolStripRenderMode.Professional;
-            this.menuStrip1.Size = new System.Drawing.Size(477, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(467, 24);
             this.menuStrip1.TabIndex = 7;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -218,34 +219,34 @@
             this.panel2.Location = new System.Drawing.Point(0, 0);
             this.panel2.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(477, 256);
+            this.panel2.Size = new System.Drawing.Size(467, 256);
             this.panel2.TabIndex = 25;
             // 
             // export
             // 
-            this.export.Location = new System.Drawing.Point(246, 118);
+            this.export.Location = new System.Drawing.Point(300, 220);
             this.export.Name = "export";
-            this.export.Size = new System.Drawing.Size(39, 23);
+            this.export.Size = new System.Drawing.Size(50, 30);
             this.export.TabIndex = 40;
-            this.export.Text = "<<";
+            this.export.Text = "讀取";
             this.export.UseVisualStyleBackColor = true;
             this.export.Click += new System.EventHandler(this.export_Click);
             // 
             // import
             // 
-            this.import.Location = new System.Drawing.Point(246, 89);
+            this.import.Location = new System.Drawing.Point(355, 220);
             this.import.Name = "import";
-            this.import.Size = new System.Drawing.Size(39, 23);
+            this.import.Size = new System.Drawing.Size(50, 30);
             this.import.TabIndex = 39;
-            this.import.Text = ">>";
+            this.import.Text = "儲存";
             this.import.UseVisualStyleBackColor = true;
             this.import.Click += new System.EventHandler(this.import_Click);
             // 
             // delete
             // 
-            this.delete.Location = new System.Drawing.Point(291, 219);
+            this.delete.Location = new System.Drawing.Point(410, 220);
             this.delete.Name = "delete";
-            this.delete.Size = new System.Drawing.Size(75, 34);
+            this.delete.Size = new System.Drawing.Size(50, 30);
             this.delete.TabIndex = 38;
             this.delete.Text = "刪除";
             this.delete.UseVisualStyleBackColor = true;
@@ -255,9 +256,9 @@
             // 
             this.accounts.FormattingEnabled = true;
             this.accounts.ItemHeight = 16;
-            this.accounts.Location = new System.Drawing.Point(291, 17);
+            this.accounts.Location = new System.Drawing.Point(300, 17);
             this.accounts.Name = "accounts";
-            this.accounts.Size = new System.Drawing.Size(174, 196);
+            this.accounts.Size = new System.Drawing.Size(160, 196);
             this.accounts.TabIndex = 37;
             // 
             // comboBox2
@@ -477,7 +478,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(477, 256);
+            this.ClientSize = new System.Drawing.Size(467, 256);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel1);
             this.Font = new System.Drawing.Font("微軟正黑體", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));

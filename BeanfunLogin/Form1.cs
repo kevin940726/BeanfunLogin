@@ -293,7 +293,7 @@ namespace BeanfunLogin
                         continue;
                     }
                     this.bfClient.Ping();
-                    System.Threading.Thread.Sleep(1000 * 60 * 10);
+                    System.Threading.Thread.Sleep(1000 * 60 * 2);
                 }
                 catch
                 {
