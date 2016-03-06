@@ -104,10 +104,17 @@ namespace BeanfunLogin
             {
                 if (File.Exists("UserList.dat"))
                 {
-                    Byte[] cipher = File.ReadAllBytes("UserList.dat");
-                    string entropy = Properties.Settings.Default.entropyForList;
-                    byte[] plaintext = ProtectedData.Unprotect(cipher, Encoding.UTF8.GetBytes(entropy), DataProtectionScope.CurrentUser);
-                    return System.Text.Encoding.UTF8.GetString(plaintext);
+                    try
+                    {
+                        Byte[] cipher = File.ReadAllBytes("UserList.dat");
+                        string entropy = Properties.Settings.Default.entropyForList;
+                        byte[] plaintext = ProtectedData.Unprotect(cipher, Encoding.UTF8.GetBytes(entropy), DataProtectionScope.CurrentUser);
+                        return System.Text.Encoding.UTF8.GetString(plaintext);
+                    }
+                    catch
+                    {
+                        File.Delete("UserList.dat");
+                    }
                 }
 
                 return null;

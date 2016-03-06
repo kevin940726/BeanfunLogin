@@ -123,6 +123,7 @@ namespace BeanfunLogin
 
         public void BackToLogin()
         {
+            this.Size = new System.Drawing.Size(459, 290);
             panel1.SendToBack();
             panel2.BringToFront();
             Properties.Settings.Default.autoLogin = false;
@@ -153,10 +154,17 @@ namespace BeanfunLogin
                     // Load password.
                     if (File.Exists("UserState.dat"))
                     {
-                        Byte[] cipher = File.ReadAllBytes("UserState.dat");
-                        string entropy = Properties.Settings.Default.entropy;
-                        byte[] plaintext = ProtectedData.Unprotect(cipher, Encoding.UTF8.GetBytes(entropy), DataProtectionScope.CurrentUser);
-                        this.passwdInput.Text = System.Text.Encoding.UTF8.GetString(plaintext);
+                        try
+                        {
+                            Byte[] cipher = File.ReadAllBytes("UserState.dat");
+                            string entropy = Properties.Settings.Default.entropy;
+                            byte[] plaintext = ProtectedData.Unprotect(cipher, Encoding.UTF8.GetBytes(entropy), DataProtectionScope.CurrentUser);
+                            this.passwdInput.Text = System.Text.Encoding.UTF8.GetString(plaintext);
+                        }
+                        catch
+                        {
+                            File.Delete("UserState.dat");
+                        }
                     }
                 }
                 if (Properties.Settings.Default.autoLogin == true && Properties.Settings.Default.loginMethod != 2 && Properties.Settings.Default.loginMethod != 4)
@@ -189,7 +197,10 @@ namespace BeanfunLogin
                 this.passwdInput.ImeMode = ImeMode.OnHalf;
                 return true;
             }
-            catch { return errexit("初始化失敗，未知的錯誤。", 0); }
+            catch (Exception e)
+            { 
+                return errexit("初始化失敗，未知的錯誤。" + e.Message, 0); 
+            }
         }
 
         public void CheckForUpdate()
@@ -228,7 +239,9 @@ namespace BeanfunLogin
         private void button1_Click(object sender, EventArgs e)
         {
             if (this.ping.IsBusy)
+            {
                 this.ping.CancelAsync();
+            }
             if (this.rememberAccount.Checked == true)
                 Properties.Settings.Default.AccountID = this.accountInput.Text;
             if (this.rememberAccPwd.Checked == true)
@@ -261,7 +274,9 @@ namespace BeanfunLogin
         private void button3_Click(object sender, EventArgs e)
         {
             if (this.ping.IsBusy)
+            {
                 this.ping.CancelAsync();
+            }
             if (listView1.SelectedItems.Count <= 0 || this.backgroundWorker2.IsBusy) return;
             if (Properties.Settings.Default.autoSelect == true)
             {
@@ -278,26 +293,21 @@ namespace BeanfunLogin
         // Ping to Beanfun website.
         private void ping_DoWork(object sender, DoWorkEventArgs e)
         {
-            if (Thread.CurrentThread.Name == null)
-                Thread.CurrentThread.Name = "Ping Worker";
-            Debug.WriteLine("Ping Worker started");
             while (!this.ping.CancellationPending && Properties.Settings.Default.keepLogged)
             {
-                Debug.WriteLine("Trying keep logged");
                 try
                 {
                     if (this.backgroundWorker1.IsBusy)
                     {
-                        Debug.WriteLine("busy");
                         System.Threading.Thread.Sleep(1000 * 1);
                         continue;
                     }
                     this.bfClient.Ping();
-                    System.Threading.Thread.Sleep(1000 * 60 * 2);
+                    System.Threading.Thread.Sleep(1000 * 60 * 1);
                 }
-                catch
+                catch(Exception ex)
                 {
-                    ;
+                    this.bfClient.Log(ex.Message);
                 }
             }
         }
@@ -403,17 +413,15 @@ namespace BeanfunLogin
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
             Properties.Settings.Default.loginMethod = this.loginMethodInput.SelectedIndex;
+            this.gamaotp_label.Visible = false;
+            this.gamaotp_challenge_code_output.Text = "";
             if (Properties.Settings.Default.loginMethod == 4)
             {
-                this.rememberAccount.Location = new Point(49, 155);
-                this.rememberAccPwd.Location = new Point(165, 155);
                 this.label4.Visible = true;
                 this.textBox4.Visible = true;
             }
             else
             {
-                this.rememberAccount.Location = new Point(107, 127);
-                this.rememberAccPwd.Location = new Point(107, 155);
                 this.label4.Visible = false;
                 this.textBox4.Visible = false;
             }
@@ -425,7 +433,10 @@ namespace BeanfunLogin
                 if (this.bfClient.errmsg != null)
                     errexit(this.bfClient.errmsg, 2);
                 else
-                    errexit("通行密碼： " + this.gamaotpClass.motp, 2, "GAMAOTP");
+                {
+                    this.gamaotp_label.Visible = true;
+                    this.gamaotp_challenge_code_output.Text = this.gamaotpClass.motp;
+                }
             }         
             else if (Properties.Settings.Default.loginMethod == 3)
             {
@@ -447,8 +458,10 @@ namespace BeanfunLogin
                 if (!this.ping.IsBusy)
                     this.ping.RunWorkerAsync();
             else
-                if (this.ping.IsBusy)
-                    this.ping.CancelAsync();
+                    if (this.ping.IsBusy)
+                    {
+                        this.ping.CancelAsync();
+                    }
             Properties.Settings.Default.Save();
         }
 
@@ -590,8 +603,6 @@ namespace BeanfunLogin
                     refreshAccountList();
                 }
             }
-            //else
-                 // MessageBox.Show("Debe seleccionar un email");
         }
 
         private void import_Click(object sender, EventArgs e)
@@ -618,12 +629,8 @@ namespace BeanfunLogin
                 accountInput.Text = account;
                 passwdInput.Text = passwd;
                 loginMethodInput.SelectedIndex = method;
-
-                comboBox1_SelectedIndexChanged(null, null);
             }
         }
-
-        
 
     }
 }

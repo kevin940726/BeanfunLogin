@@ -67,10 +67,12 @@ namespace BeanfunLogin
 
                 // Handle panel switching.
                 this.ActiveControl = null;
+                this.Size = new System.Drawing.Size(300, 290);
                 this.panel2.SendToBack();
                 this.panel1.BringToFront();
                 this.AcceptButton = this.button3;
-                this.listView1.Items[Properties.Settings.Default.autoSelectIndex].Selected = true;
+                if (Properties.Settings.Default.autoSelectIndex < this.listView1.Items.Count)
+                    this.listView1.Items[Properties.Settings.Default.autoSelectIndex].Selected = true;
                 this.listView1.Select();
                 if (Properties.Settings.Default.autoSelect == true && Properties.Settings.Default.autoSelectIndex < this.bfClient.accountList.Count())
                 {
@@ -150,6 +152,9 @@ namespace BeanfunLogin
                 Clipboard.SetText(textBox3.Text);
                 this.Text = "進行遊戲 - " + WebUtility.HtmlDecode(this.bfClient.accountList[index].sname);
             }
+
+            if (Properties.Settings.Default.keepLogged && !this.ping.IsBusy)
+                this.ping.RunWorkerAsync();
         }
 
     }

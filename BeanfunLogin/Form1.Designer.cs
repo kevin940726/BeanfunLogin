@@ -42,6 +42,8 @@
             this.BackToLogin_ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.SetGamePath_ToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.gamaotp_challenge_code_output = new System.Windows.Forms.Label();
+            this.gamaotp_label = new System.Windows.Forms.Label();
             this.export = new System.Windows.Forms.Button();
             this.import = new System.Windows.Forms.Button();
             this.delete = new System.Windows.Forms.Button();
@@ -81,7 +83,7 @@
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(467, 256);
+            this.panel1.Size = new System.Drawing.Size(443, 252);
             this.panel1.TabIndex = 0;
             // 
             // keepLogged
@@ -178,7 +180,7 @@
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.RenderMode = System.Windows.Forms.ToolStripRenderMode.Professional;
-            this.menuStrip1.Size = new System.Drawing.Size(467, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(443, 24);
             this.menuStrip1.TabIndex = 7;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -198,6 +200,8 @@
             // 
             // panel2
             // 
+            this.panel2.Controls.Add(this.gamaotp_challenge_code_output);
+            this.panel2.Controls.Add(this.gamaotp_label);
             this.panel2.Controls.Add(this.export);
             this.panel2.Controls.Add(this.import);
             this.panel2.Controls.Add(this.delete);
@@ -215,16 +219,36 @@
             this.panel2.Controls.Add(this.label2);
             this.panel2.Controls.Add(this.accountInput);
             this.panel2.Controls.Add(this.button1);
-            this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel2.Location = new System.Drawing.Point(0, 0);
             this.panel2.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(467, 256);
             this.panel2.TabIndex = 25;
             // 
+            // gamaotp_challenge_code_output
+            // 
+            this.gamaotp_challenge_code_output.AutoSize = true;
+            this.gamaotp_challenge_code_output.Font = new System.Drawing.Font("微軟正黑體", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.gamaotp_challenge_code_output.ForeColor = System.Drawing.Color.Red;
+            this.gamaotp_challenge_code_output.Location = new System.Drawing.Point(96, 135);
+            this.gamaotp_challenge_code_output.Name = "gamaotp_challenge_code_output";
+            this.gamaotp_challenge_code_output.Size = new System.Drawing.Size(0, 21);
+            this.gamaotp_challenge_code_output.TabIndex = 42;
+            // 
+            // gamaotp_label
+            // 
+            this.gamaotp_label.AutoSize = true;
+            this.gamaotp_label.Font = new System.Drawing.Font("微軟正黑體", 11.25F);
+            this.gamaotp_label.Location = new System.Drawing.Point(30, 135);
+            this.gamaotp_label.Name = "gamaotp_label";
+            this.gamaotp_label.Size = new System.Drawing.Size(54, 19);
+            this.gamaotp_label.TabIndex = 41;
+            this.gamaotp_label.Text = "認證碼";
+            this.gamaotp_label.Visible = false;
+            // 
             // export
             // 
-            this.export.Location = new System.Drawing.Point(300, 220);
+            this.export.Location = new System.Drawing.Point(275, 217);
             this.export.Name = "export";
             this.export.Size = new System.Drawing.Size(50, 30);
             this.export.TabIndex = 40;
@@ -234,7 +258,7 @@
             // 
             // import
             // 
-            this.import.Location = new System.Drawing.Point(355, 220);
+            this.import.Location = new System.Drawing.Point(330, 217);
             this.import.Name = "import";
             this.import.Size = new System.Drawing.Size(50, 30);
             this.import.TabIndex = 39;
@@ -244,7 +268,7 @@
             // 
             // delete
             // 
-            this.delete.Location = new System.Drawing.Point(410, 220);
+            this.delete.Location = new System.Drawing.Point(385, 217);
             this.delete.Name = "delete";
             this.delete.Size = new System.Drawing.Size(50, 30);
             this.delete.TabIndex = 38;
@@ -256,7 +280,7 @@
             // 
             this.accounts.FormattingEnabled = true;
             this.accounts.ItemHeight = 16;
-            this.accounts.Location = new System.Drawing.Point(300, 17);
+            this.accounts.Location = new System.Drawing.Point(275, 14);
             this.accounts.Name = "accounts";
             this.accounts.Size = new System.Drawing.Size(160, 196);
             this.accounts.TabIndex = 37;
@@ -306,7 +330,7 @@
             this.rememberAccount.Checked = global::BeanfunLogin.Properties.Settings.Default.rememberAccount;
             this.rememberAccount.CheckState = System.Windows.Forms.CheckState.Checked;
             this.rememberAccount.DataBindings.Add(new System.Windows.Forms.Binding("Checked", global::BeanfunLogin.Properties.Settings.Default, "rememberAccount", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.rememberAccount.Location = new System.Drawing.Point(107, 127);
+            this.rememberAccount.Location = new System.Drawing.Point(77, 182);
             this.rememberAccount.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.rememberAccount.Name = "rememberAccount";
             this.rememberAccount.Size = new System.Drawing.Size(75, 20);
@@ -316,7 +340,7 @@
             // 
             // textBox4
             // 
-            this.textBox4.Location = new System.Drawing.Point(95, 124);
+            this.textBox4.Location = new System.Drawing.Point(95, 133);
             this.textBox4.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.textBox4.Name = "textBox4";
             this.textBox4.PasswordChar = '*';
@@ -327,7 +351,7 @@
             // label4
             // 
             this.label4.Font = new System.Drawing.Font("微軟正黑體", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.label4.Location = new System.Drawing.Point(21, 124);
+            this.label4.Location = new System.Drawing.Point(21, 133);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(69, 19);
             this.label4.TabIndex = 34;
@@ -367,7 +391,7 @@
             this.checkBox3.AutoSize = true;
             this.checkBox3.Checked = global::BeanfunLogin.Properties.Settings.Default.autoLogin;
             this.checkBox3.DataBindings.Add(new System.Windows.Forms.Binding("Checked", global::BeanfunLogin.Properties.Settings.Default, "autoLogin", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.checkBox3.Location = new System.Drawing.Point(107, 183);
+            this.checkBox3.Location = new System.Drawing.Point(77, 214);
             this.checkBox3.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.checkBox3.Name = "checkBox3";
             this.checkBox3.Size = new System.Drawing.Size(75, 20);
@@ -381,7 +405,7 @@
             this.rememberAccPwd.AutoSize = true;
             this.rememberAccPwd.Checked = global::BeanfunLogin.Properties.Settings.Default.rememberPwd;
             this.rememberAccPwd.DataBindings.Add(new System.Windows.Forms.Binding("Checked", global::BeanfunLogin.Properties.Settings.Default, "rememberPwd", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.rememberAccPwd.Location = new System.Drawing.Point(107, 155);
+            this.rememberAccPwd.Location = new System.Drawing.Point(158, 182);
             this.rememberAccPwd.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.rememberAccPwd.Name = "rememberAccPwd";
             this.rememberAccPwd.Size = new System.Drawing.Size(75, 20);
@@ -432,7 +456,7 @@
             // 
             this.button1.Font = new System.Drawing.Font("微軟正黑體", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
             this.button1.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.button1.Location = new System.Drawing.Point(95, 210);
+            this.button1.Location = new System.Drawing.Point(165, 210);
             this.button1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(87, 29);
@@ -478,7 +502,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(467, 256);
+            this.ClientSize = new System.Drawing.Size(443, 252);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel1);
             this.Font = new System.Drawing.Font("微軟正黑體", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
@@ -535,6 +559,8 @@
         private System.Windows.Forms.Button import;
         private System.Windows.Forms.Button delete;
         private System.Windows.Forms.ListBox accounts;
+        private System.Windows.Forms.Label gamaotp_challenge_code_output;
+        private System.Windows.Forms.Label gamaotp_label;
 
 
     }
