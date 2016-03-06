@@ -9,6 +9,7 @@ using System.Collections.Specialized;
 using System.Net;
 using System.Diagnostics;
 using System.Threading;
+using System.IO;
 
 namespace BeanfunLogin
 {
@@ -106,9 +107,14 @@ namespace BeanfunLogin
             this.otp = this.bfClient.GetOTP(Properties.Settings.Default.loginMethod, this.bfClient.accountList[index], this.service_code, this.service_region);
             if (this.otp == null)
                 e.Result = -1;
-            else
+            else 
             {
                 e.Result = index;
+                if (false == Properties.Settings.Default.opengame)
+                {
+                    return;
+                }
+
                 foreach (Process process in Process.GetProcesses())
                 {
                     if (process.ProcessName == "MapleStory")
@@ -117,14 +123,14 @@ namespace BeanfunLogin
                 
                 try
                 {
-                    Process.Start(Properties.Settings.Default.gamePath, "tw.login.maplestory.gamania.com 8484 BeanFun " + this.bfClient.accountList[index].sacc + " " + this.otp);
+                    if (File.Exists(Properties.Settings.Default.gamePath))
+                        Process.Start(Properties.Settings.Default.gamePath, "tw.login.maplestory.gamania.com 8484 BeanFun " + this.bfClient.accountList[index].sacc + " " + this.otp);
                 }
                 catch
                 {
                     errexit("啟動失敗，請嘗試手動以系統管理員身分啟動遊戲。", 2);
                 }
-            }
-            
+            }            
         }
 
         // getOTP completed.

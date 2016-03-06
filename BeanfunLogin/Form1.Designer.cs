@@ -31,9 +31,7 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(main));
             this.panel1 = new System.Windows.Forms.Panel();
-            this.keepLogged = new System.Windows.Forms.CheckBox();
             this.button3 = new System.Windows.Forms.Button();
-            this.checkBox4 = new System.Windows.Forms.CheckBox();
             this.textBox3 = new System.Windows.Forms.TextBox();
             this.listView1 = new System.Windows.Forms.ListView();
             this.CharName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -49,13 +47,10 @@
             this.delete = new System.Windows.Forms.Button();
             this.accounts = new System.Windows.Forms.ListBox();
             this.comboBox2 = new System.Windows.Forms.ComboBox();
-            this.rememberAccount = new System.Windows.Forms.CheckBox();
             this.textBox4 = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
             this.loginMethodInput = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
-            this.checkBox3 = new System.Windows.Forms.CheckBox();
-            this.rememberAccPwd = new System.Windows.Forms.CheckBox();
             this.passwdInput = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
@@ -66,6 +61,12 @@
             this.ping = new System.ComponentModel.BackgroundWorker();
             this.Tip = new System.Windows.Forms.ToolTip(this.components);
             this.Notification = new System.Windows.Forms.ToolTip(this.components);
+            this.checkBox1 = new System.Windows.Forms.CheckBox();
+            this.keepLogged = new System.Windows.Forms.CheckBox();
+            this.checkBox4 = new System.Windows.Forms.CheckBox();
+            this.rememberAccount = new System.Windows.Forms.CheckBox();
+            this.checkBox3 = new System.Windows.Forms.CheckBox();
+            this.rememberAccPwd = new System.Windows.Forms.CheckBox();
             this.panel1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -73,6 +74,7 @@
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.checkBox1);
             this.panel1.Controls.Add(this.keepLogged);
             this.panel1.Controls.Add(this.button3);
             this.panel1.Controls.Add(this.checkBox4);
@@ -86,22 +88,6 @@
             this.panel1.Size = new System.Drawing.Size(443, 252);
             this.panel1.TabIndex = 0;
             // 
-            // keepLogged
-            // 
-            this.keepLogged.AutoSize = true;
-            this.keepLogged.Checked = global::BeanfunLogin.Properties.Settings.Default.keepLogged;
-            this.keepLogged.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.keepLogged.DataBindings.Add(new System.Windows.Forms.Binding("Checked", global::BeanfunLogin.Properties.Settings.Default, "keepLogged", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.keepLogged.Enabled = false;
-            this.keepLogged.Location = new System.Drawing.Point(130, 24);
-            this.keepLogged.Name = "keepLogged";
-            this.keepLogged.Size = new System.Drawing.Size(75, 20);
-            this.keepLogged.TabIndex = 8;
-            this.keepLogged.Text = "保持登入";
-            this.keepLogged.UseVisualStyleBackColor = true;
-            this.keepLogged.Visible = false;
-            this.keepLogged.CheckedChanged += new System.EventHandler(this.keepLogged_CheckedChanged);
-            // 
             // button3
             // 
             this.button3.FlatStyle = System.Windows.Forms.FlatStyle.System;
@@ -113,20 +99,6 @@
             this.button3.Text = "啟動遊戲";
             this.button3.UseVisualStyleBackColor = true;
             this.button3.Click += new System.EventHandler(this.button3_Click);
-            // 
-            // checkBox4
-            // 
-            this.checkBox4.AutoSize = true;
-            this.checkBox4.Checked = global::BeanfunLogin.Properties.Settings.Default.autoSelect;
-            this.checkBox4.DataBindings.Add(new System.Windows.Forms.Binding("Checked", global::BeanfunLogin.Properties.Settings.Default, "autoSelect", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.checkBox4.Location = new System.Drawing.Point(25, 24);
-            this.checkBox4.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.checkBox4.Name = "checkBox4";
-            this.checkBox4.Size = new System.Drawing.Size(99, 20);
-            this.checkBox4.TabIndex = 5;
-            this.checkBox4.Text = "下次自動選擇";
-            this.checkBox4.UseVisualStyleBackColor = true;
-            this.checkBox4.CheckedChanged += new System.EventHandler(this.checkBox4_CheckedChanged);
             // 
             // textBox3
             // 
@@ -324,20 +296,6 @@
             this.comboBox2.TabIndex = 36;
             this.comboBox2.SelectedIndexChanged += new System.EventHandler(this.comboBox2_SelectedIndexChanged);
             // 
-            // rememberAccount
-            // 
-            this.rememberAccount.AutoSize = true;
-            this.rememberAccount.Checked = global::BeanfunLogin.Properties.Settings.Default.rememberAccount;
-            this.rememberAccount.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.rememberAccount.DataBindings.Add(new System.Windows.Forms.Binding("Checked", global::BeanfunLogin.Properties.Settings.Default, "rememberAccount", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.rememberAccount.Location = new System.Drawing.Point(77, 182);
-            this.rememberAccount.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.rememberAccount.Name = "rememberAccount";
-            this.rememberAccount.Size = new System.Drawing.Size(75, 20);
-            this.rememberAccount.TabIndex = 30;
-            this.rememberAccount.Text = "記住帳號";
-            this.rememberAccount.UseVisualStyleBackColor = true;
-            // 
             // textBox4
             // 
             this.textBox4.Location = new System.Drawing.Point(95, 133);
@@ -385,34 +343,6 @@
             this.label1.Size = new System.Drawing.Size(60, 17);
             this.label1.TabIndex = 33;
             this.label1.Text = "登入模式";
-            // 
-            // checkBox3
-            // 
-            this.checkBox3.AutoSize = true;
-            this.checkBox3.Checked = global::BeanfunLogin.Properties.Settings.Default.autoLogin;
-            this.checkBox3.DataBindings.Add(new System.Windows.Forms.Binding("Checked", global::BeanfunLogin.Properties.Settings.Default, "autoLogin", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.checkBox3.Location = new System.Drawing.Point(77, 214);
-            this.checkBox3.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.checkBox3.Name = "checkBox3";
-            this.checkBox3.Size = new System.Drawing.Size(75, 20);
-            this.checkBox3.TabIndex = 32;
-            this.checkBox3.Text = "自動登入";
-            this.checkBox3.UseVisualStyleBackColor = true;
-            this.checkBox3.CheckedChanged += new System.EventHandler(this.checkBox3_CheckedChanged);
-            // 
-            // rememberAccPwd
-            // 
-            this.rememberAccPwd.AutoSize = true;
-            this.rememberAccPwd.Checked = global::BeanfunLogin.Properties.Settings.Default.rememberPwd;
-            this.rememberAccPwd.DataBindings.Add(new System.Windows.Forms.Binding("Checked", global::BeanfunLogin.Properties.Settings.Default, "rememberPwd", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.rememberAccPwd.Location = new System.Drawing.Point(158, 182);
-            this.rememberAccPwd.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.rememberAccPwd.Name = "rememberAccPwd";
-            this.rememberAccPwd.Size = new System.Drawing.Size(75, 20);
-            this.rememberAccPwd.TabIndex = 31;
-            this.rememberAccPwd.Text = "記住帳密";
-            this.rememberAccPwd.UseVisualStyleBackColor = true;
-            this.rememberAccPwd.CheckedChanged += new System.EventHandler(this.checkBox2_CheckedChanged);
             // 
             // passwdInput
             // 
@@ -498,6 +428,92 @@
             this.Notification.InitialDelay = 0;
             this.Notification.ReshowDelay = 100;
             // 
+            // checkBox1
+            // 
+            this.checkBox1.AutoSize = true;
+            this.checkBox1.Checked = global::BeanfunLogin.Properties.Settings.Default.opengame;
+            this.checkBox1.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBox1.DataBindings.Add(new System.Windows.Forms.Binding("Checked", global::BeanfunLogin.Properties.Settings.Default, "opengame", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.checkBox1.Location = new System.Drawing.Point(112, 24);
+            this.checkBox1.Name = "checkBox1";
+            this.checkBox1.Size = new System.Drawing.Size(99, 20);
+            this.checkBox1.TabIndex = 9;
+            this.checkBox1.Text = "自動開啟遊戲";
+            this.checkBox1.UseVisualStyleBackColor = true;
+            this.checkBox1.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
+            // 
+            // keepLogged
+            // 
+            this.keepLogged.AutoSize = true;
+            this.keepLogged.Checked = global::BeanfunLogin.Properties.Settings.Default.keepLogged;
+            this.keepLogged.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.keepLogged.DataBindings.Add(new System.Windows.Forms.Binding("Checked", global::BeanfunLogin.Properties.Settings.Default, "keepLogged", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.keepLogged.Enabled = false;
+            this.keepLogged.Location = new System.Drawing.Point(208, 24);
+            this.keepLogged.Name = "keepLogged";
+            this.keepLogged.Size = new System.Drawing.Size(75, 20);
+            this.keepLogged.TabIndex = 8;
+            this.keepLogged.Text = "保持登入";
+            this.keepLogged.UseVisualStyleBackColor = true;
+            this.keepLogged.Visible = false;
+            this.keepLogged.CheckedChanged += new System.EventHandler(this.keepLogged_CheckedChanged);
+            // 
+            // checkBox4
+            // 
+            this.checkBox4.AutoSize = true;
+            this.checkBox4.Checked = global::BeanfunLogin.Properties.Settings.Default.autoSelect;
+            this.checkBox4.DataBindings.Add(new System.Windows.Forms.Binding("Checked", global::BeanfunLogin.Properties.Settings.Default, "autoSelect", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.checkBox4.Location = new System.Drawing.Point(17, 24);
+            this.checkBox4.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.checkBox4.Name = "checkBox4";
+            this.checkBox4.Size = new System.Drawing.Size(99, 20);
+            this.checkBox4.TabIndex = 5;
+            this.checkBox4.Text = "下次自動選擇";
+            this.checkBox4.UseVisualStyleBackColor = true;
+            this.checkBox4.CheckedChanged += new System.EventHandler(this.checkBox4_CheckedChanged);
+            // 
+            // rememberAccount
+            // 
+            this.rememberAccount.AutoSize = true;
+            this.rememberAccount.Checked = global::BeanfunLogin.Properties.Settings.Default.rememberAccount;
+            this.rememberAccount.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.rememberAccount.DataBindings.Add(new System.Windows.Forms.Binding("Checked", global::BeanfunLogin.Properties.Settings.Default, "rememberAccount", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.rememberAccount.Location = new System.Drawing.Point(77, 182);
+            this.rememberAccount.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.rememberAccount.Name = "rememberAccount";
+            this.rememberAccount.Size = new System.Drawing.Size(75, 20);
+            this.rememberAccount.TabIndex = 30;
+            this.rememberAccount.Text = "記住帳號";
+            this.rememberAccount.UseVisualStyleBackColor = true;
+            // 
+            // checkBox3
+            // 
+            this.checkBox3.AutoSize = true;
+            this.checkBox3.Checked = global::BeanfunLogin.Properties.Settings.Default.autoLogin;
+            this.checkBox3.DataBindings.Add(new System.Windows.Forms.Binding("Checked", global::BeanfunLogin.Properties.Settings.Default, "autoLogin", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.checkBox3.Location = new System.Drawing.Point(77, 214);
+            this.checkBox3.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.checkBox3.Name = "checkBox3";
+            this.checkBox3.Size = new System.Drawing.Size(75, 20);
+            this.checkBox3.TabIndex = 32;
+            this.checkBox3.Text = "自動登入";
+            this.checkBox3.UseVisualStyleBackColor = true;
+            this.checkBox3.CheckedChanged += new System.EventHandler(this.checkBox3_CheckedChanged);
+            // 
+            // rememberAccPwd
+            // 
+            this.rememberAccPwd.AutoSize = true;
+            this.rememberAccPwd.Checked = global::BeanfunLogin.Properties.Settings.Default.rememberPwd;
+            this.rememberAccPwd.DataBindings.Add(new System.Windows.Forms.Binding("Checked", global::BeanfunLogin.Properties.Settings.Default, "rememberPwd", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.rememberAccPwd.Location = new System.Drawing.Point(158, 182);
+            this.rememberAccPwd.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.rememberAccPwd.Name = "rememberAccPwd";
+            this.rememberAccPwd.Size = new System.Drawing.Size(75, 20);
+            this.rememberAccPwd.TabIndex = 31;
+            this.rememberAccPwd.Text = "記住帳密";
+            this.rememberAccPwd.UseVisualStyleBackColor = true;
+            this.rememberAccPwd.CheckedChanged += new System.EventHandler(this.checkBox2_CheckedChanged);
+            // 
             // main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 16F);
@@ -561,6 +577,7 @@
         private System.Windows.Forms.ListBox accounts;
         private System.Windows.Forms.Label gamaotp_challenge_code_output;
         private System.Windows.Forms.Label gamaotp_label;
+        private System.Windows.Forms.CheckBox checkBox1;
 
 
     }
