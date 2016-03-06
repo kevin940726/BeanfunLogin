@@ -295,20 +295,13 @@ namespace BeanfunLogin
         {
             while (!this.ping.CancellationPending && Properties.Settings.Default.keepLogged)
             {
-                try
+                if (this.backgroundWorker1.IsBusy)
                 {
-                    if (this.backgroundWorker1.IsBusy)
-                    {
-                        System.Threading.Thread.Sleep(1000 * 1);
-                        continue;
-                    }
-                    this.bfClient.Ping();
-                    System.Threading.Thread.Sleep(1000 * 60 * 1);
+                    System.Threading.Thread.Sleep(1000 * 1);
+                    continue;
                 }
-                catch(Exception ex)
-                {
-                    this.bfClient.Log(ex.Message);
-                }
+                this.bfClient.Ping();
+                System.Threading.Thread.Sleep(1000 * 60 * 1);
             }
         }
 

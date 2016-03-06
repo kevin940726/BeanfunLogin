@@ -101,7 +101,7 @@ namespace BeanfunLogin
                     string ret = Encoding.GetString(raw);
                     getDataOkay = true;
                 }
-                catch (NotSupportedException e)
+                catch
                 {
                     System.Threading.Thread.Sleep(189 * new Random().Next(3,9));
                 }
