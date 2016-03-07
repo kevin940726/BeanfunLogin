@@ -135,7 +135,7 @@ namespace BeanfunLogin
             try
             {
                 this.Text = "BeanfunLogin - v" + Properties.Settings.Default.currentVersion.ToString().Insert(1, ".").Insert(3, ".");
-                this.AcceptButton = this.button1;
+                this.AcceptButton = this.loginButton;
                 this.bfClient = null;
                 this.accountManager = new AccountManager();
 
@@ -171,7 +171,7 @@ namespace BeanfunLogin
                 {
                     this.UseWaitCursor = true;
                     this.panel2.Enabled = false;
-                    this.button1.Text = "請稍後...";
+                    this.loginButton.Text = "請稍後...";
                     this.loginWorker.RunWorkerAsync(Properties.Settings.Default.loginMethod);
                 }
                 if (Properties.Settings.Default.gamePath == "")
@@ -236,7 +236,7 @@ namespace BeanfunLogin
         }
 
         // The login botton.
-        private void button1_Click(object sender, EventArgs e)
+        private void loginButton_Click(object sender, EventArgs e)
         {
             if (this.ping.IsBusy)
             {
@@ -266,12 +266,12 @@ namespace BeanfunLogin
 
             this.UseWaitCursor = true;
             this.panel2.Enabled = false;
-            this.button1.Text = "請稍後...";
+            this.loginButton.Text = "請稍後...";
             this.loginWorker.RunWorkerAsync(Properties.Settings.Default.loginMethod);
         }    
 
         // The get OTP button.
-        private void button3_Click(object sender, EventArgs e)
+        private void getOtpButton_Click(object sender, EventArgs e)
         {
             if (this.ping.IsBusy)
             {
@@ -286,7 +286,7 @@ namespace BeanfunLogin
 
             this.textBox3.Text = "獲取密碼中...";
             this.listView1.Enabled = false;
-            this.button3.Enabled = false;
+            this.getOtpButton.Enabled = false;
             this.getOtpWorker.RunWorkerAsync(listView1.SelectedItems[0].Index);
         }
 
@@ -400,7 +400,7 @@ namespace BeanfunLogin
         private void listView1_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (listView1.SelectedItems.Count == 1)
-                this.button3.Text = "獲取密碼";
+                this.getOtpButton.Text = "獲取密碼";
         }
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)

@@ -44,7 +44,7 @@ namespace BeanfunLogin
         {
             this.panel2.Enabled = true;
             this.UseWaitCursor = false;
-            this.button1.Text = "登入";
+            this.loginButton.Text = "登入";
             if (e.Error != null)
             {
                 errexit(e.Error.Message, 1);
@@ -71,7 +71,7 @@ namespace BeanfunLogin
                 this.Size = new System.Drawing.Size(300, 290);
                 this.panel2.SendToBack();
                 this.panel1.BringToFront();
-                this.AcceptButton = this.button3;
+                this.AcceptButton = this.getOtpButton;
                 if (Properties.Settings.Default.autoSelectIndex < this.listView1.Items.Count)
                     this.listView1.Items[Properties.Settings.Default.autoSelectIndex].Selected = true;
                 this.listView1.Select();
@@ -84,8 +84,8 @@ namespace BeanfunLogin
                 if (Properties.Settings.Default.keepLogged && !this.ping.IsBusy)
                     this.ping.RunWorkerAsync();
                 ShowToolTip(listView1, "步驟1", "選擇欲開啟的遊戲帳號，雙擊以複製帳號。");
-                ShowToolTip(button3, "步驟2", "按下以在右側產生並自動複製密碼，至遊戲中貼上帳密登入。");
-                Tip.SetToolTip(button3, "點擊獲取密碼");
+                ShowToolTip(getOtpButton, "步驟2", "按下以在右側產生並自動複製密碼，至遊戲中貼上帳密登入。");
+                Tip.SetToolTip(getOtpButton, "點擊獲取密碼");
                 Tip.SetToolTip(listView1, "雙擊即自動複製");
                 Tip.SetToolTip(textBox3, "點擊一次即自動複製");
                 Properties.Settings.Default.showTip = false;
@@ -136,9 +136,9 @@ namespace BeanfunLogin
         // getOTP completed.
         private void getOtpWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            this.button3.Text = "獲取密碼";
+            this.getOtpButton.Text = "獲取密碼";
             this.listView1.Enabled = true;
-            this.button3.Enabled = true;
+            this.getOtpButton.Enabled = true;
             if (e.Error != null)
             {
                 this.textBox3.Text = "獲取失敗";
