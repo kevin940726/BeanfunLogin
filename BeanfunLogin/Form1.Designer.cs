@@ -56,8 +56,8 @@
             this.label2 = new System.Windows.Forms.Label();
             this.accountInput = new System.Windows.Forms.TextBox();
             this.button1 = new System.Windows.Forms.Button();
-            this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
-            this.backgroundWorker2 = new System.ComponentModel.BackgroundWorker();
+            this.getOtpWorker = new System.ComponentModel.BackgroundWorker();
+            this.loginWorker = new System.ComponentModel.BackgroundWorker();
             this.ping = new System.ComponentModel.BackgroundWorker();
             this.Tip = new System.Windows.Forms.ToolTip(this.components);
             this.Notification = new System.Windows.Forms.ToolTip(this.components);
@@ -397,17 +397,17 @@
             // 
             // backgroundWorker1
             // 
-            this.backgroundWorker1.WorkerReportsProgress = true;
-            this.backgroundWorker1.WorkerSupportsCancellation = true;
-            this.backgroundWorker1.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorker1_DoWork);
-            this.backgroundWorker1.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundWorker1_RunWorkerCompleted);
+            this.getOtpWorker.WorkerReportsProgress = true;
+            this.getOtpWorker.WorkerSupportsCancellation = true;
+            this.getOtpWorker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.getOtpWorker_DoWork);
+            this.getOtpWorker.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.getOtpWorker_RunWorkerCompleted);
             // 
             // backgroundWorker2
             // 
-            this.backgroundWorker2.WorkerReportsProgress = true;
-            this.backgroundWorker2.WorkerSupportsCancellation = true;
-            this.backgroundWorker2.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorker2_DoWork);
-            this.backgroundWorker2.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundWorker2_RunWorkerCompleted);
+            this.loginWorker.WorkerReportsProgress = true;
+            this.loginWorker.WorkerSupportsCancellation = true;
+            this.loginWorker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.loginWorker_DoWork);
+            this.loginWorker.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.loginWorker_RunWorkerCompleted);
             // 
             // ping
             // 
@@ -557,13 +557,13 @@
         private System.Windows.Forms.TextBox textBox3;
         private System.Windows.Forms.CheckBox checkBox4;
         private System.Windows.Forms.Button button3;
-        private System.ComponentModel.BackgroundWorker backgroundWorker1;
+        private System.ComponentModel.BackgroundWorker getOtpWorker;
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem BackToLogin_ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem SetGamePath_ToolStripMenuItem1;
         private System.Windows.Forms.ComboBox loginMethodInput;
         private System.Windows.Forms.Label label1;
-        private System.ComponentModel.BackgroundWorker backgroundWorker2;
+        private System.ComponentModel.BackgroundWorker loginWorker;
         private System.Windows.Forms.TextBox textBox4;
         private System.Windows.Forms.Label label4;
         private System.ComponentModel.BackgroundWorker ping;

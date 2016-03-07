@@ -172,7 +172,7 @@ namespace BeanfunLogin
                     this.UseWaitCursor = true;
                     this.panel2.Enabled = false;
                     this.button1.Text = "請稍後...";
-                    this.backgroundWorker2.RunWorkerAsync(Properties.Settings.Default.loginMethod);
+                    this.loginWorker.RunWorkerAsync(Properties.Settings.Default.loginMethod);
                 }
                 if (Properties.Settings.Default.gamePath == "")
                 {
@@ -267,7 +267,7 @@ namespace BeanfunLogin
             this.UseWaitCursor = true;
             this.panel2.Enabled = false;
             this.button1.Text = "請稍後...";
-            this.backgroundWorker2.RunWorkerAsync(Properties.Settings.Default.loginMethod);
+            this.loginWorker.RunWorkerAsync(Properties.Settings.Default.loginMethod);
         }    
 
         // The get OTP button.
@@ -277,7 +277,7 @@ namespace BeanfunLogin
             {
                 this.ping.CancelAsync();
             }
-            if (listView1.SelectedItems.Count <= 0 || this.backgroundWorker2.IsBusy) return;
+            if (listView1.SelectedItems.Count <= 0 || this.loginWorker.IsBusy) return;
             if (Properties.Settings.Default.autoSelect == true)
             {
                 Properties.Settings.Default.autoSelectIndex = listView1.SelectedItems[0].Index;
@@ -287,7 +287,7 @@ namespace BeanfunLogin
             this.textBox3.Text = "獲取密碼中...";
             this.listView1.Enabled = false;
             this.button3.Enabled = false;
-            this.backgroundWorker1.RunWorkerAsync(listView1.SelectedItems[0].Index);
+            this.getOtpWorker.RunWorkerAsync(listView1.SelectedItems[0].Index);
         }
 
         // Ping to Beanfun website.
@@ -295,7 +295,7 @@ namespace BeanfunLogin
         {
             while (!this.ping.CancellationPending && Properties.Settings.Default.keepLogged)
             {
-                if (this.backgroundWorker1.IsBusy)
+                if (this.getOtpWorker.IsBusy)
                 {
                     System.Threading.Thread.Sleep(1000 * 1);
                     continue;

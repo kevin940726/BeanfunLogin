@@ -18,7 +18,7 @@ namespace BeanfunLogin
         private string otp;
 
         // Login do work.
-        private void backgroundWorker2_DoWork(object sender, DoWorkEventArgs e)
+        private void loginWorker_DoWork(object sender, DoWorkEventArgs e)
         {
             if (Thread.CurrentThread.Name == null)
                 Thread.CurrentThread.Name = "Login Worker";
@@ -40,7 +40,7 @@ namespace BeanfunLogin
         }
 
         // Login completed.
-        private void backgroundWorker2_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        private void loginWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             this.panel2.Enabled = true;
             this.UseWaitCursor = false;
@@ -79,7 +79,7 @@ namespace BeanfunLogin
                 {
                     this.textBox3.Text = "獲取密碼中...";
                     this.listView1.Enabled = false;
-                    this.backgroundWorker1.RunWorkerAsync(Properties.Settings.Default.autoSelectIndex);
+                    this.getOtpWorker.RunWorkerAsync(Properties.Settings.Default.autoSelectIndex);
                 }
                 if (Properties.Settings.Default.keepLogged && !this.ping.IsBusy)
                     this.ping.RunWorkerAsync();
@@ -99,7 +99,7 @@ namespace BeanfunLogin
         }
 
         // getOTP do work.
-        private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
+        private void getOtpWorker_DoWork(object sender, DoWorkEventArgs e)
         {
             if (Thread.CurrentThread.Name == null)
                 Thread.CurrentThread.Name = "GetOTP Worker";
@@ -134,7 +134,7 @@ namespace BeanfunLogin
         }
 
         // getOTP completed.
-        private void backgroundWorker1_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        private void getOtpWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             this.button3.Text = "獲取密碼";
             this.listView1.Enabled = true;
