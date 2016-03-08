@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Net;
 using System.Windows.Forms;
+using System.Diagnostics;
 
 
 namespace BeanfunLogin
@@ -42,7 +43,14 @@ namespace BeanfunLogin
 
         public string DownloadString(string Uri, Encoding Encoding)
         {
-            return (Encoding.GetString(base.DownloadData(Uri)));
+            var ret = (Encoding.GetString(base.DownloadData(Uri)));
+            return ret;
+        }
+
+        public string DownloadString(string Uri)
+        {
+            var ret = base.DownloadString(Uri);
+            return ret;
         }
 
         protected override WebRequest GetWebRequest(Uri address)
@@ -92,20 +100,10 @@ namespace BeanfunLogin
         public void Ping()
         {
             byte[] raw = null;
-            bool getDataOkay = false;
-            while (!getDataOkay)
-            {
-                try
-                {
-                    raw = this.DownloadData("http://tw.beanfun.com/beanfun_block/generic_handlers/echo_token.ashx?webtoken=1");
-                    string ret = Encoding.GetString(raw);
-                    getDataOkay = true;
-                }
-                catch
-                {
-                    System.Threading.Thread.Sleep(189 * new Random().Next(3,9));
-                }
-            }
+
+            raw = this.DownloadData("http://tw.beanfun.com/beanfun_block/generic_handlers/echo_token.ashx?webtoken=1");
+            string ret = Encoding.GetString(raw);
+            Debug.WriteLine(GetCurrentTime() + " @ " +ret);
         }
 
     }

@@ -238,9 +238,9 @@ namespace BeanfunLogin
         // The login botton.
         private void loginButton_Click(object sender, EventArgs e)
         {
-            if (this.ping.IsBusy)
+            if (this.pingWorker.IsBusy)
             {
-                this.ping.CancelAsync();
+                this.pingWorker.CancelAsync();
             }
             if (this.rememberAccount.Checked == true)
                 Properties.Settings.Default.AccountID = this.accountInput.Text;
@@ -273,9 +273,9 @@ namespace BeanfunLogin
         // The get OTP button.
         private void getOtpButton_Click(object sender, EventArgs e)
         {
-            if (this.ping.IsBusy)
+            if (this.pingWorker.IsBusy)
             {
-                this.ping.CancelAsync();
+                this.pingWorker.CancelAsync();
             }
             if (listView1.SelectedItems.Count <= 0 || this.loginWorker.IsBusy) return;
             if (Properties.Settings.Default.autoSelect == true)
@@ -288,21 +288,6 @@ namespace BeanfunLogin
             this.listView1.Enabled = false;
             this.getOtpButton.Enabled = false;
             this.getOtpWorker.RunWorkerAsync(listView1.SelectedItems[0].Index);
-        }
-
-        // Ping to Beanfun website.
-        private void ping_DoWork(object sender, DoWorkEventArgs e)
-        {
-            while (!this.ping.CancellationPending && Properties.Settings.Default.keepLogged)
-            {
-                if (this.getOtpWorker.IsBusy)
-                {
-                    System.Threading.Thread.Sleep(1000 * 1);
-                    continue;
-                }
-                this.bfClient.Ping();
-                System.Threading.Thread.Sleep(1000 * 60 * 1);
-            }
         }
 
         // Building ciphertext by 3DES.
@@ -448,12 +433,12 @@ namespace BeanfunLogin
         private void keepLogged_CheckedChanged(object sender, EventArgs e)
         {
             if (keepLogged.Checked)
-                if (!this.ping.IsBusy)
-                    this.ping.RunWorkerAsync();
+                if (!this.pingWorker.IsBusy)
+                    this.pingWorker.RunWorkerAsync();
             else
-                    if (this.ping.IsBusy)
+                    if (this.pingWorker.IsBusy)
                     {
-                        this.ping.CancelAsync();
+                        this.pingWorker.CancelAsync();
                     }
             Properties.Settings.Default.Save();
         }

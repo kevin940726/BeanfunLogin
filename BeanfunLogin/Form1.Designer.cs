@@ -64,7 +64,7 @@
             this.loginButton = new System.Windows.Forms.Button();
             this.getOtpWorker = new System.ComponentModel.BackgroundWorker();
             this.loginWorker = new System.ComponentModel.BackgroundWorker();
-            this.ping = new System.ComponentModel.BackgroundWorker();
+            this.pingWorker = new System.ComponentModel.BackgroundWorker();
             this.Tip = new System.Windows.Forms.ToolTip(this.components);
             this.Notification = new System.Windows.Forms.ToolTip(this.components);
             this.panel1.SuspendLayout();
@@ -495,11 +495,12 @@
             this.loginWorker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.loginWorker_DoWork);
             this.loginWorker.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.loginWorker_RunWorkerCompleted);
             // 
-            // ping
+            // pingWorker
             // 
-            this.ping.WorkerReportsProgress = true;
-            this.ping.WorkerSupportsCancellation = true;
-            this.ping.DoWork += new System.ComponentModel.DoWorkEventHandler(this.ping_DoWork);
+            this.pingWorker.WorkerReportsProgress = true;
+            this.pingWorker.WorkerSupportsCancellation = true;
+            this.pingWorker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.pingWorker_DoWork);
+            this.pingWorker.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.pingWorker_RunWorkerCompleted);
             // 
             // Tip
             // 
@@ -566,7 +567,7 @@
         private System.ComponentModel.BackgroundWorker loginWorker;
         private System.Windows.Forms.TextBox textBox4;
         private System.Windows.Forms.Label label4;
-        private System.ComponentModel.BackgroundWorker ping;
+        private System.ComponentModel.BackgroundWorker pingWorker;
         private System.Windows.Forms.CheckBox keepLogged;
         private System.Windows.Forms.ToolTip Tip;
         private System.Windows.Forms.ToolTip Notification;

@@ -20,8 +20,10 @@ namespace BeanfunLogin
         // Login do work.
         private void loginWorker_DoWork(object sender, DoWorkEventArgs e)
         {
-            if (Thread.CurrentThread.Name == null)
-                Thread.CurrentThread.Name = "Login Worker";
+            while (this.pingWorker.IsBusy)
+                Thread.Sleep(137);
+            Debug.WriteLine("loginWorker starting");
+            Thread.CurrentThread.Name = "Login Worker";
             e.Result = "";
             try
             {
@@ -42,6 +44,9 @@ namespace BeanfunLogin
         // Login completed.
         private void loginWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
+            if (Properties.Settings.Default.keepLogged && !this.pingWorker.IsBusy)
+                this.pingWorker.RunWorkerAsync();
+            Debug.WriteLine("loginWorker end");
             this.panel2.Enabled = true;
             this.UseWaitCursor = false;
             this.loginButton.Text = "登入";
@@ -81,8 +86,8 @@ namespace BeanfunLogin
                     this.listView1.Enabled = false;
                     this.getOtpWorker.RunWorkerAsync(Properties.Settings.Default.autoSelectIndex);
                 }
-                if (Properties.Settings.Default.keepLogged && !this.ping.IsBusy)
-                    this.ping.RunWorkerAsync();
+                if (Properties.Settings.Default.keepLogged && !this.pingWorker.IsBusy)
+                    this.pingWorker.RunWorkerAsync();
                 ShowToolTip(listView1, "步驟1", "選擇欲開啟的遊戲帳號，雙擊以複製帳號。");
                 ShowToolTip(getOtpButton, "步驟2", "按下以在右側產生並自動複製密碼，至遊戲中貼上帳密登入。");
                 Tip.SetToolTip(getOtpButton, "點擊獲取密碼");
@@ -101,10 +106,19 @@ namespace BeanfunLogin
         // getOTP do work.
         private void getOtpWorker_DoWork(object sender, DoWorkEventArgs e)
         {
-            if (Thread.CurrentThread.Name == null)
-                Thread.CurrentThread.Name = "GetOTP Worker";
+            while (this.pingWorker.IsBusy)
+                Thread.Sleep(133);
+            Debug.WriteLine("getOtpWorker start");
+            Thread.CurrentThread.Name = "GetOTP Worker";
             int index = (int)e.Argument;
+            Debug.WriteLine("Count = " + this.bfClient.accountList.Count + " | index = " + index);
+            if (this.bfClient.accountList.Count <= index)
+            {
+                return;
+            }
+            Debug.WriteLine("call GetOTP");
             this.otp = this.bfClient.GetOTP(Properties.Settings.Default.loginMethod, this.bfClient.accountList[index], this.service_code, this.service_region);
+            Debug.WriteLine("call GetOTP done");
             if (this.otp == null)
                 e.Result = -1;
             else 
@@ -112,30 +126,39 @@ namespace BeanfunLogin
                 e.Result = index;
                 if (false == Properties.Settings.Default.opengame)
                 {
+                    Debug.WriteLine("no open game");
                     return;
                 }
 
                 foreach (Process process in Process.GetProcesses())
                 {
                     if (process.ProcessName == "MapleStory")
+                    {
+                        Debug.WriteLine("find game");
                         return;
+                    }
                 }
                 
                 try
                 {
+                    Debug.WriteLine("try open game");
                     if (File.Exists(Properties.Settings.Default.gamePath))
                         Process.Start(Properties.Settings.Default.gamePath, "tw.login.maplestory.gamania.com 8484 BeanFun " + this.bfClient.accountList[index].sacc + " " + this.otp);
+                    Debug.WriteLine("try open game done");
                 }
                 catch
                 {
                     errexit("啟動失敗，請嘗試手動以系統管理員身分啟動遊戲。", 2);
                 }
-            }            
+            }
+
+            return;
         }
 
         // getOTP completed.
         private void getOtpWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
+            Debug.WriteLine("getOtpWorker end");
             this.getOtpButton.Text = "獲取密碼";
             this.listView1.Enabled = true;
             this.getOtpButton.Enabled = true;
@@ -159,9 +182,47 @@ namespace BeanfunLogin
                 this.Text = "進行遊戲 - " + WebUtility.HtmlDecode(this.bfClient.accountList[index].sname);
             }
 
-            if (Properties.Settings.Default.keepLogged && !this.ping.IsBusy)
-                this.ping.RunWorkerAsync();
+            if (Properties.Settings.Default.keepLogged && !this.pingWorker.IsBusy)
+                this.pingWorker.RunWorkerAsync();
         }
 
+        // Ping to Beanfun website.
+        private void pingWorker_DoWork(object sender, DoWorkEventArgs e)
+        {
+            Thread.CurrentThread.Name = "ping Worker";
+            Debug.WriteLine("pingWorker start");
+            const int WaitSecs = 60; // 1min
+
+            while (Properties.Settings.Default.keepLogged)
+            {
+                if (this.pingWorker.CancellationPending)
+                {
+                    Debug.WriteLine("break duo to cancel");
+                    break;
+                }
+
+                if (this.getOtpWorker.IsBusy || this.loginWorker.IsBusy)
+                {
+                    Debug.WriteLine("ping.busy sleep 1s");
+                    System.Threading.Thread.Sleep(1000 * 1);
+                    continue;
+                }
+
+                if(this.bfClient != null)
+                    this.bfClient.Ping();
+
+                for (int i = 0; i < WaitSecs; ++i)
+                {
+                    if (this.pingWorker.CancellationPending)
+                        break;
+                    System.Threading.Thread.Sleep(1000 * 1);
+                }
+            }
+        }
+        
+        private void pingWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            Debug.WriteLine("ping.done");
+        }
     }
 }
