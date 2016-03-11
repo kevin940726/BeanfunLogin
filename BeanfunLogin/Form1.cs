@@ -16,11 +16,14 @@ using System.IO;
 using Utility.ModifyRegistry;
 using Microsoft.Win32;
 using System.Diagnostics;
+using System.Threading;
 
 namespace BeanfunLogin
 {
     public partial class main : Form
     {
+        private AccountManager accountManager = null;
+
         public BeanfunClient bfClient;
 
         public BeanfunClient.GamaotpClass gamaotpClass;
@@ -120,6 +123,7 @@ namespace BeanfunLogin
 
         public void BackToLogin()
         {
+            this.Size = new System.Drawing.Size(459, 290);
             panel1.SendToBack();
             panel2.BringToFront();
             Properties.Settings.Default.autoLogin = false;
@@ -131,31 +135,44 @@ namespace BeanfunLogin
             try
             {
                 this.Text = "BeanfunLogin - v" + Properties.Settings.Default.currentVersion.ToString().Insert(1, ".").Insert(3, ".");
-                this.AcceptButton = this.button1;
+                this.AcceptButton = this.loginButton;
                 this.bfClient = null;
+                this.accountManager = new AccountManager();
+
+                bool res = accountManager.init();
+                if (res == false)
+                    errexit("帳號記錄初始化失敗，未知的錯誤。", 0);
+                refreshAccountList();
                 //Properties.Settings.Default.Reset(); //SetToDefault.                  
 
                 // Handle settings.
                 if (Properties.Settings.Default.rememberAccount == true)
-                    this.textBox1.Text = Properties.Settings.Default.AccountID;
+                    this.accountInput.Text = Properties.Settings.Default.AccountID;
                 if (Properties.Settings.Default.rememberPwd == true && Properties.Settings.Default.loginMethod != 2)
                 {
-                    this.checkBox1.Enabled = false;
+                    this.rememberAccount.Enabled = false;
                     // Load password.
                     if (File.Exists("UserState.dat"))
                     {
-                        Byte[] cipher = File.ReadAllBytes("UserState.dat");
-                        string entropy = Properties.Settings.Default.entropy;
-                        byte[] plaintext = ProtectedData.Unprotect(cipher, Encoding.UTF8.GetBytes(entropy), DataProtectionScope.CurrentUser);
-                        this.textBox2.Text = System.Text.Encoding.UTF8.GetString(plaintext);
+                        try
+                        {
+                            Byte[] cipher = File.ReadAllBytes("UserState.dat");
+                            string entropy = Properties.Settings.Default.entropy;
+                            byte[] plaintext = ProtectedData.Unprotect(cipher, Encoding.UTF8.GetBytes(entropy), DataProtectionScope.CurrentUser);
+                            this.passwdInput.Text = System.Text.Encoding.UTF8.GetString(plaintext);
+                        }
+                        catch
+                        {
+                            File.Delete("UserState.dat");
+                        }
                     }
                 }
                 if (Properties.Settings.Default.autoLogin == true && Properties.Settings.Default.loginMethod != 2 && Properties.Settings.Default.loginMethod != 4)
                 {
                     this.UseWaitCursor = true;
                     this.panel2.Enabled = false;
-                    this.button1.Text = "請稍後...";
-                    this.backgroundWorker2.RunWorkerAsync(Properties.Settings.Default.loginMethod);
+                    this.loginButton.Text = "請稍後...";
+                    this.loginWorker.RunWorkerAsync(Properties.Settings.Default.loginMethod);
                 }
                 if (Properties.Settings.Default.gamePath == "")
                 {
@@ -166,21 +183,24 @@ namespace BeanfunLogin
                         Properties.Settings.Default.gamePath = myRegistry.Read("Path");
                 }
 
-                this.comboBox1.SelectedIndex = Properties.Settings.Default.loginMethod;
+                this.loginMethodInput.SelectedIndex = Properties.Settings.Default.loginMethod;
                 this.comboBox2.SelectedIndex = Properties.Settings.Default.loginGame;
                 this.textBox3.Text = "";
 
-                if (this.textBox1.Text == "")
-                    this.ActiveControl = this.textBox1;
-                else if (this.textBox2.Text == "")
-                    this.ActiveControl = this.textBox2;
+                if (this.accountInput.Text == "")
+                    this.ActiveControl = this.accountInput;
+                else if (this.passwdInput.Text == "")
+                    this.ActiveControl = this.passwdInput;
 
                 // .NET textbox full mode bug.
-                this.textBox1.ImeMode = ImeMode.OnHalf;
-                this.textBox2.ImeMode = ImeMode.OnHalf;
+                this.accountInput.ImeMode = ImeMode.OnHalf;
+                this.passwdInput.ImeMode = ImeMode.OnHalf;
                 return true;
             }
-            catch { return errexit("初始化失敗，未知的錯誤。", 0); }
+            catch (Exception e)
+            { 
+                return errexit("初始化失敗，未知的錯誤。" + e.Message, 0); 
+            }
         }
 
         public void CheckForUpdate()
@@ -208,14 +228,23 @@ namespace BeanfunLogin
             catch { return; }
         }
 
-        // The login botton.
-        private void button1_Click(object sender, EventArgs e)
+        private void refreshAccountList()
         {
-            if (this.ping.IsBusy)
-                this.ping.CancelAsync();
-            if (this.checkBox1.Checked == true)
-                Properties.Settings.Default.AccountID = this.textBox1.Text;
-            if (this.checkBox2.Checked == true)
+            string[] accArray = accountManager.getAccountList();
+            accounts.Items.Clear();
+            accounts.Items.AddRange(accArray);
+        }
+
+        // The login botton.
+        private void loginButton_Click(object sender, EventArgs e)
+        {
+            if (this.pingWorker.IsBusy)
+            {
+                this.pingWorker.CancelAsync();
+            }
+            if (this.rememberAccount.Checked == true)
+                Properties.Settings.Default.AccountID = this.accountInput.Text;
+            if (this.rememberAccPwd.Checked == true)
             {
                 using (BinaryWriter writer = new BinaryWriter(File.Open("UserState.dat", FileMode.Create)))
                 {
@@ -225,7 +254,7 @@ namespace BeanfunLogin
                     string entropy = new string(Enumerable.Repeat(chars, 8).Select(s => s[random.Next(s.Length)]).ToArray());
 
                     Properties.Settings.Default.entropy = entropy;
-                    writer.Write(ciphertext(this.textBox2.Text, entropy));
+                    writer.Write(ciphertext(this.passwdInput.Text, entropy));
                 }
             }
             else
@@ -237,16 +266,18 @@ namespace BeanfunLogin
 
             this.UseWaitCursor = true;
             this.panel2.Enabled = false;
-            this.button1.Text = "請稍後...";
-            this.backgroundWorker2.RunWorkerAsync(Properties.Settings.Default.loginMethod);
+            this.loginButton.Text = "請稍後...";
+            this.loginWorker.RunWorkerAsync(Properties.Settings.Default.loginMethod);
         }    
 
         // The get OTP button.
-        private void button3_Click(object sender, EventArgs e)
+        private void getOtpButton_Click(object sender, EventArgs e)
         {
-            if (this.ping.IsBusy)
-                this.ping.CancelAsync();
-            if (listView1.SelectedItems.Count <= 0 || this.backgroundWorker2.IsBusy) return;
+            if (this.pingWorker.IsBusy)
+            {
+                this.pingWorker.CancelAsync();
+            }
+            if (listView1.SelectedItems.Count <= 0 || this.loginWorker.IsBusy) return;
             if (Properties.Settings.Default.autoSelect == true)
             {
                 Properties.Settings.Default.autoSelectIndex = listView1.SelectedItems[0].Index;
@@ -255,28 +286,8 @@ namespace BeanfunLogin
 
             this.textBox3.Text = "獲取密碼中...";
             this.listView1.Enabled = false;
-            this.button3.Enabled = false;
-            this.backgroundWorker1.RunWorkerAsync(listView1.SelectedItems[0].Index);
-        }
-
-        // Ping to Beanfun website.
-        private void ping_DoWork(object sender, DoWorkEventArgs e)
-        {
-            while (!this.ping.CancellationPending && Properties.Settings.Default.keepLogged)
-            { 
-                try
-                {
-                    if (this.backgroundWorker1.IsBusy)
-                    {
-                        System.Threading.Thread.Sleep(1000 * 1);
-                        continue;
-                    }
-                    Debug.WriteLine(this.bfClient.Ping());
-                    System.Threading.Thread.Sleep(1000 * 60 * 10);
-                }
-                catch
-                { return; }
-            }
+            this.getOtpButton.Enabled = false;
+            this.getOtpWorker.RunWorkerAsync(listView1.SelectedItems[0].Index);
         }
 
         // Building ciphertext by 3DES.
@@ -313,32 +324,32 @@ namespace BeanfunLogin
             if (this.checkBox3.Checked == true)
             {
                 Properties.Settings.Default.autoLogin = true;
-                this.checkBox1.Checked = true;
-                this.checkBox2.Checked = true;
-                this.checkBox1.Enabled = false;
-                this.checkBox2.Enabled = false;
+                this.rememberAccount.Checked = true;
+                this.rememberAccPwd.Checked = true;
+                this.rememberAccount.Enabled = false;
+                this.rememberAccPwd.Enabled = false;
             }
             else
             {
                 Properties.Settings.Default.autoLogin = false;
-                this.checkBox1.Enabled = true;
-                this.checkBox2.Enabled = true;
+                this.rememberAccount.Enabled = true;
+                this.rememberAccPwd.Enabled = true;
             }
         }
 
         private void checkBox2_CheckedChanged(object sender, EventArgs e)
         {
-            if (this.checkBox2.Checked == true)
+            if (this.rememberAccPwd.Checked == true)
             {
                 Properties.Settings.Default.rememberPwd = true;
-                this.checkBox1.Checked = true;
-                this.checkBox2.Checked = true;
-                this.checkBox1.Enabled = false;
+                this.rememberAccount.Checked = true;
+                this.rememberAccPwd.Checked = true;
+                this.rememberAccount.Enabled = false;
             }
             else
             {
                 Properties.Settings.Default.rememberPwd = false;
-                this.checkBox1.Enabled = true;
+                this.rememberAccount.Enabled = true;
             }
         }
 
@@ -374,23 +385,21 @@ namespace BeanfunLogin
         private void listView1_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (listView1.SelectedItems.Count == 1)
-                this.button3.Text = "獲取密碼";
+                this.getOtpButton.Text = "獲取密碼";
         }
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            Properties.Settings.Default.loginMethod = this.comboBox1.SelectedIndex;
+            Properties.Settings.Default.loginMethod = this.loginMethodInput.SelectedIndex;
+            this.gamaotp_label.Visible = false;
+            this.gamaotp_challenge_code_output.Text = "";
             if (Properties.Settings.Default.loginMethod == 4)
             {
-                this.checkBox1.Location = new Point(49, 155);
-                this.checkBox2.Location = new Point(165, 155);
                 this.label4.Visible = true;
                 this.textBox4.Visible = true;
             }
             else
             {
-                this.checkBox1.Location = new Point(107, 127);
-                this.checkBox2.Location = new Point(107, 155);
                 this.label4.Visible = false;
                 this.textBox4.Visible = false;
             }
@@ -402,7 +411,10 @@ namespace BeanfunLogin
                 if (this.bfClient.errmsg != null)
                     errexit(this.bfClient.errmsg, 2);
                 else
-                    errexit("通行密碼： " + this.gamaotpClass.motp, 2, "GAMAOTP");
+                {
+                    this.gamaotp_label.Visible = true;
+                    this.gamaotp_challenge_code_output.Text = this.gamaotpClass.motp;
+                }
             }         
             else if (Properties.Settings.Default.loginMethod == 3)
             {
@@ -421,11 +433,13 @@ namespace BeanfunLogin
         private void keepLogged_CheckedChanged(object sender, EventArgs e)
         {
             if (keepLogged.Checked)
-                if (!this.ping.IsBusy)
-                    this.ping.RunWorkerAsync();
+                if (!this.pingWorker.IsBusy)
+                    this.pingWorker.RunWorkerAsync();
             else
-                if (this.ping.IsBusy)
-                    this.ping.CancelAsync();
+                    if (this.pingWorker.IsBusy)
+                    {
+                        this.pingWorker.CancelAsync();
+                    }
             Properties.Settings.Default.Save();
         }
 
@@ -554,7 +568,52 @@ namespace BeanfunLogin
             //Properties.Settings.Default.Save();
         }
 
-        
+        private void delete_Click(object sender, EventArgs e)
+        {
+            ListBox.SelectedObjectCollection selectedItems = new ListBox.SelectedObjectCollection(accounts);
+            selectedItems = accounts.SelectedItems;
+
+            if (accounts.SelectedIndex != -1)
+            {
+                for (int i = selectedItems.Count - 1; i >= 0; i--)
+                {
+                    accountManager.removeAccount(accounts.GetItemText(selectedItems[i]));
+                    refreshAccountList();
+                }
+            }
+        }
+
+        private void import_Click(object sender, EventArgs e)
+        {
+            bool res = accountManager.addAccount(accountInput.Text, passwdInput.Text, loginMethodInput.SelectedIndex);
+            if (res == false)
+                errexit("帳號記錄新增失敗",0);
+            refreshAccountList();
+        }
+
+        private void export_Click(object sender, EventArgs e)
+        {
+            if(accounts.SelectedIndex != -1)
+            {
+                string account = accounts.SelectedItem.ToString();
+                string passwd = accountManager.getPasswordByAccount(account);
+                int method = accountManager.getMethodByAccount(account);
+
+                if( passwd == null || method == -1 )
+                {
+                    errexit("帳號記錄讀取失敗。", 0);
+                }
+
+                accountInput.Text = account;
+                passwdInput.Text = passwd;
+                loginMethodInput.SelectedIndex = method;
+            }
+        }
+
+        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        {
+            Properties.Settings.Default.Save();
+        }
 
     }
 }
