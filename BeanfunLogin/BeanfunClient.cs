@@ -5,6 +5,7 @@ using System.Text;
 using System.Net;
 using System.Windows.Forms;
 using System.Diagnostics;
+using System.Collections.Specialized;
 
 
 namespace BeanfunLogin
@@ -33,7 +34,7 @@ namespace BeanfunLogin
         public BeanfunClient()
         {
             this.CookieContainer = new System.Net.CookieContainer();
-            this.Headers.Add("User-Agent", "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/28.0.1500.72 Safari/537.36");
+            this.Headers.Add("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.87 Safari/537.36");
             this.ResponseUri = null;
             this.errmsg = null;
             this.webtoken = null;
@@ -51,6 +52,12 @@ namespace BeanfunLogin
         {
             var ret = base.DownloadString(Uri);
             return ret;
+        }
+
+        public byte[] UploadValues(string skey, NameValueCollection payload)
+        {
+            this.Headers.Add("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.87 Safari/537.36");
+            return base.UploadValues(skey, payload);
         }
 
         protected override WebRequest GetWebRequest(Uri address)
