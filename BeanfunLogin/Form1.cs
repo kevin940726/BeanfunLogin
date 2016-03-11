@@ -187,7 +187,7 @@ namespace BeanfunLogin
                         Properties.Settings.Default.gamePath = myRegistry.Read("Path");
                 }
 
-                this.comboBox1.SelectedIndex = Properties.Settings.Default.loginMethod;
+                this.loginMethodInput.SelectedIndex = Properties.Settings.Default.loginMethod;
                 this.textBox3.Text = "";
 
                 if (this.accountInput.Text == "")
