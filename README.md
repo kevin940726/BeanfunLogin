@@ -12,11 +12,23 @@ Login to Beanfun and MapleStory without browsers, using 3DES to encrypt the stor
 ========================
 ### Version Log
 
-Version 1.6.5 (Current, Development version)
+Version 1.8.0 (Development version)
+- fix bugs:
+  - auto select out of bound exception
+  - check game path before open game
+
+- features
+  - user can choose not to open game autoly
+  - keep logged in 
+  
+Version 1.7.0 
+- multiple account and password save/load
+
+Version 1.6.5 (Current version)
 - Dynamic load game list.
 - Add User-Agent at any request.
 
-Version 1.6.3 (Current, Development version)
+Version 1.6.3 
 - Vakten update.
 
 Version 1.6.2

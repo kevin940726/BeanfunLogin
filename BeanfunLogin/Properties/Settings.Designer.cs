@@ -133,7 +133,7 @@ namespace BeanfunLogin.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
         public bool keepLogged {
             get {
                 return ((bool)(this["keepLogged"]));
@@ -157,7 +157,7 @@ namespace BeanfunLogin.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("165")]
+        [global::System.Configuration.DefaultSettingValueAttribute("181")]
         public int currentVersion {
             get {
                 return ((int)(this["currentVersion"]));
@@ -176,6 +176,30 @@ namespace BeanfunLogin.Properties {
             }
             set {
                 this["loginGame"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string entropyForList {
+            get {
+                return ((string)(this["entropyForList"]));
+            }
+            set {
+                this["entropyForList"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool opengame {
+            get {
+                return ((bool)(this["opengame"]));
+            }
+            set {
+                this["opengame"] = value;
             }
         }
     }

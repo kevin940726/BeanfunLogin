@@ -30,16 +30,22 @@
       <Value Profile="(Default)">0</Value>
     </Setting>
     <Setting Name="keepLogged" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">False</Value>
+      <Value Profile="(Default)">True</Value>
     </Setting>
     <Setting Name="showTip" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
     <Setting Name="currentVersion" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">165</Value>
+      <Value Profile="(Default)">181</Value>
     </Setting>
     <Setting Name="loginGame" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">3</Value>
+    </Setting>
+    <Setting Name="entropyForList" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="opengame" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
     </Setting>
   </Settings>
 </SettingsFile>

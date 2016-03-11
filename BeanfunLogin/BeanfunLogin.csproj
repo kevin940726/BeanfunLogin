@@ -84,6 +84,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AccountManager.cs" />
     <Compile Include="BeanfunClient.cs">
       <SubType>Component</SubType>
     </Compile>

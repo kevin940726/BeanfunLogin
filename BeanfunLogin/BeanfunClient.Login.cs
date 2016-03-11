@@ -22,6 +22,7 @@ namespace BeanfunLogin
                 if (!regex.IsMatch(response))
                     {this.errmsg = "LoginNoViewstate"; return null;}
                 string viewstate = regex.Match(response).Groups[1].Value;
+
                 regex = new Regex("id=\"__EVENTVALIDATION\" value=\"(.*)\" />");
                 if (!regex.IsMatch(response))
                     { this.errmsg = "LoginNoEventvalidation"; return null; }
@@ -47,6 +48,7 @@ namespace BeanfunLogin
                 payload.Add("btn_login.x", "0");
                 payload.Add("btn_login.y", "0");
                 payload.Add("LBD_VCID_c_login_idpass_form_samplecaptcha", samplecaptcha);
+
                 response = Encoding.UTF8.GetString(this.UploadValues("https://tw.newlogin.beanfun.com/login/id-pass_form.aspx?skey=" + skey, payload));
                 //Debug.WriteLine(response);
                 //regex = new Regex("akey%3d(.*)\"");
