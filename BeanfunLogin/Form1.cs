@@ -171,7 +171,6 @@ namespace BeanfunLogin
                 }
 
                 this.comboBox1.SelectedIndex = Properties.Settings.Default.loginMethod;
-                this.comboBox2.SelectedIndex = Properties.Settings.Default.loginGame;
                 this.textBox3.Text = "";
 
                 if (this.textBox1.Text == "")
@@ -215,12 +214,12 @@ namespace BeanfunLogin
                     foreach (var game in o["Rows"])
                     {
                         Debug.Write(game["serviceCode"]);
+                        this.comboBox2.Items.Add((string)game["ServiceFamilyName"]);
                         gameList.Add(new GameService((string)game["ServiceFamilyName"], (string)game["ServiceCode"], (string)game["ServiceRegion"]));
                     }
                 }
-                this.comboBox2.DataSource = gameList;
-                this.comboBox2.DisplayMember = "name";
-                this.comboBox2.ValueMember = "name";
+
+                this.comboBox2.SelectedIndex = Properties.Settings.Default.loginGame;
 
                 string response = wc.DownloadString("https://raw.githubusercontent.com/kevin940726/BeanfunLogin/master/zh-TW.md");
                 Regex regex = new Regex("Version (\\d\\.\\d\\.\\d)");
@@ -465,11 +464,11 @@ namespace BeanfunLogin
 
         private void comboBox2_SelectedIndexChanged(object sender, EventArgs e)
         {
+            Properties.Settings.Default.loginGame = this.comboBox2.SelectedIndex;
             try
             {
                 service_code = gameList[this.comboBox2.SelectedIndex].service_code;
                 service_region = gameList[this.comboBox2.SelectedIndex].service_region;
-                Properties.Settings.Default.loginGame = this.comboBox2.SelectedIndex;
             }
             catch
             {
@@ -477,6 +476,7 @@ namespace BeanfunLogin
             }
             
             //Properties.Settings.Default.Save();
+            //Debug.WriteLine(Properties.Settings.Default.loginGame);
         }
 
         
