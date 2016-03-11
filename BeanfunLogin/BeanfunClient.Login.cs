@@ -6,6 +6,7 @@ using System.Net;
 using System.Text.RegularExpressions;
 using System.Collections.Specialized;
 using System.Diagnostics;
+using System.Web;
 
 namespace BeanfunLogin
 {
@@ -25,19 +26,36 @@ namespace BeanfunLogin
                 if (!regex.IsMatch(response))
                     { this.errmsg = "LoginNoEventvalidation"; return null; }
                 string eventvalidation = regex.Match(response).Groups[1].Value;
+                regex = new Regex("id=\"__VIEWSTATEGENERATOR\" value=\"(.*)\" />");
+                if (!regex.IsMatch(response))
+                { this.errmsg = "LoginNoViewstateGenerator"; return null; }
+                string viewstateGenerator = regex.Match(response).Groups[1].Value;
+                regex = new Regex("id=\"LBD_VCID_c_login_idpass_form_samplecaptcha\" value=\"(.*)\" />");
+                if (!regex.IsMatch(response))
+                { this.errmsg = "LoginNoSamplecaptcha"; return null; }
+                string samplecaptcha = regex.Match(response).Groups[1].Value;
 
                 NameValueCollection payload = new NameValueCollection();
                 payload.Add("__EVENTTARGET", "");
                 payload.Add("__EVENTARGUMENT", "");
                 payload.Add("__VIEWSTATE", viewstate);
+                payload.Add("__VIEWSTATEGENERATOR", viewstateGenerator);
                 payload.Add("__EVENTVALIDATION", eventvalidation);
                 payload.Add("t_AccountID", id);
                 payload.Add("t_Password", pass);
                 payload.Add("CodeTextBox", "");
-                payload.Add("btn_login.x", "46");
-                payload.Add("btn_login.y", "31");
-                payload.Add("LBD_VCID_c_login_idpass_form_samplecaptcha", "");
+                payload.Add("btn_login.x", "0");
+                payload.Add("btn_login.y", "0");
+                payload.Add("LBD_VCID_c_login_idpass_form_samplecaptcha", samplecaptcha);
                 response = Encoding.UTF8.GetString(this.UploadValues("https://tw.newlogin.beanfun.com/login/id-pass_form.aspx?skey=" + skey, payload));
+                //Debug.WriteLine(response);
+                //regex = new Regex("akey%3d(.*)\"");
+                //if (!regex.IsMatch(response.ToString()))
+                //{ this.errmsg = "LoginNoAkey"; return null; }
+                //string akey = regex.Match(response).Groups[1].Value;
+                //string s = this.DownloadString("https://tw.newlogin.beanfun.com/login/final_step.aspx?akey=" + akey);
+                //Debug.WriteLine(s);
+
                 regex = new Regex("akey=(.*)");
                 if (!regex.IsMatch(this.ResponseUri.ToString()))
                 { this.errmsg = "LoginNoAkey"; return null; }
@@ -59,11 +77,12 @@ namespace BeanfunLogin
                 string[] ports = { "14057", "16057", "17057" };
                 foreach (string port in ports)
                 {
-                    string response = this.DownloadString("https://localhost:" + port + "/api/1/status.jsonp?api=YXBpLmtleXBhc2NvaWQuY29tOjQ0My9SZXN0L0FwaVNlcnZpY2Uv&callback=_jqjsp&alt=json-in-script");
+                    string response = this.DownloadString("https://vaktenlocal.com:" + port + "/api/2/authenticate.jsonp?customerId=GAMANIA&sessionId=" + lblSID + "&api=https://api.keypascoid.com/Rest/ApiService/3&callback=_jqjsp&alt=json-in-script");
                     if (response == "_jqjsp( {\"statusCode\":200} );")
                     {
-                        response = this.DownloadString("https://localhost:" + port + "/api/1/aut.jsonp?sid=GAMANIA" + lblSID + "&api=YXBpLmtleXBhc2NvaWQuY29tOjQ0My9SZXN0L0FwaVNlcnZpY2Uv&callback=_jqjsp&alt=json-in-script");
-                        if (response == "_jqjsp( {\"statusCode\":200} );") return true;
+                        //response = this.DownloadString("https://localhost:" + port + "/api/1/aut.jsonp?sid=GAMANIA" + lblSID + "&api=YXBpLmtleXBhc2NvaWQuY29tOjQ0My9SZXN0L0FwaVNlcnZpY2Uv&callback=_jqjsp&alt=json-in-script");
+                        //if (response == "_jqjsp( {\"statusCode\":200} );") return true;
+                        return true;
                     }
                 }
                 return false;
@@ -360,9 +379,12 @@ namespace BeanfunLogin
         public string GetSessionkey()
         {
             string response = this.DownloadString("https://tw.beanfun.com/beanfun_block/bflogin/default.aspx?service=999999_T0");
+            //this.DownloadString(this.ResponseHeaders["Location"]);
+            //this.DownloadString(this.ResponseHeaders["Location"]);
+            //response = this.ResponseHeaders["Location"];
+            response = this.ResponseUri.ToString();
             if (response == null)
             { this.errmsg = "LoginNoResponse"; return null; }
-            response = this.ResponseUri.ToString();
             Regex regex = new Regex("skey=(.*)&display");
             if (!regex.IsMatch(response))
             { this.errmsg = "LoginNoSkey"; return null; }
@@ -420,7 +442,14 @@ namespace BeanfunLogin
                 NameValueCollection payload = new NameValueCollection();
                 payload.Add("SessionKey", skey);
                 payload.Add("AuthKey", akey);
+                Debug.WriteLine(skey);
+                Debug.WriteLine(akey);
                 response = Encoding.UTF8.GetString(this.UploadValues("https://tw.beanfun.com/beanfun_block/bflogin/return.aspx", payload));
+                Debug.WriteLine(response);
+                response = this.DownloadString("https://tw.beanfun.com/" + this.ResponseHeaders["Location"]);
+                Debug.WriteLine(response);
+                Debug.WriteLine(this.ResponseHeaders);
+
                 this.webtoken = this.GetCookie("bfWebToken");
                 if (this.webtoken == "")
                 { this.errmsg = "LoginNoWebtoken"; return; }
