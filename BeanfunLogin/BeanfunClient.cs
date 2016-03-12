@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Net;
+using System.Collections.Specialized;
 
 
 namespace BeanfunLogin
@@ -31,13 +32,12 @@ namespace BeanfunLogin
         public BeanfunClient()
         {
             this.CookieContainer = new System.Net.CookieContainer();
-            this.Headers.Add("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.109 Safari/537.36");
+            this.Headers.Add("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.87 Safari/537.36");
             this.ResponseUri = null;
             this.errmsg = null;
             this.webtoken = null;
             this.accountList = new List<AccountList>();
             this.Encoding = Encoding.UTF8;
-            ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
         }
 
         public string DownloadString(string Uri, Encoding Encoding)
@@ -49,10 +49,6 @@ namespace BeanfunLogin
         {
             WebRequest webRequest = base.GetWebRequest(address);
             HttpWebRequest request2 = webRequest as HttpWebRequest;
-            if (String.IsNullOrEmpty(this.Headers["User-Agent"]))
-            {
-                this.Headers.Add("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.109 Safari/537.36");
-            }
 
             if (request2 != null)
             {
@@ -61,9 +57,15 @@ namespace BeanfunLogin
             return webRequest;
         }
 
+         public byte[] UploadValues(string skey, NameValueCollection payload)
+         {
+             this.Headers.Add("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.87 Safari/537.36");
+             return base.UploadValues(skey, payload);
+         }
+
         protected override WebResponse GetWebResponse(WebRequest request)
         {
-            WebResponse webResponse = base.GetWebResponse(request);
+          WebResponse webResponse = base.GetWebResponse(request);
             this.ResponseUri = webResponse.ResponseUri;
             return webResponse;
         }

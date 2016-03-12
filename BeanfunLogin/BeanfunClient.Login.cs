@@ -48,13 +48,6 @@ namespace BeanfunLogin
                 payload.Add("btn_login.y", "0");
                 payload.Add("LBD_VCID_c_login_idpass_form_samplecaptcha", samplecaptcha);
                 response = Encoding.UTF8.GetString(this.UploadValues("https://tw.newlogin.beanfun.com/login/id-pass_form.aspx?skey=" + skey, payload));
-                //Debug.WriteLine(response);
-                //regex = new Regex("akey%3d(.*)\"");
-                //if (!regex.IsMatch(response.ToString()))
-                //{ this.errmsg = "LoginNoAkey"; return null; }
-                //string akey = regex.Match(response).Groups[1].Value;
-                //string s = this.DownloadString("https://tw.newlogin.beanfun.com/login/final_step.aspx?akey=" + akey);
-                //Debug.WriteLine(s);
 
                 regex = new Regex("akey=(.*)");
                 if (!regex.IsMatch(this.ResponseUri.ToString()))
