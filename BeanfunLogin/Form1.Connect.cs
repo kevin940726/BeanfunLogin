@@ -10,6 +10,7 @@ using System.Net;
 using System.Diagnostics;
 using System.Threading;
 using System.IO;
+using System.Runtime.InteropServices;
 
 namespace BeanfunLogin
 {
@@ -158,6 +159,13 @@ namespace BeanfunLogin
         // getOTP completed.
         private void getOtpWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
+            const int VK_TAB = 0x09;
+            const byte VK_CONTROL = 0x11;
+            const int VK_V = 0x56;
+            const int VK_ENTER = 0x0d;
+            const byte KEYEVENTF_EXTENDEDKEY = 0x1;
+            const byte KEYEVENTF_KEYUP = 0x2;
+
             Debug.WriteLine("getOtpWorker end");
             this.getOtpButton.Text = "獲取密碼";
             this.listView1.Enabled = true;
@@ -177,9 +185,45 @@ namespace BeanfunLogin
             }
             else
             {
+                int accIndex = listView1.SelectedItems[0].Index;
+                string acc = this.bfClient.accountList[index].sacc;
+                Clipboard.SetText(acc);
+
+                IntPtr hWnd;
+                if ((hWnd = WindowsAPI.FindWindow(null, "MapleStory")) != IntPtr.Zero)
+                {
+                    WindowsAPI.SetForegroundWindow(hWnd);
+
+                    WindowsAPI.keybd_event(VK_CONTROL, 0x9d, KEYEVENTF_EXTENDEDKEY, 0);
+                    WindowsAPI.keybd_event(VK_V, 0x9e, 0, 0);
+                    Thread.Sleep(100);
+                    WindowsAPI.keybd_event(VK_V, 0x9e, KEYEVENTF_KEYUP, 0);
+                    Thread.Sleep(100);
+                    WindowsAPI.keybd_event(VK_CONTROL, 0x9d, KEYEVENTF_EXTENDEDKEY | KEYEVENTF_KEYUP, 0);
+
+                    WindowsAPI.keybd_event(VK_TAB, 0, KEYEVENTF_EXTENDEDKEY, 0);
+                    WindowsAPI.keybd_event(VK_TAB, 0, KEYEVENTF_KEYUP, 0);
+                }
+
                 this.textBox3.Text = this.otp;
                 Clipboard.SetText(textBox3.Text);
                 this.Text = "進行遊戲 - " + WebUtility.HtmlDecode(this.bfClient.accountList[index].sname);
+
+                if ((hWnd = WindowsAPI.FindWindow(null, "MapleStory")) != IntPtr.Zero)
+                {
+                    WindowsAPI.keybd_event(VK_CONTROL, 0x9d, KEYEVENTF_EXTENDEDKEY, 0);
+                    WindowsAPI.keybd_event(VK_V, 0x9e, 0, 0);
+                    Thread.Sleep(100);
+                    WindowsAPI.keybd_event(VK_V, 0x9e, KEYEVENTF_KEYUP, 0);
+                    Thread.Sleep(100);
+                    WindowsAPI.keybd_event(VK_CONTROL, 0x9d, KEYEVENTF_EXTENDEDKEY | KEYEVENTF_KEYUP, 0);
+
+                    WindowsAPI.keybd_event(VK_ENTER, 0, 0, 0);
+                    WindowsAPI.keybd_event(VK_ENTER, 0, KEYEVENTF_KEYUP, 0);
+
+                }
+
+
             }
 
             if (Properties.Settings.Default.keepLogged && !this.pingWorker.IsBusy)
