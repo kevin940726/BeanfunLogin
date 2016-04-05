@@ -31,6 +31,7 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(main));
             this.panel1 = new System.Windows.Forms.Panel();
+            this.autoPaste = new System.Windows.Forms.CheckBox();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.keepLogged = new System.Windows.Forms.CheckBox();
             this.getOtpButton = new System.Windows.Forms.Button();
@@ -74,6 +75,7 @@
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.autoPaste);
             this.panel1.Controls.Add(this.checkBox1);
             this.panel1.Controls.Add(this.keepLogged);
             this.panel1.Controls.Add(this.getOtpButton);
@@ -87,6 +89,19 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(443, 252);
             this.panel1.TabIndex = 0;
+            // 
+            // autoPaste
+            // 
+            this.autoPaste.AutoSize = true;
+            this.autoPaste.Checked = global::BeanfunLogin.Properties.Settings.Default.autoPaste;
+            this.autoPaste.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.autoPaste.DataBindings.Add(new System.Windows.Forms.Binding("Checked", global::BeanfunLogin.Properties.Settings.Default, "autoPaste", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.autoPaste.Location = new System.Drawing.Point(207, 24);
+            this.autoPaste.Name = "autoPaste";
+            this.autoPaste.Size = new System.Drawing.Size(75, 20);
+            this.autoPaste.TabIndex = 10;
+            this.autoPaste.Text = "自動輸入";
+            this.autoPaste.UseVisualStyleBackColor = true;
             // 
             // checkBox1
             // 
@@ -109,7 +124,7 @@
             this.keepLogged.CheckState = System.Windows.Forms.CheckState.Checked;
             this.keepLogged.DataBindings.Add(new System.Windows.Forms.Binding("Checked", global::BeanfunLogin.Properties.Settings.Default, "keepLogged", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.keepLogged.Enabled = false;
-            this.keepLogged.Location = new System.Drawing.Point(208, 24);
+            this.keepLogged.Location = new System.Drawing.Point(291, 27);
             this.keepLogged.Name = "keepLogged";
             this.keepLogged.Size = new System.Drawing.Size(75, 20);
             this.keepLogged.TabIndex = 8;
@@ -238,7 +253,7 @@
             this.panel2.Location = new System.Drawing.Point(0, 0);
             this.panel2.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(467, 256);
+            this.panel2.Size = new System.Drawing.Size(443, 256);
             this.panel2.TabIndex = 25;
             // 
             // gamaotp_challenge_code_output
@@ -579,6 +594,7 @@
         private System.Windows.Forms.Label gamaotp_challenge_code_output;
         private System.Windows.Forms.Label gamaotp_label;
         private System.Windows.Forms.CheckBox checkBox1;
+        private System.Windows.Forms.CheckBox autoPaste;
 
 
     }

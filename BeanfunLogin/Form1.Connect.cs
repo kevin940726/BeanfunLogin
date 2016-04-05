@@ -11,6 +11,7 @@ using System.Diagnostics;
 using System.Threading;
 using System.IO;
 using System.Runtime.InteropServices;
+using System.Drawing;
 
 namespace BeanfunLogin
 {
@@ -190,7 +191,7 @@ namespace BeanfunLogin
                 Clipboard.SetText(acc);
 
                 IntPtr hWnd;
-                if ((hWnd = WindowsAPI.FindWindow(null, "MapleStory")) != IntPtr.Zero)
+                if (autoPaste.Checked == true && (hWnd = WindowsAPI.FindWindow(null, "MapleStory")) != IntPtr.Zero)
                 {
                     WindowsAPI.SetForegroundWindow(hWnd);
 
@@ -209,7 +210,7 @@ namespace BeanfunLogin
                 Clipboard.SetText(textBox3.Text);
                 this.Text = "進行遊戲 - " + WebUtility.HtmlDecode(this.bfClient.accountList[index].sname);
 
-                if ((hWnd = WindowsAPI.FindWindow(null, "MapleStory")) != IntPtr.Zero)
+                if (autoPaste.Checked == true && (hWnd = WindowsAPI.FindWindow(null, "MapleStory")) != IntPtr.Zero)
                 {
                     WindowsAPI.keybd_event(VK_CONTROL, 0x9d, KEYEVENTF_EXTENDEDKEY, 0);
                     WindowsAPI.keybd_event(VK_V, 0x9e, 0, 0);
@@ -221,6 +222,8 @@ namespace BeanfunLogin
                     WindowsAPI.keybd_event(VK_ENTER, 0, 0, 0);
                     WindowsAPI.keybd_event(VK_ENTER, 0, KEYEVENTF_KEYUP, 0);
 
+                    listView1.Items[accIndex].BackColor = Color.Green;
+                    listView1.Items[accIndex].Selected = false;
                 }
 
 

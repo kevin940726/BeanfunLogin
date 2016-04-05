@@ -238,6 +238,8 @@ namespace BeanfunLogin
         // The login botton.
         private void loginButton_Click(object sender, EventArgs e)
         {
+            foreach (ListViewItem item in listView1.Items)
+                item.BackColor = DefaultBackColor;
             if (this.pingWorker.IsBusy)
             {
                 this.pingWorker.CancelAsync();
@@ -287,6 +289,7 @@ namespace BeanfunLogin
             this.textBox3.Text = "獲取密碼中...";
             this.listView1.Enabled = false;
             this.getOtpButton.Enabled = false;
+            listView1.SelectedItems[0].BackColor = Color.DarkRed;
             this.getOtpWorker.RunWorkerAsync(listView1.SelectedItems[0].Index);
         }
 
