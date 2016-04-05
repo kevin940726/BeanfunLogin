@@ -289,7 +289,6 @@ namespace BeanfunLogin
             this.textBox3.Text = "獲取密碼中...";
             this.listView1.Enabled = false;
             this.getOtpButton.Enabled = false;
-            listView1.SelectedItems[0].BackColor = Color.DarkRed;
             this.getOtpWorker.RunWorkerAsync(listView1.SelectedItems[0].Index);
         }
 
