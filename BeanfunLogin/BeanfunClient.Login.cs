@@ -431,7 +431,6 @@ namespace BeanfunLogin
                 else
                     response = this.DownloadString("https://tw.beanfun.com/beanfun_block/auth.aspx?channel=game_zone&page_and_query=game_start.aspx%3Fservice_code_and_region%3D"+service_code+"_"+service_region+"&web_token=" + webtoken, Encoding.UTF8);
 
-                /*
                 if (loginMethod == 5)
                 {
                     regex = new Regex("id=\"__VIEWSTATE\" value=\"(.*)\" />");
@@ -448,7 +447,6 @@ namespace BeanfunLogin
                     payload.Add("btnCheckPLASYSAFE", "Hidden+Button");
                     response = Encoding.UTF8.GetString(this.UploadValues("https://tw.beanfun.com/beanfun_block/auth.aspx?channel=game_zone&page_and_query=game_start.aspx%3Fservice_code_and_region%3D"+service_code+"_"+service_region+"&web_token=" + webtoken + "&cardid=" + cardid, payload));
                 }
-                 */
 
                 // Add account list to ListView.
                 regex = new Regex("<div id=\"(\\w+)\" sn=\"(\\d+)\" name=\"([^\"]+)\"");
