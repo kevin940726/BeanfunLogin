@@ -34,7 +34,7 @@ namespace BeanfunLogin
         {
             InitializeComponent();
             init();
-            //CheckForUpdate();
+            CheckForUpdate();
         }
 
         public void ShowToolTip(IWin32Window ui, string title, string des, int iniDelay = 2000, bool repeat = false)
