@@ -6,6 +6,7 @@ using System.Net;
 using System.Text.RegularExpressions;
 using System.Collections.Specialized;
 using System.Security.Cryptography;
+using System.Diagnostics;
 
 namespace BeanfunLogin
 {
@@ -43,7 +44,7 @@ namespace BeanfunLogin
             try
             {
                 string response;
-                if (loginMethod == 5)
+                if (loginMethod == 5 || loginMethod == (int)LoginMethod.QRCode)
                     response = this.DownloadString("https://tw.beanfun.com/beanfun_block/game_zone/game_start_step2.aspx?service_code="+service_code+"&service_region="+service_region+"&sotp=" + acc.sotp + "&dt=" + GetCurrentTime(2), Encoding.UTF8);
                 else
                     response = this.DownloadString("https://tw.beanfun.com/beanfun_block/auth.aspx?channel=game_zone&page_and_query=game_start_step2.aspx%3Fservice_code%3D"+service_code+"%26service_region%3D"+service_region+"%26sotp%3D" + acc.sotp + "&web_token=" + this.webtoken);
@@ -61,7 +62,13 @@ namespace BeanfunLogin
                     { this.errmsg = "OTPNoCreateTime"; return null; }
                     acc.screatetime = regex.Match(response).Groups[1].Value;
                 }
-                response = this.DownloadString("https://tw.newlogin.beanfun.com/generic_handlers/get_cookies.ashx");
+                //response = this.DownloadString("https://tw.newlogin.beanfun.com/generic_handlers/get_cookies.ashx");
+                byte[] tmp = this.DownloadData("https://tw.newlogin.beanfun.com/generic_handlers/get_cookies.ashx");
+                Debug.Write(Encoding.UTF8.GetString(tmp));
+                Debug.Write(Encoding.ASCII.GetString(tmp));
+                Debug.Write(Encoding.Unicode.GetString(tmp));
+                Debug.Write(Encoding.UTF7.GetString(tmp));
+                Debug.Write(Encoding.UTF32.GetString(tmp));
                 regex = new Regex("var m_strSecretCode = '(.*)';");
                 if (!regex.IsMatch(response))
                 { this.errmsg = "OTPNoSecretCode"; return null; }

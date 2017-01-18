@@ -374,7 +374,6 @@ namespace BeanfunLogin
 
         public QRCodeClass GetQRCodeValue(string skey)
         {
-            Debug.WriteLine("HIII");
             string resp = this.DownloadString("https://tw.newlogin.beanfun.com/login/id-pass_form.aspx?skey=" + skey);
 
             string response = this.DownloadString("https://tw.newlogin.beanfun.com/login/qr_form.aspx?skey=" + skey );
@@ -455,15 +454,23 @@ namespace BeanfunLogin
                             return null;
                         }
                     }
-                    Thread.Sleep(5000); 
+                    Thread.Sleep(2000);
+                    
                 }
 
-                this.redirect = false;
+                
                 this.Headers.Set("Referer", @"https://tw.newlogin.beanfun.com/login/qr_form.aspx?skey=" + skey);
-                string response2 = this.DownloadString("https://tw.newlogin.beanfun.com/login/qr_step2.aspx?skey=" + skey);
+                this.redirect = false;
+                byte[] tmp2 = this.DownloadData("https://tw.newlogin.beanfun.com/login/qr_step2.aspx?skey=" + skey);
                 this.redirect = true;
+                string response2 = Encoding.UTF8.GetString(tmp2);
                 Debug.Write(response2);
-                return null;
+                Regex regex2 = new Regex("akey%3d(.*)%26authkey");
+                if (!regex2.IsMatch(response2))
+                { this.errmsg = "AKeyParseFailed"; return null; }
+                string akey = regex2.Match(response2).Groups[1].Value;
+                this.DownloadString("https://tw.newlogin.beanfun.com/login/final_step.aspx?akey="+akey+"&authkey=N&bfapp=1");
+                return akey;
             }
             catch (Exception e)
             {
