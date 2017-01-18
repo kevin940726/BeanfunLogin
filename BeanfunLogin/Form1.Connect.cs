@@ -29,9 +29,9 @@ namespace BeanfunLogin
             e.Result = "";
             try
             {
-                if (Properties.Settings.Default.loginMethod != 2)
+                if (Properties.Settings.Default.loginMethod != (int)LoginMethod.Gamaotp && Properties.Settings.Default.loginMethod != (int)LoginMethod.QRCode)
                     this.bfClient = new BeanfunClient();
-                this.bfClient.Login(this.accountInput.Text, this.passwdInput.Text, Properties.Settings.Default.loginMethod, this.textBox4.Text, this.gamaotpClass, this.service_code, this.service_region);
+                this.bfClient.Login(this.accountInput.Text, this.passwdInput.Text, Properties.Settings.Default.loginMethod, this.extraCodeInput.Text, this.gamaotpClass, this.qrcodeClass, this.service_code, this.service_region);
                 if (this.bfClient.errmsg != null)
                     e.Result = this.bfClient.errmsg;
                 else

@@ -52,17 +52,18 @@
             this.accounts = new System.Windows.Forms.ListBox();
             this.comboBox2 = new System.Windows.Forms.ComboBox();
             this.rememberAccount = new System.Windows.Forms.CheckBox();
-            this.textBox4 = new System.Windows.Forms.TextBox();
-            this.label4 = new System.Windows.Forms.Label();
+            this.extraCodeInput = new System.Windows.Forms.TextBox();
+            this.secPassLabel = new System.Windows.Forms.Label();
             this.loginMethodInput = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
             this.checkBox3 = new System.Windows.Forms.CheckBox();
             this.rememberAccPwd = new System.Windows.Forms.CheckBox();
             this.passwdInput = new System.Windows.Forms.TextBox();
-            this.label3 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
+            this.passLabel = new System.Windows.Forms.Label();
+            this.accountLabel = new System.Windows.Forms.Label();
             this.accountInput = new System.Windows.Forms.TextBox();
             this.loginButton = new System.Windows.Forms.Button();
+            this.qrcodeImg = new System.Windows.Forms.PictureBox();
             this.getOtpWorker = new System.ComponentModel.BackgroundWorker();
             this.loginWorker = new System.ComponentModel.BackgroundWorker();
             this.pingWorker = new System.ComponentModel.BackgroundWorker();
@@ -71,6 +72,7 @@
             this.panel1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.panel2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.qrcodeImg)).BeginInit();
             this.SuspendLayout();
             // 
             // panel1
@@ -218,14 +220,14 @@
             // BackToLogin_ToolStripMenuItem
             // 
             this.BackToLogin_ToolStripMenuItem.Name = "BackToLogin_ToolStripMenuItem";
-            this.BackToLogin_ToolStripMenuItem.Size = new System.Drawing.Size(92, 20);
+            this.BackToLogin_ToolStripMenuItem.Size = new System.Drawing.Size(91, 20);
             this.BackToLogin_ToolStripMenuItem.Text = "返回登入頁面";
             this.BackToLogin_ToolStripMenuItem.Click += new System.EventHandler(this.BackToLogin_ToolStripMenuItem_Click);
             // 
             // SetGamePath_ToolStripMenuItem1
             // 
             this.SetGamePath_ToolStripMenuItem1.Name = "SetGamePath_ToolStripMenuItem1";
-            this.SetGamePath_ToolStripMenuItem1.Size = new System.Drawing.Size(92, 20);
+            this.SetGamePath_ToolStripMenuItem1.Size = new System.Drawing.Size(91, 20);
             this.SetGamePath_ToolStripMenuItem1.Text = "設定遊戲路徑";
             this.SetGamePath_ToolStripMenuItem1.Click += new System.EventHandler(this.SetGamePath_ToolStripMenuItem1_Click);
             // 
@@ -239,17 +241,18 @@
             this.panel2.Controls.Add(this.accounts);
             this.panel2.Controls.Add(this.comboBox2);
             this.panel2.Controls.Add(this.rememberAccount);
-            this.panel2.Controls.Add(this.textBox4);
-            this.panel2.Controls.Add(this.label4);
+            this.panel2.Controls.Add(this.extraCodeInput);
+            this.panel2.Controls.Add(this.secPassLabel);
             this.panel2.Controls.Add(this.loginMethodInput);
             this.panel2.Controls.Add(this.label1);
             this.panel2.Controls.Add(this.checkBox3);
             this.panel2.Controls.Add(this.rememberAccPwd);
             this.panel2.Controls.Add(this.passwdInput);
-            this.panel2.Controls.Add(this.label3);
-            this.panel2.Controls.Add(this.label2);
+            this.panel2.Controls.Add(this.passLabel);
+            this.panel2.Controls.Add(this.accountLabel);
             this.panel2.Controls.Add(this.accountInput);
             this.panel2.Controls.Add(this.loginButton);
+            this.panel2.Controls.Add(this.qrcodeImg);
             this.panel2.Location = new System.Drawing.Point(0, 0);
             this.panel2.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.panel2.Name = "panel2";
@@ -369,26 +372,26 @@
             this.rememberAccount.Text = "記住帳號";
             this.rememberAccount.UseVisualStyleBackColor = true;
             // 
-            // textBox4
+            // extraCodeInput
             // 
-            this.textBox4.Location = new System.Drawing.Point(95, 133);
-            this.textBox4.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.textBox4.Name = "textBox4";
-            this.textBox4.PasswordChar = '*';
-            this.textBox4.Size = new System.Drawing.Size(145, 23);
-            this.textBox4.TabIndex = 35;
-            this.textBox4.Visible = false;
+            this.extraCodeInput.Location = new System.Drawing.Point(95, 133);
+            this.extraCodeInput.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.extraCodeInput.Name = "extraCodeInput";
+            this.extraCodeInput.PasswordChar = '*';
+            this.extraCodeInput.Size = new System.Drawing.Size(145, 23);
+            this.extraCodeInput.TabIndex = 35;
+            this.extraCodeInput.Visible = false;
             // 
-            // label4
+            // secPassLabel
             // 
-            this.label4.Font = new System.Drawing.Font("微軟正黑體", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.label4.Location = new System.Drawing.Point(21, 133);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(69, 19);
-            this.label4.TabIndex = 34;
-            this.label4.Text = "安全密碼";
-            this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.label4.Visible = false;
+            this.secPassLabel.Font = new System.Drawing.Font("微軟正黑體", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.secPassLabel.Location = new System.Drawing.Point(21, 133);
+            this.secPassLabel.Name = "secPassLabel";
+            this.secPassLabel.Size = new System.Drawing.Size(69, 19);
+            this.secPassLabel.TabIndex = 34;
+            this.secPassLabel.Text = "安全密碼";
+            this.secPassLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.secPassLabel.Visible = false;
             // 
             // loginMethodInput
             // 
@@ -400,7 +403,8 @@
             "GAMAOTP",
             "OTP",
             "聰明鎖",
-            "PLAYSAFE"});
+            "PLAYSAFE",
+            "QRCode"});
             this.loginMethodInput.Location = new System.Drawing.Point(78, 17);
             this.loginMethodInput.Name = "loginMethodInput";
             this.loginMethodInput.Size = new System.Drawing.Size(74, 24);
@@ -454,26 +458,26 @@
             this.passwdInput.Size = new System.Drawing.Size(145, 23);
             this.passwdInput.TabIndex = 29;
             // 
-            // label3
+            // passLabel
             // 
-            this.label3.Font = new System.Drawing.Font("微軟正黑體", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.label3.Location = new System.Drawing.Point(21, 93);
-            this.label3.Name = "label3";
-            this.label3.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.label3.Size = new System.Drawing.Size(69, 19);
-            this.label3.TabIndex = 28;
-            this.label3.Text = "密碼";
-            this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.passLabel.Font = new System.Drawing.Font("微軟正黑體", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.passLabel.Location = new System.Drawing.Point(21, 93);
+            this.passLabel.Name = "passLabel";
+            this.passLabel.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.passLabel.Size = new System.Drawing.Size(69, 19);
+            this.passLabel.TabIndex = 28;
+            this.passLabel.Text = "密碼";
+            this.passLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // label2
+            // accountLabel
             // 
-            this.label2.Font = new System.Drawing.Font("微軟正黑體", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.label2.Location = new System.Drawing.Point(21, 52);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(69, 19);
-            this.label2.TabIndex = 27;
-            this.label2.Text = "帳號";
-            this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.accountLabel.Font = new System.Drawing.Font("微軟正黑體", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.accountLabel.Location = new System.Drawing.Point(21, 52);
+            this.accountLabel.Name = "accountLabel";
+            this.accountLabel.Size = new System.Drawing.Size(69, 19);
+            this.accountLabel.TabIndex = 27;
+            this.accountLabel.Text = "帳號";
+            this.accountLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // accountInput
             // 
@@ -495,6 +499,16 @@
             this.loginButton.Text = "登入";
             this.loginButton.UseVisualStyleBackColor = true;
             this.loginButton.Click += new System.EventHandler(this.loginButton_Click);
+            // 
+            // qrcodeImg
+            // 
+            this.qrcodeImg.Location = new System.Drawing.Point(46, 48);
+            this.qrcodeImg.Name = "qrcodeImg";
+            this.qrcodeImg.Size = new System.Drawing.Size(190, 190);
+            this.qrcodeImg.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.qrcodeImg.TabIndex = 43;
+            this.qrcodeImg.TabStop = false;
+            this.qrcodeImg.Visible = false;
             // 
             // getOtpWorker
             // 
@@ -551,6 +565,7 @@
             this.menuStrip1.PerformLayout();
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.qrcodeImg)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -566,8 +581,8 @@
         private System.Windows.Forms.CheckBox rememberAccPwd;
         private System.Windows.Forms.CheckBox rememberAccount;
         private System.Windows.Forms.TextBox passwdInput;
-        private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label passLabel;
+        private System.Windows.Forms.Label accountLabel;
         private System.Windows.Forms.TextBox accountInput;
         private System.Windows.Forms.Button loginButton;
         private System.Windows.Forms.TextBox textBox3;
@@ -580,8 +595,8 @@
         private System.Windows.Forms.ComboBox loginMethodInput;
         private System.Windows.Forms.Label label1;
         private System.ComponentModel.BackgroundWorker loginWorker;
-        private System.Windows.Forms.TextBox textBox4;
-        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.TextBox extraCodeInput;
+        private System.Windows.Forms.Label secPassLabel;
         private System.ComponentModel.BackgroundWorker pingWorker;
         private System.Windows.Forms.CheckBox keepLogged;
         private System.Windows.Forms.ToolTip Tip;
@@ -595,6 +610,7 @@
         private System.Windows.Forms.Label gamaotp_label;
         private System.Windows.Forms.CheckBox checkBox1;
         private System.Windows.Forms.CheckBox autoPaste;
+        private System.Windows.Forms.PictureBox qrcodeImg;
 
 
     }

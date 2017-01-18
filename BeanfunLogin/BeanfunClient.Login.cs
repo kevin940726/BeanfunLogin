@@ -6,6 +6,10 @@ using System.Net;
 using System.Text.RegularExpressions;
 using System.Collections.Specialized;
 using System.Diagnostics;
+using System.Drawing;
+using System.IO;
+using System.Threading;
+using System.Web;
 
 namespace BeanfunLogin
 {
@@ -359,6 +363,114 @@ namespace BeanfunLogin
             }
         }
 
+        public class QRCodeClass
+        {
+            public string skey;
+            public string value;
+            public string viewstate;
+            public string eventvalidation;
+            public Bitmap bitmap;
+        }
+
+        public QRCodeClass GetQRCodeValue(string skey)
+        {
+            this.DownloadString("https://tw.newlogin.beanfun.com/loginform.aspx?skey="+skey+"&display_mode=2&region=qr");
+            string response = this.DownloadString("https://tw.newlogin.beanfun.com/login/qr_form.aspx?skey=" + skey );
+            Regex regex = new Regex("id=\"__VIEWSTATE\" value=\"(.*)\" />");
+            if (!regex.IsMatch(response))
+            { this.errmsg = "LoginNoViewstate"; return null; }
+            string viewstate = regex.Match(response).Groups[1].Value;
+
+            regex = new Regex("id=\"__EVENTVALIDATION\" value=\"(.*)\" />");
+            if (!regex.IsMatch(response))
+            { this.errmsg = "LoginNoEventvalidation"; return null; }
+            string eventvalidation = regex.Match(response).Groups[1].Value;
+
+            //Thread.Sleep(3000);
+
+            regex = new Regex("u=(.*)\" style");
+            if (!regex.IsMatch(response))
+            { this.errmsg = "LoginNoHash"; return null; }
+            string value = regex.Match(response).Groups[1].Value;
+
+            Stream stream = this.OpenRead("http://tw.newlogin.beanfun.com/qrhandler.ashx?u="  + value);
+
+            QRCodeClass res = new QRCodeClass();
+            res.skey = skey;
+            res.viewstate = viewstate;
+            res.eventvalidation = eventvalidation;
+            res.value = Uri.UnescapeDataString(value);
+            res.bitmap = new Bitmap(stream);
+
+            return res;
+        }
+
+        private string QRCodeLogin(string skey, QRCodeClass qrcodeclass)
+        {
+            try
+            {
+                int errorCount = 0;
+                string result;
+                while (true)
+                {
+                    this.Headers.Add("Content-type", "application/x-www-form-urlencoded");
+                    //this.Headers.Add("Origin", @"https://tw.newlogin.beanfun.com");
+                    this.Headers.Add("Referer", @"https://tw.newlogin.beanfun.com/login/qr_form.aspx?skey="+skey);
+                    this.Headers.Add("Accept", "*/*");
+                    this.Headers.Add("Accept-Encoding", "gzip, deflate, br"); 
+                    this.Headers.Add("Accept-Language", "zh-TW,zh;q=0.8,en-US;q=0.6,en;q=0.4");
+                    NameValueCollection payload = new NameValueCollection();
+                    payload.Add("data", qrcodeclass.value);
+                    Debug.WriteLine(qrcodeclass.value);
+                    var uri = new Uri("https://tw.bfapp.beanfun.com/api/Check/CheckLoginStatus");
+                    //var servicePoint = ServicePointManager.FindServicePoint(uri);
+                    //servicePoint.Expect100Continue = false;
+
+                    //this.CookieContainer.Add(new Cookie("defaultLogin", "1", "/", "tw.newlogin.beanfun.com"));
+                    //this.CookieContainer.Add(new Cookie("_gat_Gamania", "1", "/", ".beanfun.com"));
+
+                    string response = Encoding.UTF8.GetString(this.UploadValues("https://tw.bfapp.beanfun.com/api/Check/CheckLoginStatus",payload));
+                    Regex regex = new Regex("\"ResultMessage\":\"(.*)\",\"ResultDat");
+                    if (!regex.IsMatch(response))
+                    { this.errmsg = "LoginJsonParseFailed"; return null; }
+
+                    result = regex.Match(response).Groups[1].Value;
+                    Debug.WriteLine(result);
+                    if (result == "Failed")
+                        ;
+                    else if (result == "Token Expired")
+                    {
+                        this.errmsg = "LoginTokenExpired";
+                        return null;
+                    }
+                    else if (result == "Success")
+                        break;
+                    else
+                    {
+                        if (errorCount++ >= 5)
+                        {
+                            this.errmsg = response;
+                            return null;
+                        }
+                    }
+                    Thread.Sleep(5000); 
+                }
+
+                this.redirect = false;
+                this.Headers.Add("Referer", @"https://tw.newlogin.beanfun.com/login/qr_form.aspx?skey=" + skey);
+                string response2 = this.DownloadString("https://tw.newlogin.beanfun.com/login/qr_step2.aspx?skey=" + skey);
+                this.redirect = true;
+                Debug.Write(response2);
+                return null;
+            }
+            catch (Exception e)
+            {
+                this.errmsg = "LoginUnknown\n\n" + e.Message + "\n" + e.StackTrace;
+                return null;
+            }
+        }
+
+
         public string GetSessionkey()
         {
             string response = this.DownloadString("https://tw.beanfun.com/beanfun_block/bflogin/default.aspx?service=999999_T0");
@@ -371,7 +483,7 @@ namespace BeanfunLogin
             return regex.Match(response).Groups[1].Value;
         }
 
-        public void Login(string id, string pass, int loginMethod, string securePass = null, GamaotpClass gamaotpClass = null, string service_code = "610074", string service_region = "T9")
+        public void Login(string id, string pass, int loginMethod, string securePass = null, GamaotpClass gamaotpClass = null, QRCodeClass qrcodeClass = null, string service_code = "610074", string service_region = "T9")
         {
             try
             {
@@ -380,7 +492,7 @@ namespace BeanfunLogin
                 string skey = null;
                 string akey = null;
                 string cardid = null;
-                if (loginMethod != 2)
+                if (loginMethod != (int)LoginMethod.Gamaotp)
                 {
                     skey = GetSessionkey();
                 }
@@ -411,6 +523,9 @@ namespace BeanfunLogin
                         { this.errmsg = "LoginPlaySafeResultError"; return; }
                         cardid = temp[0];
                         akey = temp[1];
+                        break;
+                    case 6:
+                        akey = QRCodeLogin(skey, qrcodeClass);
                         break;
                     default:
                         this.errmsg = "LoginNoMethod";
