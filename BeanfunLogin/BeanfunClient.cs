@@ -36,7 +36,7 @@ namespace BeanfunLogin
         {
             this.redirect = true;
             this.CookieContainer = new System.Net.CookieContainer();
-            this.Headers.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:47.0) Gecko/20100101 Firefox/47.0");
+            this.Headers.Set("User-Agent", "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:47.0) Gecko/20100101 Firefox/47.0");
             this.ResponseUri = null;
             this.errmsg = null;
             this.webtoken = null;
@@ -52,14 +52,14 @@ namespace BeanfunLogin
 
         public string DownloadString(string Uri)
         {
-            this.Headers.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:47.0) Gecko/20100101 Firefox/47.0");
+            this.Headers.Set("User-Agent", "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:47.0) Gecko/20100101 Firefox/47.0");
             var ret = base.DownloadString(Uri);
             return ret;
         }
 
         public byte[] UploadValues(string skey, NameValueCollection payload)
         {
-            this.Headers.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:47.0) Gecko/20100101 Firefox/47.0");
+            this.Headers.Set("User-Agent", "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:47.0) Gecko/20100101 Firefox/47.0");
             return base.UploadValues(skey, payload);
         }
 

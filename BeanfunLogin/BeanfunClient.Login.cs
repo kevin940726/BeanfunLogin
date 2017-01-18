@@ -374,7 +374,9 @@ namespace BeanfunLogin
 
         public QRCodeClass GetQRCodeValue(string skey)
         {
-            this.DownloadString("https://tw.newlogin.beanfun.com/loginform.aspx?skey="+skey+"&display_mode=2&region=qr");
+            Debug.WriteLine("HIII");
+            string resp = this.DownloadString("https://tw.newlogin.beanfun.com/login/id-pass_form.aspx?skey=" + skey);
+
             string response = this.DownloadString("https://tw.newlogin.beanfun.com/login/qr_form.aspx?skey=" + skey );
             Regex regex = new Regex("id=\"__VIEWSTATE\" value=\"(.*)\" />");
             if (!regex.IsMatch(response))
@@ -413,16 +415,16 @@ namespace BeanfunLogin
                 string result;
                 while (true)
                 {
-                    this.Headers.Add("Content-type", "application/x-www-form-urlencoded");
+                    this.Headers.Set("Content-type", "application/x-www-form-urlencoded");
                     //this.Headers.Add("Origin", @"https://tw.newlogin.beanfun.com");
-                    this.Headers.Add("Referer", @"https://tw.newlogin.beanfun.com/login/qr_form.aspx?skey="+skey);
-                    this.Headers.Add("Accept", "*/*");
-                    this.Headers.Add("Accept-Encoding", "gzip, deflate, br"); 
-                    this.Headers.Add("Accept-Language", "zh-TW,zh;q=0.8,en-US;q=0.6,en;q=0.4");
+                    this.Headers.Set("Referer", @"https://tw.newlogin.beanfun.com/login/qr_form.aspx?skey=" + skey);
+                    this.Headers.Set("Accept", "*/*");
+                    this.Headers.Set("Accept-Encoding", "gzip, deflate, br");
+                    this.Headers.Set("Accept-Language", "zh-TW,zh;q=0.8,en-US;q=0.6,en;q=0.4");
                     NameValueCollection payload = new NameValueCollection();
                     payload.Add("data", qrcodeclass.value);
                     Debug.WriteLine(qrcodeclass.value);
-                    var uri = new Uri("https://tw.bfapp.beanfun.com/api/Check/CheckLoginStatus");
+                    //var uri = new Uri("https://tw.bfapp.beanfun.com/api/Check/CheckLoginStatus");
                     //var servicePoint = ServicePointManager.FindServicePoint(uri);
                     //servicePoint.Expect100Continue = false;
 
@@ -457,7 +459,7 @@ namespace BeanfunLogin
                 }
 
                 this.redirect = false;
-                this.Headers.Add("Referer", @"https://tw.newlogin.beanfun.com/login/qr_form.aspx?skey=" + skey);
+                this.Headers.Set("Referer", @"https://tw.newlogin.beanfun.com/login/qr_form.aspx?skey=" + skey);
                 string response2 = this.DownloadString("https://tw.newlogin.beanfun.com/login/qr_step2.aspx?skey=" + skey);
                 this.redirect = true;
                 Debug.Write(response2);
@@ -492,7 +494,11 @@ namespace BeanfunLogin
                 string skey = null;
                 string akey = null;
                 string cardid = null;
-                if (loginMethod != (int)LoginMethod.Gamaotp)
+                if (loginMethod == (int)LoginMethod.QRCode)
+                {
+                    skey = qrcodeClass.skey;
+                }
+                else if (loginMethod != (int)LoginMethod.Gamaotp)
                 {
                     skey = GetSessionkey();
                 }
