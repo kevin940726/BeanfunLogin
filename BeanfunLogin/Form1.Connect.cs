@@ -271,5 +271,45 @@ namespace BeanfunLogin
         {
             Debug.WriteLine("ping.done");
         }
+
+        private void qrWorker_DoWork(object sender, DoWorkEventArgs e)
+        {
+            this.bfClient = new BeanfunClient();
+            string skey = this.bfClient.GetSessionkey();
+            this.qrcodeClass = this.bfClient.GetQRCodeValue(skey);
+        }
+
+        private void qrWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            this.loginMethodInput.Enabled = true;
+            wait_qrWorker_notify.Visible = false;
+            if (this.qrcodeClass == null)
+                wait_qrWorker_notify.Text = "QRCode取得失敗";
+            else
+            {
+                qrcodeImg.Image = qrcodeClass.bitmap;
+                qrCheckLogin.Enabled = true;
+            }
+        }
+
+        private void qrCheckLogin_Tick(object sender, EventArgs e)
+        {
+            if (this.qrcodeClass == null)
+            {
+                MessageBox.Show("QRCode not get yet");
+                return;
+            }
+            int res = this.bfClient.QRCodeCheckLoginStatus(this.qrcodeClass);
+            if (res != 0)
+                this.qrCheckLogin.Enabled = false;
+            if (res == 1)
+            {
+                loginButton_Click(null, null);
+            }
+            if (res == -2)
+            {
+                comboBox1_SelectedIndexChanged(null, null);
+            }
+        }
     }
 }

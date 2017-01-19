@@ -44,6 +44,7 @@
             this.BackToLogin_ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.SetGamePath_ToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.wait_qrWorker_notify = new System.Windows.Forms.Label();
             this.gamaotp_challenge_code_output = new System.Windows.Forms.Label();
             this.gamaotp_label = new System.Windows.Forms.Label();
             this.export = new System.Windows.Forms.Button();
@@ -69,6 +70,8 @@
             this.pingWorker = new System.ComponentModel.BackgroundWorker();
             this.Tip = new System.Windows.Forms.ToolTip(this.components);
             this.Notification = new System.Windows.Forms.ToolTip(this.components);
+            this.qrWorker = new System.ComponentModel.BackgroundWorker();
+            this.qrCheckLogin = new System.Windows.Forms.Timer(this.components);
             this.panel1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -233,6 +236,7 @@
             // 
             // panel2
             // 
+            this.panel2.Controls.Add(this.wait_qrWorker_notify);
             this.panel2.Controls.Add(this.gamaotp_challenge_code_output);
             this.panel2.Controls.Add(this.gamaotp_label);
             this.panel2.Controls.Add(this.export);
@@ -258,6 +262,17 @@
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(443, 256);
             this.panel2.TabIndex = 25;
+            // 
+            // wait_qrWorker_notify
+            // 
+            this.wait_qrWorker_notify.AutoSize = true;
+            this.wait_qrWorker_notify.Font = new System.Drawing.Font("微軟正黑體", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.wait_qrWorker_notify.Location = new System.Drawing.Point(47, 120);
+            this.wait_qrWorker_notify.Name = "wait_qrWorker_notify";
+            this.wait_qrWorker_notify.Size = new System.Drawing.Size(204, 24);
+            this.wait_qrWorker_notify.TabIndex = 44;
+            this.wait_qrWorker_notify.Text = "取得QRCode中 請稍後";
+            this.wait_qrWorker_notify.Visible = false;
             // 
             // gamaotp_challenge_code_output
             // 
@@ -544,6 +559,18 @@
             this.Notification.InitialDelay = 0;
             this.Notification.ReshowDelay = 100;
             // 
+            // qrWorker
+            // 
+            this.qrWorker.WorkerReportsProgress = true;
+            this.qrWorker.WorkerSupportsCancellation = true;
+            this.qrWorker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.qrWorker_DoWork);
+            this.qrWorker.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.qrWorker_RunWorkerCompleted);
+            // 
+            // qrCheckLogin
+            // 
+            this.qrCheckLogin.Interval = 2000;
+            this.qrCheckLogin.Tick += new System.EventHandler(this.qrCheckLogin_Tick);
+            // 
             // main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 16F);
@@ -611,6 +638,9 @@
         private System.Windows.Forms.CheckBox checkBox1;
         private System.Windows.Forms.CheckBox autoPaste;
         private System.Windows.Forms.PictureBox qrcodeImg;
+        private System.ComponentModel.BackgroundWorker qrWorker;
+        private System.Windows.Forms.Label wait_qrWorker_notify;
+        private System.Windows.Forms.Timer qrCheckLogin;
 
 
     }

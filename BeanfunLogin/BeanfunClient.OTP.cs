@@ -62,13 +62,8 @@ namespace BeanfunLogin
                     { this.errmsg = "OTPNoCreateTime"; return null; }
                     acc.screatetime = regex.Match(response).Groups[1].Value;
                 }
-                //response = this.DownloadString("https://tw.newlogin.beanfun.com/generic_handlers/get_cookies.ashx");
-                byte[] tmp = this.DownloadData("https://tw.newlogin.beanfun.com/generic_handlers/get_cookies.ashx");
-                Debug.Write(Encoding.UTF8.GetString(tmp));
-                Debug.Write(Encoding.ASCII.GetString(tmp));
-                Debug.Write(Encoding.Unicode.GetString(tmp));
-                Debug.Write(Encoding.UTF7.GetString(tmp));
-                Debug.Write(Encoding.UTF32.GetString(tmp));
+                response = this.DownloadString("https://tw.newlogin.beanfun.com/generic_handlers/get_cookies.ashx", Encoding.UTF8);
+
                 regex = new Regex("var m_strSecretCode = '(.*)';");
                 if (!regex.IsMatch(response))
                 { this.errmsg = "OTPNoSecretCode"; return null; }

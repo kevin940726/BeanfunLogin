@@ -277,8 +277,10 @@ namespace BeanfunLogin
             }
             Properties.Settings.Default.Save();
 
+
             this.UseWaitCursor = true;
             this.panel2.Enabled = false;
+
             this.loginButton.Text = "請稍後...";
             this.loginWorker.RunWorkerAsync(Properties.Settings.Default.loginMethod);
         }    
@@ -404,6 +406,8 @@ namespace BeanfunLogin
         // login method changed event
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
+            qrCheckLogin.Enabled = false;
+
             accountInput.Visible = true;
             accountLabel.Visible = true;
 
@@ -420,6 +424,8 @@ namespace BeanfunLogin
             rememberAccPwd.Visible = true;
             checkBox3.Visible = true;
             loginButton.Visible = true;
+
+            wait_qrWorker_notify.Visible = false;
 
             this.gamaotp_challenge_code_output.Text = "";
 
@@ -464,17 +470,12 @@ namespace BeanfunLogin
                 rememberAccPwd.Visible = false;
                 checkBox3.Visible = false;
                 loginButton.Visible = false;
+                qrcodeImg.Image = null;
+                wait_qrWorker_notify.Text = "取得QRCode中 請稍後";
+                wait_qrWorker_notify.Visible = true;
 
-                this.bfClient = new BeanfunClient();
-                this.qrcodeClass = this.bfClient.GetQRCodeValue(this.bfClient.GetSessionkey());
-                if (qrcodeClass == null)
-                    MessageBox.Show("QRCode取得失敗");
-                else
-                {
-                    qrcodeImg.Image = qrcodeClass.bitmap;
-
-                    loginButton_Click(null, null);
-                }
+                this.qrWorker.RunWorkerAsync(null);
+                this.loginMethodInput.Enabled = false;
             }
             else
             {
@@ -666,6 +667,12 @@ namespace BeanfunLogin
         {
             Properties.Settings.Default.Save();
         }
+
+
+
+
+
+
 
     }
 }
