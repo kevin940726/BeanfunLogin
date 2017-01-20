@@ -25,11 +25,8 @@ namespace BeanfunLogin
     enum LoginMethod : int {
         Regular = 0,
         Keypasco = 1,
-        Gamaotp = 2,
-        Otp = 3,
-        OtpE = 4,
-        PlaySafe = 5,
-        QRCode = 6
+        PlaySafe = 2,
+        QRCode = 3
     };
 
     public partial class main : Form
@@ -49,7 +46,7 @@ namespace BeanfunLogin
         {
             InitializeComponent();
             init();
-            //CheckForUpdate();
+            CheckForUpdate();
         }
 
         public void ShowToolTip(IWin32Window ui, string title, string des, int iniDelay = 2000, bool repeat = false)
@@ -96,7 +93,7 @@ namespace BeanfunLogin
                     method = 0;
                     break;
                 case "OTPNoLongPollingKey":
-                    if (Properties.Settings.Default.loginMethod == 5)
+                    if (Properties.Settings.Default.loginMethod == (int)LoginMethod.PlaySafe)
                         msg = "密碼獲取失敗，請檢查晶片卡是否插入讀卡機，且讀卡機運作正常。\n若仍出現此訊息，請嘗試重新登入。";
                     else
                     {
@@ -163,7 +160,7 @@ namespace BeanfunLogin
                 // Handle settings.
                 if (Properties.Settings.Default.rememberAccount == true)
                     this.accountInput.Text = Properties.Settings.Default.AccountID;
-                if (Properties.Settings.Default.rememberPwd == true && Properties.Settings.Default.loginMethod != 2)
+                if (Properties.Settings.Default.rememberPwd == true)
                 {
                     this.rememberAccount.Enabled = false;
                     // Load password.
@@ -182,7 +179,7 @@ namespace BeanfunLogin
                         }
                     }
                 }
-                if (Properties.Settings.Default.autoLogin == true && Properties.Settings.Default.loginMethod != 2 && Properties.Settings.Default.loginMethod != 4)
+                if (Properties.Settings.Default.autoLogin == true)
                 {
                     this.UseWaitCursor = true;
                     this.panel2.Enabled = false;
@@ -464,28 +461,7 @@ namespace BeanfunLogin
 
             Properties.Settings.Default.loginMethod = this.loginMethodInput.SelectedIndex;
 
-            if (Properties.Settings.Default.loginMethod == (int)LoginMethod.OtpE)
-            {
-                this.secPassLabel.Visible = true;
-                this.extraCodeInput.Visible = true;
-            }
-            else if (Properties.Settings.Default.loginMethod == (int)LoginMethod.Gamaotp)
-            {
-                this.passLabel.Text = "安全密碼";
-                this.bfClient = new BeanfunClient();
-                this.gamaotpClass = this.bfClient.GetGamaotpPassCode(this.bfClient.GetSessionkey());
-
-                if (this.bfClient.errmsg != null)
-                    errexit(this.bfClient.errmsg, 2);
-
-                this.gamaotp_label.Visible = true;
-                this.gamaotp_challenge_code_output.Text = this.gamaotpClass.motp;
-            }         
-            else if (Properties.Settings.Default.loginMethod == (int)LoginMethod.Otp)
-            {
-                this.passLabel.Text = "安全密碼";
-            }
-            else if (Properties.Settings.Default.loginMethod == (int)LoginMethod.PlaySafe)
+            if (Properties.Settings.Default.loginMethod == (int)LoginMethod.PlaySafe)
             {
                 this.passLabel.Text = "PIN碼";
             }

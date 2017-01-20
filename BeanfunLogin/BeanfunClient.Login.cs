@@ -154,6 +154,7 @@ namespace BeanfunLogin
             { this.skey = skey; this.sotp = sotp; this.motp = motp; this.viewstate = viewstate; this.eventvalidation = eventvalidation; }
         }
 
+        [Obsolete("Method1 is deprecated, unsupport login method", true)]
         public GamaotpClass GetGamaotpPassCode(string skey)
         {
             string response = this.DownloadString("https://tw.newlogin.beanfun.com/login/gamaotp_form.aspx?skey=" + skey);
@@ -178,6 +179,7 @@ namespace BeanfunLogin
             return new GamaotpClass(skey, sotp, motp, viewstate, eventvalidation);
         }
 
+        [Obsolete("Method1 is deprecated, unsupport login method", true)]
         private string GamaotpLogin(string id, string pass, GamaotpClass gamaotpClass)
         {
             try
@@ -222,6 +224,7 @@ namespace BeanfunLogin
             }
         }
 
+        [Obsolete("Method1 is deprecated, unsupport login method", true)]
         private string OtpLogin(string userID, string pass, string skey)
         {
             try
@@ -265,6 +268,7 @@ namespace BeanfunLogin
             }
         }
 
+        [Obsolete("Method1 is deprecated, unsupport login method", true)]
         private string OtpELogin(string id, string pass, string securePass, string skey)
         {
             try
@@ -521,29 +525,20 @@ namespace BeanfunLogin
                 {
                     skey = qrcodeClass.skey;
                 }
-                else if (loginMethod != (int)LoginMethod.Gamaotp)
+                else
                 {
                     skey = GetSessionkey();
                 }
 
                 switch (loginMethod)
                 {
-                    case 0:
+                    case (int)LoginMethod.Regular:
                         akey = RegularLogin(id, pass, skey);
                         break;
-                    case 1:
+                    case (int)LoginMethod.Keypasco:
                         akey = KeypascoLogin(id, pass, skey);
                         break;
-                    case 2:
-                        akey = GamaotpLogin(id, pass, gamaotpClass);
-                        break;
-                    case 3:
-                        akey = OtpLogin(id, pass, skey);
-                        break;
-                    case 4:
-                        akey = OtpELogin(id, pass, securePass, skey);
-                        break;
-                    case 5:
+                    case (int)LoginMethod.PlaySafe:
                         string r = playsafeLogin(id, pass, skey);
                         if (r == null)
                             return;
@@ -553,7 +548,7 @@ namespace BeanfunLogin
                         cardid = temp[0];
                         akey = temp[1];
                         break;
-                    case 6:
+                    case (int)LoginMethod.QRCode:
                         akey = QRCodeLogin(qrcodeClass);
                         break;
                     default:
@@ -577,12 +572,12 @@ namespace BeanfunLogin
                 this.webtoken = this.GetCookie("bfWebToken");
                 if (this.webtoken == "")
                 { this.errmsg = "LoginNoWebtoken"; return; }
-                if (loginMethod == 5)
+                if (loginMethod == (int)LoginMethod.PlaySafe)
                     response = this.DownloadString("https://tw.beanfun.com/beanfun_block/auth.aspx?channel=game_zone&page_and_query=game_start.aspx%3Fservice_code_and_region%3D"+service_code+"_"+service_region+"&web_token=" + webtoken + "&cardid=" + cardid, Encoding.UTF8);
                 else
                     response = this.DownloadString("https://tw.beanfun.com/beanfun_block/auth.aspx?channel=game_zone&page_and_query=game_start.aspx%3Fservice_code_and_region%3D"+service_code+"_"+service_region+"&web_token=" + webtoken, Encoding.UTF8);
 
-                if (loginMethod == 5)
+                if (loginMethod == (int)LoginMethod.PlaySafe)
                 {
                     regex = new Regex("id=\"__VIEWSTATE\" value=\"(.*)\" />");
                     if (!regex.IsMatch(response))
