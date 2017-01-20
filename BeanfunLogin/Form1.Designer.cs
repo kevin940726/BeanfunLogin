@@ -338,35 +338,6 @@
             // 
             this.comboBox2.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox2.FormattingEnabled = true;
-            this.comboBox2.Items.AddRange(new object[] {
-            "新楓之谷",
-            "天堂",
-            "天堂。健康伺服器",
-            "天堂。免費伺服器",
-            "絕對武力 online",
-            "夢幻之星ONLINE 2",
-            "英雄三國(HOK)",
-            "跑跑卡丁車",
-            "艾爾之光",
-            "新瑪奇mabinogi",
-            "蠟筆小新 Online",
-            "C9第九大陸",
-            "瑪奇英雄傳",
-            "爆爆王",
-            "泡泡大亂鬥",
-            "楓之谷體驗伺服器",
-            "火爆小鬥士",
-            "夢境",
-            "戲谷麻將",
-            "戲谷大老二",
-            "戲谷自摸",
-            "戲谷十三支",
-            "戲谷柏青哥",
-            "戲谷真接龍",
-            "戲谷跑馬風雲",
-            "戲谷德州撲克",
-            "戲谷夢幻滿貫",
-            "戲谷暗棋"});
             this.comboBox2.Location = new System.Drawing.Point(158, 17);
             this.comboBox2.Name = "comboBox2";
             this.comboBox2.Size = new System.Drawing.Size(110, 24);
@@ -429,7 +400,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("微軟正黑體", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.label1.Font = new System.Drawing.Font("Microsoft JhengHei", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
             this.label1.Location = new System.Drawing.Point(12, 19);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(60, 17);
@@ -578,7 +549,7 @@
             this.ClientSize = new System.Drawing.Size(443, 252);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel1);
-            this.Font = new System.Drawing.Font("微軟正黑體", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.Font = new System.Drawing.Font("Microsoft JhengHei", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;

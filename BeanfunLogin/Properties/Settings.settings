@@ -39,7 +39,7 @@
       <Value Profile="(Default)">191</Value>
     </Setting>
     <Setting Name="loginGame" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">0</Value>
+      <Value Profile="(Default)">3</Value>
     </Setting>
     <Setting Name="entropyForList" Type="System.String" Scope="User">
       <Value Profile="(Default)" />

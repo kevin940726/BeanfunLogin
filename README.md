@@ -1,18 +1,18 @@
 ﻿# BeanfunLogin
 New Beanfun MapleStory OTP login.
 
-## This project is not being maintained anymore, please wait for the new version.
+## This project is depreciated. You are aware of that any changes may be or may be not be implemented. Use at your own risk.
 
 #### This project is for self practicing/learning ``C#`` ``.NET`` on Windows.
 ========================
 Login to Beanfun and MapleStory without browsers, using 3DES to encrypt the storing password. Use DES to decrypt and get the OTP.
 
-[Download](https://github.com/kevin940726/BeanfunLogin/raw/Development/BeanfunLogin.rar): Current Version 1.6.3.
+[Download](https://github.com/kevin940726/BeanfunLogin/raw/Development/BeanfunLogin.rar): Current Version 1.6.5.
 
 ========================
 ### Version Log
 
-Version 1.8.0
+Version 1.8.1 (Development version)
 - fix bugs:
   - auto select out of bound exception
   - check game path before open game
@@ -23,6 +23,10 @@ Version 1.8.0
   
 Version 1.7.0 
 - multiple account and password save/load
+
+Version 1.6.5 (Current version)
+- Dynamic load game list.
+- Add User-Agent at any request.
 
 Version 1.6.3 
 - Vakten update.

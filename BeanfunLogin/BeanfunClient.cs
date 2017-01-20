@@ -41,7 +41,6 @@ namespace BeanfunLogin
             this.errmsg = null;
             this.webtoken = null;
             this.accountList = new List<AccountList>();
-
         }
 
         public string DownloadString(string Uri, Encoding Encoding)
@@ -67,6 +66,11 @@ namespace BeanfunLogin
         {
             WebRequest webRequest = base.GetWebRequest(address);
             HttpWebRequest request2 = webRequest as HttpWebRequest;
+            if (String.IsNullOrEmpty(this.Headers["User-Agent"]))
+            {
+                this.Headers.Add("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.109 Safari/537.36");
+            }
+
             if (request2 != null)
             {
                 request2.CookieContainer = this.CookieContainer;
