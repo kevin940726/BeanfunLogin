@@ -10,6 +10,8 @@ using System.Net;
 using System.Diagnostics;
 using System.Threading;
 using System.IO;
+using System.Runtime.InteropServices;
+using System.Drawing;
 
 namespace BeanfunLogin
 {
@@ -27,9 +29,9 @@ namespace BeanfunLogin
             e.Result = "";
             try
             {
-                if (Properties.Settings.Default.loginMethod != 2)
+                if (Properties.Settings.Default.loginMethod != (int)LoginMethod.Gamaotp && Properties.Settings.Default.loginMethod != (int)LoginMethod.QRCode)
                     this.bfClient = new BeanfunClient();
-                this.bfClient.Login(this.accountInput.Text, this.passwdInput.Text, Properties.Settings.Default.loginMethod, this.textBox4.Text, this.gamaotpClass, this.service_code, this.service_region);
+                this.bfClient.Login(this.accountInput.Text, this.passwdInput.Text, Properties.Settings.Default.loginMethod, this.extraCodeInput.Text, this.gamaotpClass, this.qrcodeClass, this.service_code, this.service_region);
                 if (this.bfClient.errmsg != null)
                     e.Result = this.bfClient.errmsg;
                 else
@@ -158,6 +160,13 @@ namespace BeanfunLogin
         // getOTP completed.
         private void getOtpWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
+            const int VK_TAB = 0x09;
+            const byte VK_CONTROL = 0x11;
+            const int VK_V = 0x56;
+            const int VK_ENTER = 0x0d;
+            const byte KEYEVENTF_EXTENDEDKEY = 0x1;
+            const byte KEYEVENTF_KEYUP = 0x2;
+
             Debug.WriteLine("getOtpWorker end");
             this.getOtpButton.Text = "獲取密碼";
             this.listView1.Enabled = true;
@@ -177,9 +186,47 @@ namespace BeanfunLogin
             }
             else
             {
+                int accIndex = listView1.SelectedItems[0].Index;
+                string acc = this.bfClient.accountList[index].sacc;
+                Clipboard.SetText(acc);
+
+                IntPtr hWnd;
+                if (autoPaste.Checked == true && (hWnd = WindowsAPI.FindWindow(null, "MapleStory")) != IntPtr.Zero)
+                {
+                    WindowsAPI.SetForegroundWindow(hWnd);
+
+                    WindowsAPI.keybd_event(VK_CONTROL, 0x9d, KEYEVENTF_EXTENDEDKEY, 0);
+                    WindowsAPI.keybd_event(VK_V, 0x9e, 0, 0);
+                    Thread.Sleep(100);
+                    WindowsAPI.keybd_event(VK_V, 0x9e, KEYEVENTF_KEYUP, 0);
+                    Thread.Sleep(100);
+                    WindowsAPI.keybd_event(VK_CONTROL, 0x9d, KEYEVENTF_EXTENDEDKEY | KEYEVENTF_KEYUP, 0);
+
+                    WindowsAPI.keybd_event(VK_TAB, 0, KEYEVENTF_EXTENDEDKEY, 0);
+                    WindowsAPI.keybd_event(VK_TAB, 0, KEYEVENTF_KEYUP, 0);
+                }
+
                 this.textBox3.Text = this.otp;
                 Clipboard.SetText(textBox3.Text);
                 this.Text = "進行遊戲 - " + WebUtility.HtmlDecode(this.bfClient.accountList[index].sname);
+
+                if (autoPaste.Checked == true && (hWnd = WindowsAPI.FindWindow(null, "MapleStory")) != IntPtr.Zero)
+                {
+                    WindowsAPI.keybd_event(VK_CONTROL, 0x9d, KEYEVENTF_EXTENDEDKEY, 0);
+                    WindowsAPI.keybd_event(VK_V, 0x9e, 0, 0);
+                    Thread.Sleep(100);
+                    WindowsAPI.keybd_event(VK_V, 0x9e, KEYEVENTF_KEYUP, 0);
+                    Thread.Sleep(100);
+                    WindowsAPI.keybd_event(VK_CONTROL, 0x9d, KEYEVENTF_EXTENDEDKEY | KEYEVENTF_KEYUP, 0);
+
+                    WindowsAPI.keybd_event(VK_ENTER, 0, 0, 0);
+                    WindowsAPI.keybd_event(VK_ENTER, 0, KEYEVENTF_KEYUP, 0);
+
+                    listView1.Items[accIndex].BackColor = Color.Green;
+                    listView1.Items[accIndex].Selected = false;
+                }
+
+
             }
 
             if (Properties.Settings.Default.keepLogged && !this.pingWorker.IsBusy)
@@ -223,6 +270,46 @@ namespace BeanfunLogin
         private void pingWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             Debug.WriteLine("ping.done");
+        }
+
+        private void qrWorker_DoWork(object sender, DoWorkEventArgs e)
+        {
+            this.bfClient = new BeanfunClient();
+            string skey = this.bfClient.GetSessionkey();
+            this.qrcodeClass = this.bfClient.GetQRCodeValue(skey);
+        }
+
+        private void qrWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            this.loginMethodInput.Enabled = true;
+            wait_qrWorker_notify.Visible = false;
+            if (this.qrcodeClass == null)
+                wait_qrWorker_notify.Text = "QRCode取得失敗";
+            else
+            {
+                qrcodeImg.Image = qrcodeClass.bitmap;
+                qrCheckLogin.Enabled = true;
+            }
+        }
+
+        private void qrCheckLogin_Tick(object sender, EventArgs e)
+        {
+            if (this.qrcodeClass == null)
+            {
+                MessageBox.Show("QRCode not get yet");
+                return;
+            }
+            int res = this.bfClient.QRCodeCheckLoginStatus(this.qrcodeClass);
+            if (res != 0)
+                this.qrCheckLogin.Enabled = false;
+            if (res == 1)
+            {
+                loginButton_Click(null, null);
+            }
+            if (res == -2)
+            {
+                comboBox1_SelectedIndexChanged(null, null);
+            }
         }
     }
 }

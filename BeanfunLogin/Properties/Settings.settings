@@ -27,7 +27,7 @@
       <Value Profile="(Default)" />
     </Setting>
     <Setting Name="loginMethod" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">0</Value>
+      <Value Profile="(Default)">1</Value>
     </Setting>
     <Setting Name="keepLogged" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
@@ -36,7 +36,7 @@
       <Value Profile="(Default)">True</Value>
     </Setting>
     <Setting Name="currentVersion" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">181</Value>
+      <Value Profile="(Default)">191</Value>
     </Setting>
     <Setting Name="loginGame" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">3</Value>
@@ -45,6 +45,9 @@
       <Value Profile="(Default)" />
     </Setting>
     <Setting Name="opengame" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="autoPaste" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
   </Settings>

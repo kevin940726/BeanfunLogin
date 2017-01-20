@@ -17,6 +17,7 @@ namespace BeanfunLogin
         public string errmsg;
         private string webtoken;
         public List<AccountList> accountList;
+        bool redirect;
 
         public class AccountList
         {
@@ -33,8 +34,9 @@ namespace BeanfunLogin
 
         public BeanfunClient()
         {
+            this.redirect = true;
             this.CookieContainer = new System.Net.CookieContainer();
-            this.Headers.Add("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.87 Safari/537.36");
+            this.Headers.Set("User-Agent", "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:47.0) Gecko/20100101 Firefox/47.0");
             this.ResponseUri = null;
             this.errmsg = null;
             this.webtoken = null;
@@ -49,13 +51,14 @@ namespace BeanfunLogin
 
         public string DownloadString(string Uri)
         {
+            this.Headers.Set("User-Agent", "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:47.0) Gecko/20100101 Firefox/47.0");
             var ret = base.DownloadString(Uri);
             return ret;
         }
 
         public byte[] UploadValues(string skey, NameValueCollection payload)
         {
-            this.Headers.Add("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.87 Safari/537.36");
+            this.Headers.Set("User-Agent", "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:47.0) Gecko/20100101 Firefox/47.0");
             return base.UploadValues(skey, payload);
         }
 
@@ -71,6 +74,7 @@ namespace BeanfunLogin
             if (request2 != null)
             {
                 request2.CookieContainer = this.CookieContainer;
+                request2.AllowAutoRedirect = this.redirect;
             }
             return webRequest;
         }

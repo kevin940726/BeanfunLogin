@@ -22,6 +22,16 @@ using System.Threading;
 
 namespace BeanfunLogin
 {
+    enum LoginMethod : int {
+        Regular = 0,
+        Keypasco = 1,
+        Gamaotp = 2,
+        Otp = 3,
+        OtpE = 4,
+        PlaySafe = 5,
+        QRCode = 6
+    };
+
     public partial class main : Form
     {
         private AccountManager accountManager = null;
@@ -29,6 +39,7 @@ namespace BeanfunLogin
         public BeanfunClient bfClient;
 
         public BeanfunClient.GamaotpClass gamaotpClass;
+        public BeanfunClient.QRCodeClass qrcodeClass;
 
         private string service_code = "610074" , service_region = "T9";
 
@@ -38,7 +49,7 @@ namespace BeanfunLogin
         {
             InitializeComponent();
             init();
-            CheckForUpdate();
+            //CheckForUpdate();
         }
 
         public void ShowToolTip(IWin32Window ui, string title, string des, int iniDelay = 2000, bool repeat = false)
@@ -271,6 +282,8 @@ namespace BeanfunLogin
         // The login botton.
         private void loginButton_Click(object sender, EventArgs e)
         {
+            foreach (ListViewItem item in listView1.Items)
+                item.BackColor = DefaultBackColor;
             if (this.pingWorker.IsBusy)
             {
                 this.pingWorker.CancelAsync();
@@ -297,8 +310,10 @@ namespace BeanfunLogin
             }
             Properties.Settings.Default.Save();
 
+
             this.UseWaitCursor = true;
             this.panel2.Enabled = false;
+
             this.loginButton.Text = "請稍後...";
             this.loginWorker.RunWorkerAsync(Properties.Settings.Default.loginMethod);
         }    
@@ -421,45 +436,83 @@ namespace BeanfunLogin
                 this.getOtpButton.Text = "獲取密碼";
         }
 
+        // login method changed event
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            Properties.Settings.Default.loginMethod = this.loginMethodInput.SelectedIndex;
-            this.gamaotp_label.Visible = false;
+            qrCheckLogin.Enabled = false;
+
+            accountInput.Visible = true;
+            accountLabel.Visible = true;
+
+            passLabel.Visible = true;
+            passwdInput.Visible = true;
+
+            extraCodeInput.Visible = false;
+            gamaotp_label.Visible = false;
+            secPassLabel.Visible = false;
+
+            qrcodeImg.Visible = false;
+
+            rememberAccount.Visible = true;
+            rememberAccPwd.Visible = true;
+            checkBox3.Visible = true;
+            loginButton.Visible = true;
+
+            wait_qrWorker_notify.Visible = false;
+
             this.gamaotp_challenge_code_output.Text = "";
-            if (Properties.Settings.Default.loginMethod == 4)
+
+            Properties.Settings.Default.loginMethod = this.loginMethodInput.SelectedIndex;
+
+            if (Properties.Settings.Default.loginMethod == (int)LoginMethod.OtpE)
             {
-                this.label4.Visible = true;
-                this.textBox4.Visible = true;
+                this.secPassLabel.Visible = true;
+                this.extraCodeInput.Visible = true;
             }
-            else
+            else if (Properties.Settings.Default.loginMethod == (int)LoginMethod.Gamaotp)
             {
-                this.label4.Visible = false;
-                this.textBox4.Visible = false;
-            }
-            if (Properties.Settings.Default.loginMethod == 2)
-            {
-                this.label3.Text = "安全密碼";
+                this.passLabel.Text = "安全密碼";
                 this.bfClient = new BeanfunClient();
                 this.gamaotpClass = this.bfClient.GetGamaotpPassCode(this.bfClient.GetSessionkey());
+
                 if (this.bfClient.errmsg != null)
                     errexit(this.bfClient.errmsg, 2);
-                else
-                {
-                    this.gamaotp_label.Visible = true;
-                    this.gamaotp_challenge_code_output.Text = this.gamaotpClass.motp;
-                }
+
+                this.gamaotp_label.Visible = true;
+                this.gamaotp_challenge_code_output.Text = this.gamaotpClass.motp;
             }         
-            else if (Properties.Settings.Default.loginMethod == 3)
+            else if (Properties.Settings.Default.loginMethod == (int)LoginMethod.Otp)
             {
-                this.label3.Text = "安全密碼";
+                this.passLabel.Text = "安全密碼";
             }
-            else if (Properties.Settings.Default.loginMethod == 5)
+            else if (Properties.Settings.Default.loginMethod == (int)LoginMethod.PlaySafe)
             {
-                this.label3.Text = "PIN碼";
+                this.passLabel.Text = "PIN碼";
+            }
+            else if (Properties.Settings.Default.loginMethod == (int)LoginMethod.QRCode)
+            {
+                accountInput.Visible = false;
+                accountLabel.Visible = false;
+
+                passLabel.Visible = false;
+                passwdInput.Visible = false;
+
+                qrcodeImg.Visible = true;
+
+                rememberAccount.Visible = false;
+                rememberAccPwd.Visible = false;
+                checkBox3.Visible = false;
+                loginButton.Visible = false;
+                qrcodeImg.Image = null;
+                wait_qrWorker_notify.Text = "取得QRCode中 請稍後";
+                wait_qrWorker_notify.Visible = true;
+
+                this.qrWorker.RunWorkerAsync(null);
+                this.loginMethodInput.Enabled = false;
             }
             else
             {
-                this.label3.Text = "密碼";
+                this.passLabel.Text = "密碼";
             }
         }
 
@@ -538,6 +591,12 @@ namespace BeanfunLogin
         {
             Properties.Settings.Default.Save();
         }
+
+
+
+
+
+
 
     }
 }
