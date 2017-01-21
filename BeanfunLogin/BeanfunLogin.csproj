@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>BeanfunLogin</RootNamespace>
     <AssemblyName>BeanfunLogin</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
     <IsWebBootstrapper>false</IsWebBootstrapper>
@@ -73,6 +73,10 @@
     <TargetZone>LocalIntranet</TargetZone>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="CSharpAnalytics.Net45, Version=1.2.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\CSharpAnalytics.1.2.1\lib\net45\CSharpAnalytics.Net45.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net40\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -128,6 +132,7 @@
       <DesignTime>True</DesignTime>
     </Compile>
     <None Include="BeanfunLogin_TemporaryKey.pfx" />
+    <None Include="packages.config" />
     <None Include="Properties\app.manifest" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

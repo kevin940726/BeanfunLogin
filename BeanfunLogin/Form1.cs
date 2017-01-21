@@ -19,6 +19,7 @@ using System.Diagnostics;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Threading;
+using CSharpAnalytics;
 
 namespace BeanfunLogin
 {
@@ -47,6 +48,10 @@ namespace BeanfunLogin
             InitializeComponent();
             init();
             CheckForUpdate();
+
+            AutoMeasurement.Instance = new WinFormAutoMeasurement();
+            AutoMeasurement.DebugWriter = d => Debug.WriteLine(d);
+            AutoMeasurement.Start(new MeasurementConfiguration("UA-75983216-4"));
         }
 
         public void ShowToolTip(IWin32Window ui, string title, string des, int iniDelay = 2000, bool repeat = false)
@@ -67,6 +72,8 @@ namespace BeanfunLogin
 
         public bool errexit(string msg, int method, string title = null)
         {
+            string originalMsg = msg;
+
             switch (msg)
             {
                 case "LoginNoResponse":
@@ -97,7 +104,7 @@ namespace BeanfunLogin
                         msg = "密碼獲取失敗，請檢查晶片卡是否插入讀卡機，且讀卡機運作正常。\n若仍出現此訊息，請嘗試重新登入。";
                     else
                     {
-                        msg = "密碼獲取失敗，請嘗試重新登入。";
+                        msg = "已從伺服器斷線，請重新登入。";
                         method = 1;
                     }
                     break;
@@ -130,6 +137,9 @@ namespace BeanfunLogin
             {
                 BackToLogin();
             }
+
+            AutoMeasurement.Client.TrackEvent(originalMsg, "error", msg);
+
             return false;
         }
 
@@ -140,6 +150,7 @@ namespace BeanfunLogin
             panel2.BringToFront();
             Properties.Settings.Default.autoLogin = false;
             init();
+            
         }
 
         public bool init()
@@ -362,6 +373,8 @@ namespace BeanfunLogin
                 string file = openFileDialog.FileName;
                 Properties.Settings.Default.gamePath = file;
             }
+
+            AutoMeasurement.Client.TrackEvent("set game path", "button", "button");
         }
 
         private void checkBox3_CheckedChanged(object sender, EventArgs e)
@@ -380,6 +393,8 @@ namespace BeanfunLogin
                 this.rememberAccount.Enabled = true;
                 this.rememberAccPwd.Enabled = true;
             }
+
+            AutoMeasurement.Client.TrackEvent(this.checkBox3.Checked ? "autoLoginOn" : "autoLoginOff", "loginCheckbox");
         }
 
         private void checkBox2_CheckedChanged(object sender, EventArgs e)
@@ -396,6 +411,8 @@ namespace BeanfunLogin
                 Properties.Settings.Default.rememberPwd = false;
                 this.rememberAccount.Enabled = true;
             }
+
+            AutoMeasurement.Client.TrackEvent(this.rememberAccPwd.Checked ? "rememberPwdOn" : "rememberPwdOff", "rememberPwdCheckbox");
         }
 
         private void checkBox4_CheckedChanged(object sender, EventArgs e)
@@ -411,6 +428,8 @@ namespace BeanfunLogin
                     Properties.Settings.Default.autoSelect = false;
             }
             Properties.Settings.Default.Save();
+
+            AutoMeasurement.Client.TrackEvent(this.checkBox4.Checked ? "autoSelectOn" : "autoSelectOff", "autoSelectCheckbox", this.listView1.SelectedItems[0].Index.ToString());
         }
 
         private void textBox3_OnClick(object sender, EventArgs e)
@@ -503,6 +522,8 @@ namespace BeanfunLogin
                         this.pingWorker.CancelAsync();
                     }
             Properties.Settings.Default.Save();
+
+            AutoMeasurement.Client.TrackEvent(keepLogged.Checked ? "keepLoggedOn" : "keepLoggedOff", "keepLoggedCheckbox");
         }
 
         private void comboBox2_SelectedIndexChanged(object sender, EventArgs e)
@@ -534,6 +555,8 @@ namespace BeanfunLogin
                     refreshAccountList();
                 }
             }
+
+            AutoMeasurement.Client.TrackEvent("delete", "accountMananger", accounts.SelectedIndex.ToString());
         }
 
         private void import_Click(object sender, EventArgs e)
@@ -542,6 +565,8 @@ namespace BeanfunLogin
             if (res == false)
                 errexit("帳號記錄新增失敗",0);
             refreshAccountList();
+
+            AutoMeasurement.Client.TrackEvent("import", "accountMananger");
         }
 
         private void export_Click(object sender, EventArgs e)
@@ -560,12 +585,26 @@ namespace BeanfunLogin
                 accountInput.Text = account;
                 passwdInput.Text = passwd;
                 loginMethodInput.SelectedIndex = method;
+
+                AutoMeasurement.Client.TrackEvent("export", "accountMananger");
             }
+        }
+
+        private void autoPaste_CheckedChanged(object sender, EventArgs e)
+        {
+            AutoMeasurement.Client.TrackEvent(this.autoPaste.Checked ? "autoPasteOn" : "autoPasteOff", "autoPasteCheckbox");
+        }
+
+        private void rememberAccount_CheckedChanged(object sender, EventArgs e)
+        {
+            AutoMeasurement.Client.TrackEvent(this.rememberAccount.Checked ? "rememberAccountOn" : "rememberAccountOff", "rememberAccountCheckbox");
         }
 
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
         {
             Properties.Settings.Default.Save();
+
+            AutoMeasurement.Client.TrackEvent(this.checkBox1.Checked ? "autoLaunchOn" : "autoLaunchOff", "autoLaunchCheckbox");
         }
 
 
