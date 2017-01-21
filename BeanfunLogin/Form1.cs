@@ -43,15 +43,24 @@ namespace BeanfunLogin
 
         public List<GameService> gameList = new List<GameService>();
 
+        private CSharpAnalytics.Activities.AutoTimedEventActivity timedActivity = null;
+
         public main()
         {
+            AutoMeasurement.Instance = new WinFormAutoMeasurement();
+            AutoMeasurement.DebugWriter = d => Debug.WriteLine(d);
+            AutoMeasurement.Start(new MeasurementConfiguration("UA-75983216-4"));
+
+            timedActivity = new CSharpAnalytics.Activities.AutoTimedEventActivity("FormLoad", Properties.Settings.Default.loginMethod.ToString());
             InitializeComponent();
             init();
             CheckForUpdate();
 
-            AutoMeasurement.Instance = new WinFormAutoMeasurement();
-            AutoMeasurement.DebugWriter = d => Debug.WriteLine(d);
-            AutoMeasurement.Start(new MeasurementConfiguration("UA-75983216-4"));
+            if (this.timedActivity != null)
+            {
+                AutoMeasurement.Client.Track(this.timedActivity);
+                this.timedActivity = null;
+            }
         }
 
         public void ShowToolTip(IWin32Window ui, string title, string des, int iniDelay = 2000, bool repeat = false)
@@ -73,6 +82,7 @@ namespace BeanfunLogin
         public bool errexit(string msg, int method, string title = null)
         {
             string originalMsg = msg;
+            AutoMeasurement.Client.TrackException(msg);
 
             switch (msg)
             {
@@ -137,8 +147,6 @@ namespace BeanfunLogin
             {
                 BackToLogin();
             }
-
-            AutoMeasurement.Client.TrackEvent(originalMsg, "error", msg);
 
             return false;
         }
@@ -290,6 +298,7 @@ namespace BeanfunLogin
         // The login botton.
         private void loginButton_Click(object sender, EventArgs e)
         {
+
             foreach (ListViewItem item in listView1.Items)
                 item.BackColor = DefaultBackColor;
             if (this.pingWorker.IsBusy)
@@ -323,6 +332,7 @@ namespace BeanfunLogin
             this.panel2.Enabled = false;
 
             this.loginButton.Text = "請稍後...";
+            timedActivity = new CSharpAnalytics.Activities.AutoTimedEventActivity("Login", Properties.Settings.Default.loginMethod.ToString());
             this.loginWorker.RunWorkerAsync(Properties.Settings.Default.loginMethod);
         }    
 
@@ -343,6 +353,7 @@ namespace BeanfunLogin
             this.textBox3.Text = "獲取密碼中...";
             this.listView1.Enabled = false;
             this.getOtpButton.Enabled = false;
+            timedActivity = new CSharpAnalytics.Activities.AutoTimedEventActivity("GetOTP", Properties.Settings.Default.loginMethod.ToString());
             this.getOtpWorker.RunWorkerAsync(listView1.SelectedItems[0].Index);
         }
 
@@ -374,7 +385,7 @@ namespace BeanfunLogin
                 Properties.Settings.Default.gamePath = file;
             }
 
-            AutoMeasurement.Client.TrackEvent("set game path", "button", "button");
+            AutoMeasurement.Client.TrackEvent("set game path", "set game path");
         }
 
         private void checkBox3_CheckedChanged(object sender, EventArgs e)
@@ -429,7 +440,7 @@ namespace BeanfunLogin
             }
             Properties.Settings.Default.Save();
 
-            AutoMeasurement.Client.TrackEvent(this.checkBox4.Checked ? "autoSelectOn" : "autoSelectOff", "autoSelectCheckbox", this.listView1.SelectedItems[0].Index.ToString());
+            AutoMeasurement.Client.TrackEvent(this.checkBox4.Checked ? "autoSelectOn" : "autoSelectOff", "autoSelectCheckbox");
         }
 
         private void textBox3_OnClick(object sender, EventArgs e)
@@ -522,8 +533,6 @@ namespace BeanfunLogin
                         this.pingWorker.CancelAsync();
                     }
             Properties.Settings.Default.Save();
-
-            AutoMeasurement.Client.TrackEvent(keepLogged.Checked ? "keepLoggedOn" : "keepLoggedOff", "keepLoggedCheckbox");
         }
 
         private void comboBox2_SelectedIndexChanged(object sender, EventArgs e)
@@ -556,7 +565,7 @@ namespace BeanfunLogin
                 }
             }
 
-            AutoMeasurement.Client.TrackEvent("delete", "accountMananger", accounts.SelectedIndex.ToString());
+            AutoMeasurement.Client.TrackEvent("remove", "accountMananger");
         }
 
         private void import_Click(object sender, EventArgs e)
@@ -566,7 +575,7 @@ namespace BeanfunLogin
                 errexit("帳號記錄新增失敗",0);
             refreshAccountList();
 
-            AutoMeasurement.Client.TrackEvent("import", "accountMananger");
+            AutoMeasurement.Client.TrackEvent("add", "accountMananger");
         }
 
         private void export_Click(object sender, EventArgs e)
@@ -586,7 +595,7 @@ namespace BeanfunLogin
                 passwdInput.Text = passwd;
                 loginMethodInput.SelectedIndex = method;
 
-                AutoMeasurement.Client.TrackEvent("export", "accountMananger");
+                AutoMeasurement.Client.TrackEvent("fill", "accountMananger");
             }
         }
 

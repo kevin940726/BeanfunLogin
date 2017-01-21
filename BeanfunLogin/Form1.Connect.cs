@@ -12,6 +12,7 @@ using System.Threading;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Drawing;
+using CSharpAnalytics;
 
 namespace BeanfunLogin
 {
@@ -46,6 +47,11 @@ namespace BeanfunLogin
         // Login completed.
         private void loginWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
+            if (this.timedActivity != null)
+            {
+                AutoMeasurement.Client.Track(this.timedActivity);
+                this.timedActivity = null;
+            }
             if (Properties.Settings.Default.keepLogged && !this.pingWorker.IsBusy)
                 this.pingWorker.RunWorkerAsync();
             Debug.WriteLine("loginWorker end");
@@ -160,6 +166,12 @@ namespace BeanfunLogin
         // getOTP completed.
         private void getOtpWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
+            if (this.timedActivity != null)
+            {
+                AutoMeasurement.Client.Track(this.timedActivity);
+                this.timedActivity = null;
+            }
+
             const int VK_TAB = 0x09;
             const byte VK_CONTROL = 0x11;
             const int VK_V = 0x56;
