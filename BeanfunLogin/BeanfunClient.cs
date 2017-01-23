@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Net;
+using System.Windows.Forms;
+using System.Diagnostics;
 using System.Collections.Specialized;
 
 
@@ -15,6 +17,7 @@ namespace BeanfunLogin
         public string errmsg;
         private string webtoken;
         public List<AccountList> accountList;
+        bool redirect;
 
         public class AccountList
         {
@@ -31,18 +34,32 @@ namespace BeanfunLogin
 
         public BeanfunClient()
         {
+            this.redirect = true;
             this.CookieContainer = new System.Net.CookieContainer();
-            this.Headers.Add("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.87 Safari/537.36");
+            this.Headers.Set("User-Agent", "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:47.0) Gecko/20100101 Firefox/47.0");
             this.ResponseUri = null;
             this.errmsg = null;
             this.webtoken = null;
             this.accountList = new List<AccountList>();
-            this.Encoding = Encoding.UTF8;
         }
 
         public string DownloadString(string Uri, Encoding Encoding)
         {
-            return (Encoding.GetString(base.DownloadData(Uri)));
+            var ret = (Encoding.GetString(base.DownloadData(Uri)));
+            return ret;
+        }
+
+        public string DownloadString(string Uri)
+        {
+            this.Headers.Set("User-Agent", "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:47.0) Gecko/20100101 Firefox/47.0");
+            var ret = base.DownloadString(Uri);
+            return ret;
+        }
+
+        public byte[] UploadValues(string skey, NameValueCollection payload)
+        {
+            this.Headers.Set("User-Agent", "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:47.0) Gecko/20100101 Firefox/47.0");
+            return base.UploadValues(skey, payload);
         }
 
         protected override WebRequest GetWebRequest(Uri address)
@@ -53,6 +70,7 @@ namespace BeanfunLogin
             if (request2 != null)
             {
                 request2.CookieContainer = this.CookieContainer;
+                request2.AllowAutoRedirect = this.redirect;
             }
             return webRequest;
         }
@@ -96,11 +114,14 @@ namespace BeanfunLogin
             }
         }
 
-        public string Ping()
+        public void Ping()
         {
-            return "";
-        }
+            byte[] raw = null;
 
+            raw = this.DownloadData("http://tw.beanfun.com/beanfun_block/generic_handlers/echo_token.ashx?webtoken=1");
+            string ret = Encoding.GetString(raw);
+            Debug.WriteLine(GetCurrentTime() + " @ " +ret);
+        }
 
     }
 }
