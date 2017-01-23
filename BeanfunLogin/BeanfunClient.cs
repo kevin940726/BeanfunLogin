@@ -75,12 +75,6 @@ namespace BeanfunLogin
             return webRequest;
         }
 
-         public byte[] UploadValues(string skey, NameValueCollection payload)
-         {
-             this.Headers.Add("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.87 Safari/537.36");
-             return base.UploadValues(skey, payload);
-         }
-
         protected override WebResponse GetWebResponse(WebRequest request)
         {
           WebResponse webResponse = base.GetWebResponse(request);

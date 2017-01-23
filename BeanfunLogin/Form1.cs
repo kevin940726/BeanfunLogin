@@ -174,7 +174,7 @@ namespace BeanfunLogin
                 if (res == false)
                     errexit("帳號記錄初始化失敗，未知的錯誤。", 0);
                 refreshAccountList();
-                //Properties.Settings.Default.Reset(); //SetToDefault.                  
+                // Properties.Settings.Default.Reset(); //SetToDefault.                  
 
                 // Handle settings.
                 if (Properties.Settings.Default.rememberAccount == true)
