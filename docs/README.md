@@ -1,11 +1,11 @@
 ---
-layout: post
+layout: default
 title: BeanfunLogin - 新楓之谷Beanfun登入器
 ---
 
 ## 新楓之谷Beanfun登入器
 
-[**程式下載**](../../raw/master/BeanfunLogin.rar) - Version 1.10.0
+[**程式下載**](../../raw/master/BeanfunLogin.rar) - Version 1.9.1
 
 此版本更新
 * 新增 QR Code 登入方式
