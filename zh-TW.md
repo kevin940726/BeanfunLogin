@@ -2,7 +2,7 @@
 
 ### 此頁面已全面移至新[連結](https://kevin940726.github.io/BeanfunLogin/)
 
-Version 1.9.1
+Version 1.9.2
 
 此版本更新
 * 新增 QR Code 登入方式
