@@ -268,7 +268,7 @@ namespace BeanfunLogin
 
                 this.comboBox2.SelectedIndex = Properties.Settings.Default.loginGame;
 
-                string response = wc.DownloadString("https://raw.githubusercontent.com/kevin940726/BeanfunLogin/master/zh-TW.md");
+                string response = wc.DownloadString("https://raw.githubusercontent.com/kevin940726/BeanfunLogin/master/docs/index.md");
                 Regex regex = new Regex("Version (\\d\\.\\d\\.\\d)");
                 if (!regex.IsMatch(response))
                     return;
