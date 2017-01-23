@@ -104,7 +104,9 @@ namespace BeanfunLogin
                 if (!regex.IsMatch(response))
                 { this.errmsg = "LoginNoEventvalidation"; return null; }
                 string eventvalidation = regex.Match(response).Groups[1].Value;
-                regex = new Regex("lblSID\"><font color=\"White\">(\\w+)</font></span>");
+                // lblSID" style=\"color:White;\">31yf35fkkyi5pd55fvkts345</span>
+                //regex = new Regex("lblSID\"><font color=\"White\">(\\w+)</font></span>");
+                regex = new Regex("lblSID\" style=\"color:White;\">(\\w+)</span>");
                 if (!regex.IsMatch(response))
                 { this.errmsg = "LoginNoLblSID"; return null; }
                 string lblSID = regex.Match(response).Groups[1].Value;

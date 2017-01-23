@@ -33,6 +33,6 @@ using System.Resources;
 // 您可以指定所有的值，也可以依照以下的方式，使用 '*' 將組建和修訂編號
 // 指定為預設值:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.9.1.0")]
-[assembly: AssemblyFileVersion("1.9.1.0")]
+[assembly: AssemblyVersion("1.9.2.0")]
+[assembly: AssemblyFileVersion("1.9.2.0")]
 [assembly: NeutralResourcesLanguageAttribute("zh-Hant")]
