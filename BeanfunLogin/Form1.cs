@@ -158,7 +158,7 @@ namespace BeanfunLogin
             panel2.BringToFront();
             Properties.Settings.Default.autoLogin = false;
             init();
-            
+            comboBox1_SelectedIndexChanged(null, null);
         }
 
         public bool init()
@@ -614,6 +614,11 @@ namespace BeanfunLogin
             Properties.Settings.Default.Save();
 
             AutoMeasurement.Client.TrackEvent(this.checkBox1.Checked ? "autoLaunchOn" : "autoLaunchOff", "autoLaunchCheckbox");
+        }
+
+        private void main_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            Properties.Settings.Default.Save();
         }
 
 

@@ -224,14 +224,14 @@
             // BackToLogin_ToolStripMenuItem
             // 
             this.BackToLogin_ToolStripMenuItem.Name = "BackToLogin_ToolStripMenuItem";
-            this.BackToLogin_ToolStripMenuItem.Size = new System.Drawing.Size(92, 20);
+            this.BackToLogin_ToolStripMenuItem.Size = new System.Drawing.Size(91, 20);
             this.BackToLogin_ToolStripMenuItem.Text = "返回登入頁面";
             this.BackToLogin_ToolStripMenuItem.Click += new System.EventHandler(this.BackToLogin_ToolStripMenuItem_Click);
             // 
             // SetGamePath_ToolStripMenuItem1
             // 
             this.SetGamePath_ToolStripMenuItem1.Name = "SetGamePath_ToolStripMenuItem1";
-            this.SetGamePath_ToolStripMenuItem1.Size = new System.Drawing.Size(92, 20);
+            this.SetGamePath_ToolStripMenuItem1.Size = new System.Drawing.Size(91, 20);
             this.SetGamePath_ToolStripMenuItem1.Text = "設定遊戲路徑";
             this.SetGamePath_ToolStripMenuItem1.Click += new System.EventHandler(this.SetGamePath_ToolStripMenuItem1_Click);
             // 
@@ -556,6 +556,7 @@
             this.MaximizeBox = false;
             this.Name = "main";
             this.Text = "BeanfunLogin - By Kai";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.main_FormClosed);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             this.menuStrip1.ResumeLayout(false);
