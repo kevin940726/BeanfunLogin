@@ -7,6 +7,8 @@ title: BeanfunLogin - 新楓之谷Beanfun登入器
 
 [**程式下載**](https://github.com/kevin940726/BeanfunLogin/raw/master/BeanfunLogin.rar) - Version 1.9.2
 
+[其餘各版本連結](https://github.com/kevin940726/BeanfunLogin/releases)
+
 此版本更新
 
 * 新增 QR Code 登入方式
@@ -84,10 +86,10 @@ title: BeanfunLogin - 新楓之谷Beanfun登入器
 
 `.rar`是壓縮檔的附檔名，請下載並安裝[**WinRAR**](http://www.rar.com.tw/download.html)、[**7-Zip**](http://www.7-zip.org/)或其他解壓縮工具進行解壓縮。詳細的解壓縮教學請參照他們官網或自行Google。
 
-> Q: 程式顯示要我安裝`.NET Framework 4`？
-> "to run this application you first install one of the following versions of the .NET Framework v4.0.30319 CONTACT YOUR application publisher for instructions about obtaining the appropriate version of the .NET Framework."
+> Q: 程式顯示要我安裝`.NET Framework 4.5`？
+> "to run this application you first install one of the following versions of the .NET Framework v4.5.30319 CONTACT YOUR application publisher for instructions about obtaining the appropriate version of the .NET Framework."
 
-這個程式即是使用`.NET`撰寫而成，使用者必須安裝微軟提供的執行框架才能正常執行，程式的執行環境目標為[`Microsoft .NET Framework 4`](http://www.microsoft.com/zh-tw/download/details.aspx?id=17718)，詳細安裝步驟請參閱微軟官網。
+這個程式即是使用`.NET`撰寫而成，使用者必須安裝微軟提供的執行框架才能正常執行，程式的執行環境目標為[`Microsoft .NET Framework 4.5`](http://www.microsoft.com/zh-tw/download/details.aspx?id=17718)，詳細安裝步驟請參閱微軟官網。
 
 > Q: 遊戲沒有正常開啟，程式顯示請手動以系統管理員身分開啟？
 
@@ -102,6 +104,19 @@ title: BeanfunLogin - 新楓之谷Beanfun登入器
 
 若當週楓谷有進行改版，則必須手動執行一次遊戲主程式先行更新，更新完成後就可以正常使用。  
 (原因不明，待修Bug)
+
+> Q: 程式開啟失敗如完全沒有畫面、程式崩潰、同時開啟多個導致跳出錯誤？
+
+找到下面兩個檔案並刪除
+```
+C:\Users[你的使用者名稱]\AppData\Roaming\CSharpAnalytics-MeasurementQueue
+C:\Users[你的使用者名稱]\AppData\Roaming\CSharpAnalytics-MeasurementSession
+```
+如果無法解決請讓我們知道，還在研究中。
+
+> Q: 程式換新版後，獲取密碼不會自動開啟遊戲？
+
+重新設定一次遊戲路徑，並把自動開啟遊戲勾選起來，就能正常運作。或是您可以選擇手動開啟遊戲後，在帳號密碼輸入畫面，自行貼上帳號密碼。
 
 ---
 
