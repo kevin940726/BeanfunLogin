@@ -279,7 +279,7 @@ namespace BeanfunLogin
                     DialogResult result = MessageBox.Show("有新的版本(" + regex.Match(response).Groups[1].Value + ")可以下載，是否前往下載？\n(此對話窗只會顯示一次)\n\n此版本更新：" + versionlog.Match(response).Groups[1].Value, "檢查更新", MessageBoxButtons.YesNo);
                     if (result == System.Windows.Forms.DialogResult.Yes)
                     {
-                        System.Diagnostics.Process.Start("https://github.com/kevin940726/BeanfunLogin/blob/master/zh-TW.md");
+                        System.Diagnostics.Process.Start("https://kevin940726.github.io/BeanfunLogin");
                     }
                     Properties.Settings.Default.currentVersion = latest;
                     Properties.Settings.Default.Save();
