@@ -136,6 +136,9 @@ namespace BeanfunLogin
                 case "OTPUnknown":
                     msg = "獲取密碼失敗，請嘗試重新登入。";
                     break;
+                case "LoginNoPSDriver":
+                    msg = "PlaySafe驅動初始化失敗，請檢查PlaySafe元件是否已正確安裝。";
+                    break;
                 default:
                     break;
             }
@@ -333,6 +336,7 @@ namespace BeanfunLogin
 
             this.loginButton.Text = "請稍後...";
             timedActivity = new CSharpAnalytics.Activities.AutoTimedEventActivity("Login", Properties.Settings.Default.loginMethod.ToString());
+            AutoMeasurement.Client.TrackEvent("Login" + Properties.Settings.Default.loginMethod.ToString(), "Login");
             this.loginWorker.RunWorkerAsync(Properties.Settings.Default.loginMethod);
         }    
 
@@ -354,6 +358,7 @@ namespace BeanfunLogin
             this.listView1.Enabled = false;
             this.getOtpButton.Enabled = false;
             timedActivity = new CSharpAnalytics.Activities.AutoTimedEventActivity("GetOTP", Properties.Settings.Default.loginMethod.ToString());
+            AutoMeasurement.Client.TrackEvent("GetOTP" + Properties.Settings.Default.loginMethod.ToString(), "GetOTP");
             this.getOtpWorker.RunWorkerAsync(listView1.SelectedItems[0].Index);
         }
 

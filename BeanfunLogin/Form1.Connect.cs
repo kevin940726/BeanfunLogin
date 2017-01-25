@@ -90,8 +90,15 @@ namespace BeanfunLogin
                 this.listView1.Select();
                 if (Properties.Settings.Default.autoSelect == true && Properties.Settings.Default.autoSelectIndex < this.bfClient.accountList.Count())
                 {
+                    if (this.pingWorker.IsBusy)
+                    {
+                        this.pingWorker.CancelAsync();
+                    }
                     this.textBox3.Text = "獲取密碼中...";
                     this.listView1.Enabled = false;
+                    this.getOtpButton.Enabled = false;
+                    timedActivity = new CSharpAnalytics.Activities.AutoTimedEventActivity("GetOTP", Properties.Settings.Default.loginMethod.ToString());
+                    AutoMeasurement.Client.TrackEvent("GetOTP" + Properties.Settings.Default.loginMethod.ToString(), "GetOTP");
                     this.getOtpWorker.RunWorkerAsync(Properties.Settings.Default.autoSelectIndex);
                 }
                 if (Properties.Settings.Default.keepLogged && !this.pingWorker.IsBusy)
