@@ -226,5 +226,17 @@ namespace BeanfunLogin.Properties {
                 this["GAEnabled"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("v1.9.3")]
+        public string IgnoreVersion {
+            get {
+                return ((string)(this["IgnoreVersion"]));
+            }
+            set {
+                this["IgnoreVersion"] = value;
+            }
+        }
     }
 }

@@ -298,23 +298,19 @@ namespace BeanfunLogin
                 if (!regex.IsMatch(response))
                     return;
                 string versionStr = regex.Match(response).Groups[1].Value;
-                int latest = Convert.ToInt32(Regex.Replace(versionStr, "\\.", ""));
 
-                versionStr += ".0";
-                if (versionStr != currentVersion.ToString())
+                if (versionStr != Properties.Settings.Default.IgnoreVersion)
                 {
-                }
+                    Properties.Settings.Default.IgnoreVersion = versionStr;
+                    Properties.Settings.Default.Save();
 
-                if (latest > Properties.Settings.Default.currentVersion)
-                {
                     Regex versionlog = new Regex(".*此版本更新(.*)### 目錄.*", RegexOptions.Multiline | RegexOptions.Singleline);
                     DialogResult result = MessageBox.Show("有新的版本(" + regex.Match(response).Groups[1].Value + ")可以下載，是否前往下載？\n(此對話窗只會顯示一次)\n\n此版本更新：" + versionlog.Match(response).Groups[1].Value, "檢查更新", MessageBoxButtons.YesNo);
+
                     if (result == System.Windows.Forms.DialogResult.Yes)
                     {
                         System.Diagnostics.Process.Start("https://kevin940726.github.io/BeanfunLogin");
                     }
-                    Properties.Settings.Default.currentVersion = latest;
-                    Properties.Settings.Default.Save();
                 }
             }
             catch { return; }
@@ -423,6 +419,7 @@ namespace BeanfunLogin
             {
                 string file = openFileDialog.FileName;
                 Properties.Settings.Default.gamePath = file;
+                Properties.Settings.Default.Save();
             }
 
             if (Properties.Settings.Default.GAEnabled)
@@ -447,6 +444,8 @@ namespace BeanfunLogin
                 this.rememberAccount.Enabled = true;
                 this.rememberAccPwd.Enabled = true;
             }
+
+            Properties.Settings.Default.Save();
 
             if (Properties.Settings.Default.GAEnabled)
             {
@@ -662,6 +661,8 @@ namespace BeanfunLogin
 
         private void autoPaste_CheckedChanged(object sender, EventArgs e)
         {
+            Properties.Settings.Default.Save();
+
             if (Properties.Settings.Default.GAEnabled)
             {
                 AutoMeasurement.Client.TrackEvent(this.autoPaste.Checked ? "autoPasteOn" : "autoPasteOff", "autoPasteCheckbox");
@@ -670,6 +671,8 @@ namespace BeanfunLogin
 
         private void rememberAccount_CheckedChanged(object sender, EventArgs e)
         {
+            Properties.Settings.Default.Save();
+
             if (Properties.Settings.Default.GAEnabled)
             {
                 AutoMeasurement.Client.TrackEvent(this.rememberAccount.Checked ? "rememberAccountOn" : "rememberAccountOff", "rememberAccountCheckbox");
@@ -690,17 +693,5 @@ namespace BeanfunLogin
         {
             Properties.Settings.Default.Save();
         }
-
-        private void main_FormClosed(object sender, FormClosedEventArgs e)
-        {
-            Properties.Settings.Default.Save();
-        }
-
-
-
-
-
-
-
     }
 }
