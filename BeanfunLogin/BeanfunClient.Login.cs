@@ -327,7 +327,16 @@ namespace BeanfunLogin
                 { this.errmsg = "LoginNoSotp"; return null; }
                 string sotp = regex.Match(response).Groups[1].Value;
 
-                PlaySafe ps = new PlaySafe();
+                PlaySafe ps = null;
+                try
+                {
+                    ps = new PlaySafe();
+                }
+                catch (Exception e)
+                {
+                    this.errmsg = "LoginNoPSDriver";
+                    return null;
+                }
                 var readername = ps.GetReader();
                 if (readername == null)
                 { this.errmsg = "LoginNoReaderName"; return null; }
@@ -601,7 +610,7 @@ namespace BeanfunLogin
                 foreach (Match match in regex.Matches(response))
                 {
                     if (match.Groups[1].Value == "" || match.Groups[2].Value == "" || match.Groups[3].Value == "")
-                    { this.errmsg = "LoginNoAccountMatch"; return; }
+                    { continue; }
                     accountList.Add(new AccountList(match.Groups[1].Value, match.Groups[2].Value, match.Groups[3].Value));
                 }
                 if (accountList.Count == 0)
@@ -611,7 +620,14 @@ namespace BeanfunLogin
             }
             catch (Exception e)
             {
-                this.errmsg = "LoginUnknown\n\n" + e.Message + "\n" + e.StackTrace; 
+                if (e is WebException)
+                {
+                    this.errmsg = "網路連線錯誤，請檢查官方網站連線是否正常。" + e.Message;
+                }
+                else
+                {
+                    this.errmsg = "LoginUnknown\n\n" + e.Message + "\n" + e.StackTrace;
+                }
                 return;
             }
         }
