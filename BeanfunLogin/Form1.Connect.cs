@@ -47,7 +47,7 @@ namespace BeanfunLogin
         // Login completed.
         private void loginWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            if (this.timedActivity != null)
+            if (this.timedActivity != null && Properties.Settings.Default.GAEnabled)
             {
                 AutoMeasurement.Client.Track(this.timedActivity);
                 this.timedActivity = null;
@@ -98,7 +98,9 @@ namespace BeanfunLogin
                     this.listView1.Enabled = false;
                     this.getOtpButton.Enabled = false;
                     timedActivity = new CSharpAnalytics.Activities.AutoTimedEventActivity("GetOTP", Properties.Settings.Default.loginMethod.ToString());
-                    AutoMeasurement.Client.TrackEvent("GetOTP" + Properties.Settings.Default.loginMethod.ToString(), "GetOTP");
+                    if (Properties.Settings.Default.GAEnabled) {
+                        AutoMeasurement.Client.TrackEvent("GetOTP" + Properties.Settings.Default.loginMethod.ToString(), "GetOTP"); 
+                    }
                     this.getOtpWorker.RunWorkerAsync(Properties.Settings.Default.autoSelectIndex);
                 }
                 if (Properties.Settings.Default.keepLogged && !this.pingWorker.IsBusy)
@@ -173,7 +175,7 @@ namespace BeanfunLogin
         // getOTP completed.
         private void getOtpWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            if (this.timedActivity != null)
+            if (this.timedActivity != null && Properties.Settings.Default.GAEnabled)
             {
                 AutoMeasurement.Client.Track(this.timedActivity);
                 this.timedActivity = null;

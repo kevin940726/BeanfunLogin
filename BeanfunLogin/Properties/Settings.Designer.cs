@@ -214,5 +214,17 @@ namespace BeanfunLogin.Properties {
                 this["autoPaste"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool GAEnabled {
+            get {
+                return ((bool)(this["GAEnabled"]));
+            }
+            set {
+                this["GAEnabled"] = value;
+            }
+        }
     }
 }
