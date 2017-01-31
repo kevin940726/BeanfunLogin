@@ -5,16 +5,16 @@ title: BeanfunLogin - 新楓之谷Beanfun登入器
 
 # 新楓之谷 Beanfun 登入器
 
-[**程式下載**](https://github.com/kevin940726/BeanfunLogin/raw/master/BeanfunLogin.rar) - Version 1.9.2
+[**程式下載**]https://github.com/kevin940726/BeanfunLogin/releases/download/v1.9.3/BeanfunLogin-1.9.3.zip) - Version 1.9.3
 
 [其餘各版本連結](https://github.com/kevin940726/BeanfunLogin/releases)
 
 此版本更新
 
-* 新增 QR Code 登入方式
-* 移除不再支援的登入方式
-* 修正部份錯誤
-* 自動輸入密碼
+* 修復bug
+* 例外情況文字說明：偵測PS驅動初始化失敗、網路連線錯誤
+* 金鑰一哥+QRCode綁定者，現在已經可以透過QRCode登入了
+* Google Analytic穩定性增加
 
 ### 目錄
 * [程式介紹](#程式介紹)
