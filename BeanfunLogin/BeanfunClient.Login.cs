@@ -327,7 +327,16 @@ namespace BeanfunLogin
                 { this.errmsg = "LoginNoSotp"; return null; }
                 string sotp = regex.Match(response).Groups[1].Value;
 
-                PlaySafe ps = new PlaySafe();
+                PlaySafe ps = null;
+                try
+                {
+                    ps = new PlaySafe();
+                }
+                catch (Exception e)
+                {
+                    this.errmsg = "LoginNoPSDriver";
+                    return null;
+                }
                 var readername = ps.GetReader();
                 if (readername == null)
                 { this.errmsg = "LoginNoReaderName"; return null; }
@@ -370,7 +379,7 @@ namespace BeanfunLogin
                 response = Encoding.UTF8.GetString(this.UploadValues("https://tw.newlogin.beanfun.com/login/playsafe_form.aspx?skey=" + skey, payload));
                 regex = new Regex("akey=(.*)");
                 if (!regex.IsMatch(this.ResponseUri.ToString()))
-                { this.errmsg = signature; return null; }
+                { this.errmsg = "LoginNoAkey"; return null; }
                 return ps.cardid + " " + regex.Match(this.ResponseUri.ToString()).Groups[1].Value;
             }
             catch (Exception e)
@@ -439,7 +448,13 @@ namespace BeanfunLogin
                 if (!regex2.IsMatch(response2))
                 { this.errmsg = "AKeyParseFailed"; return null; }
                 string akey = regex2.Match(response2).Groups[1].Value;
-                string test = this.DownloadString("https://tw.newlogin.beanfun.com/login/final_step.aspx?akey="+akey+"&authkey=N&bfapp=1");
+
+                regex2 = new Regex("authkey%3d(.*)%26");
+                if (!regex2.IsMatch(response2))
+                { this.errmsg = "authkeyParseFailed"; return null; }
+                string authkey = regex2.Match(response2).Groups[1].Value;
+                Debug.WriteLine(authkey);
+                string test = this.DownloadString("https://tw.newlogin.beanfun.com/login/final_step.aspx?akey="+akey+"&authkey="+ authkey+"&bfapp=1");
                 return akey;
             }
             catch (Exception e)
@@ -468,7 +483,7 @@ namespace BeanfunLogin
                 { this.errmsg = "LoginJsonParseFailed"; return -1; }
 
                 result = regex.Match(response).Groups[1].Value;
-                //Debug.WriteLine(result);
+                Debug.WriteLine(result);
                 if (result == "Failed")
                     return 0;
                 else if (result == "Token Expired")
@@ -595,7 +610,7 @@ namespace BeanfunLogin
                 foreach (Match match in regex.Matches(response))
                 {
                     if (match.Groups[1].Value == "" || match.Groups[2].Value == "" || match.Groups[3].Value == "")
-                    { this.errmsg = "LoginNoAccountMatch"; return; }
+                    { continue; }
                     accountList.Add(new AccountList(match.Groups[1].Value, match.Groups[2].Value, match.Groups[3].Value));
                 }
                 if (accountList.Count == 0)
@@ -605,7 +620,14 @@ namespace BeanfunLogin
             }
             catch (Exception e)
             {
-                this.errmsg = "LoginUnknown\n\n" + e.Message + "\n" + e.StackTrace; 
+                if (e is WebException)
+                {
+                    this.errmsg = "網路連線錯誤，請檢查官方網站連線是否正常。" + e.Message;
+                }
+                else
+                {
+                    this.errmsg = "LoginUnknown\n\n" + e.Message + "\n" + e.StackTrace;
+                }
                 return;
             }
         }

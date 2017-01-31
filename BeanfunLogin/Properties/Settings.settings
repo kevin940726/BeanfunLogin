@@ -50,5 +50,11 @@
     <Setting Name="autoPaste" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
+    <Setting Name="GAEnabled" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="IgnoreVersion" Type="System.String" Scope="User">
+      <Value Profile="(Default)">v1.9.3</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Threading;
 using CSharpAnalytics;
+using System.Reflection;
 
 namespace BeanfunLogin
 {
@@ -45,11 +46,26 @@ namespace BeanfunLogin
 
         private CSharpAnalytics.Activities.AutoTimedEventActivity timedActivity = null;
 
+        private string currentVersion = Assembly.GetExecutingAssembly().GetName().Version.ToString();
+
         public main()
         {
-            AutoMeasurement.Instance = new WinFormAutoMeasurement();
-            AutoMeasurement.DebugWriter = d => Debug.WriteLine(d);
-            AutoMeasurement.Start(new MeasurementConfiguration("UA-75983216-4"));
+            currentVersion = currentVersion.Remove(currentVersion.Length - 2);
+
+            if (Properties.Settings.Default.GAEnabled)
+            {
+                try
+                {
+                    AutoMeasurement.Instance = new WinFormAutoMeasurement();
+                    AutoMeasurement.DebugWriter = d => Debug.WriteLine(d);
+                    AutoMeasurement.Start(new MeasurementConfiguration("UA-75983216-4", Assembly.GetExecutingAssembly().GetName().Name, currentVersion));
+                }
+                catch
+                {
+                    Properties.Settings.Default.GAEnabled = false;
+                    Properties.Settings.Default.Save();
+                }
+            }
 
             timedActivity = new CSharpAnalytics.Activities.AutoTimedEventActivity("FormLoad", Properties.Settings.Default.loginMethod.ToString());
             InitializeComponent();
@@ -82,7 +98,8 @@ namespace BeanfunLogin
         public bool errexit(string msg, int method, string title = null)
         {
             string originalMsg = msg;
-            AutoMeasurement.Client.TrackException(msg);
+            if (Properties.Settings.Default.GAEnabled) 
+                AutoMeasurement.Client.TrackException(msg);
 
             switch (msg)
             {
@@ -136,6 +153,9 @@ namespace BeanfunLogin
                 case "OTPUnknown":
                     msg = "獲取密碼失敗，請嘗試重新登入。";
                     break;
+                case "LoginNoPSDriver":
+                    msg = "PlaySafe驅動初始化失敗，請檢查PlaySafe元件是否已正確安裝。";
+                    break;
                 default:
                     break;
             }
@@ -158,14 +178,14 @@ namespace BeanfunLogin
             panel2.BringToFront();
             Properties.Settings.Default.autoLogin = false;
             init();
-            
+            comboBox1_SelectedIndexChanged(null, null);
         }
 
         public bool init()
         {
             try
             {
-                this.Text = "BeanfunLogin - v" + Properties.Settings.Default.currentVersion.ToString().Insert(1, ".").Insert(3, ".");
+                this.Text = "BeanfunLogin - v" + currentVersion;
                 this.AcceptButton = this.loginButton;
                 this.bfClient = null;
                 this.accountManager = new AccountManager();
@@ -266,23 +286,31 @@ namespace BeanfunLogin
                     }
                 }
 
-                this.comboBox2.SelectedIndex = Properties.Settings.Default.loginGame;
+                try
+                {
+                    this.comboBox2.SelectedIndex = Properties.Settings.Default.loginGame;
+                }
+                catch { /* ignore out of range */ }
 
-                string response = wc.DownloadString("https://raw.githubusercontent.com/kevin940726/BeanfunLogin/master/docs/index.md");
+                const string updateUrl = "https://raw.githubusercontent.com/kevin940726/BeanfunLogin/master/docs/index.md";
+                string response = wc.DownloadString(updateUrl);
                 Regex regex = new Regex("Version (\\d\\.\\d\\.\\d)");
                 if (!regex.IsMatch(response))
                     return;
-                int latest = Convert.ToInt32(Regex.Replace(regex.Match(response).Groups[1].Value, "\\.", ""));
-                if (latest > Properties.Settings.Default.currentVersion)
+                string versionStr = regex.Match(response).Groups[1].Value;
+
+                if (versionStr != Properties.Settings.Default.IgnoreVersion)
                 {
+                    Properties.Settings.Default.IgnoreVersion = versionStr;
+                    Properties.Settings.Default.Save();
+
                     Regex versionlog = new Regex(".*此版本更新(.*)### 目錄.*", RegexOptions.Multiline | RegexOptions.Singleline);
                     DialogResult result = MessageBox.Show("有新的版本(" + regex.Match(response).Groups[1].Value + ")可以下載，是否前往下載？\n(此對話窗只會顯示一次)\n\n此版本更新：" + versionlog.Match(response).Groups[1].Value, "檢查更新", MessageBoxButtons.YesNo);
+
                     if (result == System.Windows.Forms.DialogResult.Yes)
                     {
                         System.Diagnostics.Process.Start("https://kevin940726.github.io/BeanfunLogin");
                     }
-                    Properties.Settings.Default.currentVersion = latest;
-                    Properties.Settings.Default.Save();
                 }
             }
             catch { return; }
@@ -332,7 +360,11 @@ namespace BeanfunLogin
             this.panel2.Enabled = false;
 
             this.loginButton.Text = "請稍後...";
-            timedActivity = new CSharpAnalytics.Activities.AutoTimedEventActivity("Login", Properties.Settings.Default.loginMethod.ToString());
+            if (Properties.Settings.Default.GAEnabled)
+            {
+                timedActivity = new CSharpAnalytics.Activities.AutoTimedEventActivity("Login", Properties.Settings.Default.loginMethod.ToString());
+                AutoMeasurement.Client.TrackEvent("Login" + Properties.Settings.Default.loginMethod.ToString(), "Login");
+            }
             this.loginWorker.RunWorkerAsync(Properties.Settings.Default.loginMethod);
         }    
 
@@ -353,7 +385,11 @@ namespace BeanfunLogin
             this.textBox3.Text = "獲取密碼中...";
             this.listView1.Enabled = false;
             this.getOtpButton.Enabled = false;
-            timedActivity = new CSharpAnalytics.Activities.AutoTimedEventActivity("GetOTP", Properties.Settings.Default.loginMethod.ToString());
+            if (Properties.Settings.Default.GAEnabled)
+            {
+                timedActivity = new CSharpAnalytics.Activities.AutoTimedEventActivity("GetOTP", Properties.Settings.Default.loginMethod.ToString());
+                AutoMeasurement.Client.TrackEvent("GetOTP" + Properties.Settings.Default.loginMethod.ToString(), "GetOTP");
+            }
             this.getOtpWorker.RunWorkerAsync(listView1.SelectedItems[0].Index);
         }
 
@@ -383,9 +419,13 @@ namespace BeanfunLogin
             {
                 string file = openFileDialog.FileName;
                 Properties.Settings.Default.gamePath = file;
+                Properties.Settings.Default.Save();
             }
 
-            AutoMeasurement.Client.TrackEvent("set game path", "set game path");
+            if (Properties.Settings.Default.GAEnabled)
+            {
+                AutoMeasurement.Client.TrackEvent("set game path", "set game path");
+            }
         }
 
         private void checkBox3_CheckedChanged(object sender, EventArgs e)
@@ -405,7 +445,12 @@ namespace BeanfunLogin
                 this.rememberAccPwd.Enabled = true;
             }
 
-            AutoMeasurement.Client.TrackEvent(this.checkBox3.Checked ? "autoLoginOn" : "autoLoginOff", "loginCheckbox");
+            Properties.Settings.Default.Save();
+
+            if (Properties.Settings.Default.GAEnabled)
+            {
+                AutoMeasurement.Client.TrackEvent(this.checkBox3.Checked ? "autoLoginOn" : "autoLoginOff", "loginCheckbox");
+            }
         }
 
         private void checkBox2_CheckedChanged(object sender, EventArgs e)
@@ -423,7 +468,10 @@ namespace BeanfunLogin
                 this.rememberAccount.Enabled = true;
             }
 
-            AutoMeasurement.Client.TrackEvent(this.rememberAccPwd.Checked ? "rememberPwdOn" : "rememberPwdOff", "rememberPwdCheckbox");
+            if (Properties.Settings.Default.GAEnabled)
+            {
+                AutoMeasurement.Client.TrackEvent(this.rememberAccPwd.Checked ? "rememberPwdOn" : "rememberPwdOff", "rememberPwdCheckbox");
+            }
         }
 
         private void checkBox4_CheckedChanged(object sender, EventArgs e)
@@ -440,7 +488,10 @@ namespace BeanfunLogin
             }
             Properties.Settings.Default.Save();
 
-            AutoMeasurement.Client.TrackEvent(this.checkBox4.Checked ? "autoSelectOn" : "autoSelectOff", "autoSelectCheckbox");
+            if (Properties.Settings.Default.GAEnabled)
+            {
+                AutoMeasurement.Client.TrackEvent(this.checkBox4.Checked ? "autoSelectOn" : "autoSelectOff", "autoSelectCheckbox");
+            }
         }
 
         private void textBox3_OnClick(object sender, EventArgs e)
@@ -565,7 +616,10 @@ namespace BeanfunLogin
                 }
             }
 
-            AutoMeasurement.Client.TrackEvent("remove", "accountMananger");
+            if (Properties.Settings.Default.GAEnabled)
+            {
+                AutoMeasurement.Client.TrackEvent("remove", "accountMananger");
+            }
         }
 
         private void import_Click(object sender, EventArgs e)
@@ -575,7 +629,10 @@ namespace BeanfunLogin
                 errexit("帳號記錄新增失敗",0);
             refreshAccountList();
 
-            AutoMeasurement.Client.TrackEvent("add", "accountMananger");
+            if (Properties.Settings.Default.GAEnabled)
+            {
+                AutoMeasurement.Client.TrackEvent("add", "accountMananger");
+            }
         }
 
         private void export_Click(object sender, EventArgs e)
@@ -595,32 +652,46 @@ namespace BeanfunLogin
                 passwdInput.Text = passwd;
                 loginMethodInput.SelectedIndex = method;
 
-                AutoMeasurement.Client.TrackEvent("fill", "accountMananger");
+                if (Properties.Settings.Default.GAEnabled)
+                {
+                    AutoMeasurement.Client.TrackEvent("fill", "accountMananger");
+                }
             }
         }
 
         private void autoPaste_CheckedChanged(object sender, EventArgs e)
         {
-            AutoMeasurement.Client.TrackEvent(this.autoPaste.Checked ? "autoPasteOn" : "autoPasteOff", "autoPasteCheckbox");
+            Properties.Settings.Default.Save();
+
+            if (Properties.Settings.Default.GAEnabled)
+            {
+                AutoMeasurement.Client.TrackEvent(this.autoPaste.Checked ? "autoPasteOn" : "autoPasteOff", "autoPasteCheckbox");
+            }
         }
 
         private void rememberAccount_CheckedChanged(object sender, EventArgs e)
         {
-            AutoMeasurement.Client.TrackEvent(this.rememberAccount.Checked ? "rememberAccountOn" : "rememberAccountOff", "rememberAccountCheckbox");
+            Properties.Settings.Default.Save();
+
+            if (Properties.Settings.Default.GAEnabled)
+            {
+                AutoMeasurement.Client.TrackEvent(this.rememberAccount.Checked ? "rememberAccountOn" : "rememberAccountOff", "rememberAccountCheckbox");
+            }
         }
 
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
         {
             Properties.Settings.Default.Save();
 
-            AutoMeasurement.Client.TrackEvent(this.checkBox1.Checked ? "autoLaunchOn" : "autoLaunchOff", "autoLaunchCheckbox");
+            if (Properties.Settings.Default.GAEnabled)
+            {
+                AutoMeasurement.Client.TrackEvent(this.checkBox1.Checked ? "autoLaunchOn" : "autoLaunchOff", "autoLaunchCheckbox");
+            }
         }
 
-
-
-
-
-
-
+        private void main_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            Properties.Settings.Default.Save();
+        }
     }
 }
