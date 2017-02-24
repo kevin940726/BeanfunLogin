@@ -444,12 +444,12 @@ namespace BeanfunLogin
                 this.redirect = true;
                 string response2 = Encoding.UTF8.GetString(tmp2);
                 Debug.Write(response2);
-                Regex regex2 = new Regex("akey%3d(.*)%26authkey");
+                Regex regex2 = new Regex("akey=(.*)&authkey");
                 if (!regex2.IsMatch(response2))
                 { this.errmsg = "AKeyParseFailed"; return null; }
                 string akey = regex2.Match(response2).Groups[1].Value;
 
-                regex2 = new Regex("authkey%3d(.*)%26");
+                regex2 = new Regex("authkey=(.*)&");
                 if (!regex2.IsMatch(response2))
                 { this.errmsg = "authkeyParseFailed"; return null; }
                 string authkey = regex2.Match(response2).Groups[1].Value;
