@@ -7,6 +7,7 @@ using System.Text.RegularExpressions;
 using System.Collections.Specialized;
 using System.Security.Cryptography;
 using System.Diagnostics;
+using System.Threading;
 
 namespace BeanfunLogin
 {
@@ -44,7 +45,7 @@ namespace BeanfunLogin
             try
             {
                 string response;
-                if (loginMethod == (int)LoginMethod.PlaySafe || loginMethod == (int)LoginMethod.QRCode)
+                if (true) //loginMethod == (int)LoginMethod.PlaySafe || loginMethod == (int)LoginMethod.QRCode)
                     response = this.DownloadString("https://tw.beanfun.com/beanfun_block/game_zone/game_start_step2.aspx?service_code="+service_code+"&service_region="+service_region+"&sotp=" + acc.sotp + "&dt=" + GetCurrentTime(2), Encoding.UTF8);
                 else
                     response = this.DownloadString("https://tw.beanfun.com/beanfun_block/auth.aspx?channel=game_zone&page_and_query=game_start_step2.aspx%3Fservice_code%3D"+service_code+"%26service_region%3D"+service_region+"%26sotp%3D" + acc.sotp + "&web_token=" + this.webtoken);
@@ -80,7 +81,9 @@ namespace BeanfunLogin
                 System.Net.ServicePointManager.Expect100Continue = false;
                 this.UploadValues("https://tw.new.beanfun.com/beanfun_block/generic_handlers/record_service_start.ashx", payload);
                 response = this.DownloadString("https://tw.new.beanfun.com/generic_handlers/get_result.ashx?meth=GetResultByLongPolling&key=" + longPollingKey + "&_=" + GetCurrentTime());
-                response = this.DownloadString("https://tw.new.beanfun.com/beanfun_block/generic_handlers/get_webstart_otp.ashx?SN=" + longPollingKey + "&WebToken=" + this.webtoken + "&SecretCode=" + secretCode + "&ppppp=FE40250C435D81475BF8F8009348B2D7F56A5FFB163A12170AD615BBA534B932&ServiceCode="+service_code+"&ServiceRegion="+service_region+"&ServiceAccount=" + acc.sacc + "&CreateTime=" + acc.screatetime.Replace(" ", "%20"));
+                //Thread.Sleep(5000);
+                //Debug.WriteLine(Environment.TickCount);
+                response = this.DownloadString("http://tw.beanfun.com/beanfun_block/generic_handlers/get_webstart_otp.ashx?SN=" + longPollingKey + "&WebToken=" + this.webtoken + "&SecretCode=" + secretCode + "&ppppp=1F552AEAFF976018F942B13690C990F60ED01510DDF89165F1658CCE7BC21DBA&ServiceCode=" + service_code+"&ServiceRegion="+service_region+"&ServiceAccount=" + acc.sacc + "&CreateTime=" + acc.screatetime.Replace(" ", "%20") + "&d=" + Environment.TickCount);
                 response = response.Substring(2);
                 string key = response.Substring(0, 8);
                 string plain = response.Substring(8);

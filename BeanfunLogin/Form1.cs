@@ -62,6 +62,7 @@ namespace BeanfunLogin
                 }
                 catch
                 {
+                    this.timedActivity = null;
                     Properties.Settings.Default.GAEnabled = false;
                     Properties.Settings.Default.Save();
                 }
@@ -72,7 +73,7 @@ namespace BeanfunLogin
             init();
             CheckForUpdate();
 
-            if (this.timedActivity != null)
+            if (Properties.Settings.Default.GAEnabled && this.timedActivity != null)
             {
                 AutoMeasurement.Client.Track(this.timedActivity);
                 this.timedActivity = null;

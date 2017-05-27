@@ -16,7 +16,6 @@
             如果您要針對回溯相容性使用檔案及登錄虛擬化，
             請刪除 requestedExecutionLevel 節點。
         -->
-        <requestedExecutionLevel level="requireAdministrator" uiAccess="false" />
       </requestedPrivileges>
       <applicationRequestMinimum>
         <defaultAssemblyRequest permissionSetReference="Custom" />

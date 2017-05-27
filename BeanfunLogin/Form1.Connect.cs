@@ -47,7 +47,7 @@ namespace BeanfunLogin
         // Login completed.
         private void loginWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            if (this.timedActivity != null && Properties.Settings.Default.GAEnabled)
+            if (Properties.Settings.Default.GAEnabled && this.timedActivity != null)
             {
                 AutoMeasurement.Client.Track(this.timedActivity);
                 this.timedActivity = null;
@@ -175,7 +175,7 @@ namespace BeanfunLogin
         // getOTP completed.
         private void getOtpWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            if (this.timedActivity != null && Properties.Settings.Default.GAEnabled)
+            if (Properties.Settings.Default.GAEnabled && this.timedActivity != null)
             {
                 AutoMeasurement.Client.Track(this.timedActivity);
                 this.timedActivity = null;
