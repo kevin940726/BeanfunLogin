@@ -367,6 +367,7 @@
             this.label1.Size = new System.Drawing.Size(60, 17);
             this.label1.TabIndex = 33;
             this.label1.Text = "登入模式";
+            this.label1.Click += new System.EventHandler(this.label1_Click);
             // 
             // checkBox3
             // 

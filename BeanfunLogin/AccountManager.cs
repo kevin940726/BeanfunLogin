@@ -28,7 +28,7 @@ namespace BeanfunLogin
         public List<int> methodList = null;
     }
 
-    class AccountManager
+    public class AccountManager
     {
         private AccountRecords accountRecords = null;
     
@@ -222,6 +222,48 @@ namespace BeanfunLogin
         public string[] getAccountList()
         {
             return accountRecords.accountList.ToArray();
+        }
+
+        public bool importRecord(string raw)
+        {
+            try
+            {
+                byte[] cipher = Convert.FromBase64String(raw);
+
+                using (Stream stream = new MemoryStream(cipher))
+                {
+                    var bformatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
+
+                    accountRecords = (AccountRecords)bformatter.Deserialize(stream);
+                }
+                accRecInit();
+                storeRecord();
+            }
+            catch
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        public string exportRecord()
+        {
+            using (var memoryStream = new MemoryStream())
+            {
+                // Serialize to memory instead of to file
+                var formatter = new BinaryFormatter();
+                formatter.Serialize(memoryStream, accountRecords);
+
+                // This resets the memory stream position for the following read operation
+                memoryStream.Seek(0, SeekOrigin.Begin);
+
+                // Get the bytes
+                var bytes = new byte[memoryStream.Length];
+                memoryStream.Read(bytes, 0, (int)memoryStream.Length);
+
+                return Convert.ToBase64String(bytes);
+            }
         }
         #endregion
     }
