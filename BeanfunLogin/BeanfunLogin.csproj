@@ -108,6 +108,12 @@
     <Compile Include="Form1.Connect.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="FormAccRecovery.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormAccRecovery.Designer.cs">
+      <DependentUpon>FormAccRecovery.cs</DependentUpon>
+    </Compile>
     <Compile Include="ModifyRegistry.cs" />
     <Compile Include="PlaySafe.cs" />
     <Compile Include="Settings.cs" />
@@ -122,6 +128,9 @@
     <Compile Include="WindowsAPI.cs" />
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormAccRecovery.resx">
+      <DependentUpon>FormAccRecovery.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

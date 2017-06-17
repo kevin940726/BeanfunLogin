@@ -708,6 +708,13 @@ namespace BeanfunLogin
             }
         }
 
+        private void label1_Click(object sender, EventArgs e)
+        {
+            var f = new FormAccRecovery(this.accountManager);
+            f.ShowDialog();
+            refreshAccountList();
+        }
+
         private void main_FormClosed(object sender, FormClosedEventArgs e)
         {
             Properties.Settings.Default.Save();
