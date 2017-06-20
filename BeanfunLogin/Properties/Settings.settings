@@ -54,7 +54,7 @@
       <Value Profile="(Default)">True</Value>
     </Setting>
     <Setting Name="IgnoreVersion" Type="System.String" Scope="User">
-      <Value Profile="(Default)">1.9.5</Value>
+      <Value Profile="(Default)">1.9.4</Value>
     </Setting>
   </Settings>
 </SettingsFile>
