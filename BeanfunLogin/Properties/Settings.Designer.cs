@@ -229,7 +229,7 @@ namespace BeanfunLogin.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("1.9.5")]
+        [global::System.Configuration.DefaultSettingValueAttribute("1.9.4")]
         public string IgnoreVersion {
             get {
                 return ((string)(this["IgnoreVersion"]));

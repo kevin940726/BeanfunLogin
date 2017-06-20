@@ -209,13 +209,15 @@ namespace BeanfunLogin
             {
                 int accIndex = listView1.SelectedItems[0].Index;
                 string acc = this.bfClient.accountList[index].sacc;
+                this.Text = "進行遊戲 - " + WebUtility.HtmlDecode(this.bfClient.accountList[index].sname);
+
                 try
                 {
                     Clipboard.SetText(acc);
                 }
                 catch
                 {
-
+                    return;
                 }
 
                 IntPtr hWnd;
@@ -241,10 +243,10 @@ namespace BeanfunLogin
                 }
                 catch
                 {
-
+                    return;
                 }
 
-                this.Text = "進行遊戲 - " + WebUtility.HtmlDecode(this.bfClient.accountList[index].sname);
+                Thread.Sleep(150);
 
                 if (autoPaste.Checked == true && (hWnd = WindowsAPI.FindWindow(null, "MapleStory")) != IntPtr.Zero)
                 {
