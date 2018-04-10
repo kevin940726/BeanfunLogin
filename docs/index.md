@@ -5,7 +5,7 @@ title: BeanfunLogin - 新楓之谷Beanfun登入器
 
 # 新楓之谷 Beanfun 登入器
 
-[**程式下載**](https://github.com/kevin940726/BeanfunLogin/releases/download/v1.9.4/BeanfunLogin-v1.9.4.zip) - Version 1.9.4
+[**程式下載**](https://github.com/kevin940726/BeanfunLogin/releases/download/v1.9.6/BeanfunLogin-v1.9.6.zip) - Version 1.9.6
 
 [其餘各版本連結](https://github.com/kevin940726/BeanfunLogin/releases)
 
