@@ -1,0 +1,3 @@
+[submodule "CSharpAnalytics"]
+	path = CSharpAnalytics
+	url = https://github.com/xnum/CSharpAnalytics.git

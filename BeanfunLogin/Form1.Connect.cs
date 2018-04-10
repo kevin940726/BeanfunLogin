@@ -32,7 +32,7 @@ namespace BeanfunLogin
             {
                 if (Properties.Settings.Default.loginMethod != (int)LoginMethod.QRCode)
                     this.bfClient = new BeanfunClient();
-                this.bfClient.Login(this.accountInput.Text, this.passwdInput.Text, Properties.Settings.Default.loginMethod, this.extraCodeInput.Text, this.gamaotpClass, this.qrcodeClass, this.service_code, this.service_region);
+                this.bfClient.Login(this.accountInput.Text, this.passwdInput.Text, Properties.Settings.Default.loginMethod, this.qrcodeClass, this.service_code, this.service_region);
                 if (this.bfClient.errmsg != null)
                     e.Result = this.bfClient.errmsg;
                 else
@@ -209,7 +209,16 @@ namespace BeanfunLogin
             {
                 int accIndex = listView1.SelectedItems[0].Index;
                 string acc = this.bfClient.accountList[index].sacc;
-                Clipboard.SetText(acc);
+                this.Text = "進行遊戲 - " + WebUtility.HtmlDecode(this.bfClient.accountList[index].sname);
+
+                try
+                {
+                    Clipboard.SetText(acc);
+                }
+                catch
+                {
+                    return;
+                }
 
                 IntPtr hWnd;
                 if (autoPaste.Checked == true && (hWnd = WindowsAPI.FindWindow(null, "MapleStory")) != IntPtr.Zero)
@@ -228,8 +237,16 @@ namespace BeanfunLogin
                 }
 
                 this.textBox3.Text = this.otp;
-                Clipboard.SetText(textBox3.Text);
-                this.Text = "進行遊戲 - " + WebUtility.HtmlDecode(this.bfClient.accountList[index].sname);
+                try
+                {
+                    Clipboard.SetText(textBox3.Text);
+                }
+                catch
+                {
+                    return;
+                }
+
+                Thread.Sleep(150);
 
                 if (autoPaste.Checked == true && (hWnd = WindowsAPI.FindWindow(null, "MapleStory")) != IntPtr.Zero)
                 {

@@ -37,7 +37,6 @@ namespace BeanfunLogin
 
         public BeanfunClient bfClient;
 
-        public BeanfunClient.GamaotpClass gamaotpClass;
         public BeanfunClient.QRCodeClass qrcodeClass;
 
         private string service_code = "610074" , service_region = "T9";
@@ -180,6 +179,15 @@ namespace BeanfunLogin
             Properties.Settings.Default.autoLogin = false;
             init();
             comboBox1_SelectedIndexChanged(null, null);
+
+            for(int i = 0; i < accounts.Items.Count; ++i)
+            {
+                if ((string)accounts.Items[i] == accountInput.Text)
+                {
+                    accounts.SelectedIndex = i;
+                    break;
+                }
+            }
         }
 
         public bool init()
@@ -244,8 +252,8 @@ namespace BeanfunLogin
                     this.ActiveControl = this.passwdInput;
 
                 // .NET textbox full mode bug.
-                this.accountInput.ImeMode = ImeMode.OnHalf;
-                this.passwdInput.ImeMode = ImeMode.OnHalf;
+                //this.accountInput.ImeMode = ImeMode.OnHalf;
+                //this.passwdInput.ImeMode = ImeMode.OnHalf;
                 return true;
             }
             catch (Exception e)
@@ -300,7 +308,7 @@ namespace BeanfunLogin
                     return;
                 string versionStr = regex.Match(response).Groups[1].Value;
 
-                if (versionStr != Properties.Settings.Default.IgnoreVersion)
+                if (versionStr != Properties.Settings.Default.IgnoreVersion && versionStr != currentVersion)
                 {
                     Properties.Settings.Default.IgnoreVersion = versionStr;
                     Properties.Settings.Default.Save();
@@ -498,14 +506,28 @@ namespace BeanfunLogin
         private void textBox3_OnClick(object sender, EventArgs e)
         {
             if (textBox3.Text == "" || textBox3.Text == "獲取失敗") return;
-            Clipboard.SetText(textBox3.Text);
+            try
+            {
+                Clipboard.SetText(textBox3.Text);
+            }
+            catch
+            {
+
+            }
         }
 
         private void listView1_DoubleClick(object sender, EventArgs e)
         {
             if (listView1.SelectedItems.Count == 1)
             {
-                Clipboard.SetText(this.bfClient.accountList[this.listView1.SelectedItems[0].Index].sacc);
+                try
+                {
+                    Clipboard.SetText(this.bfClient.accountList[this.listView1.SelectedItems[0].Index].sacc);
+                }
+                catch
+                {
+
+                }
             }
         }
 
@@ -525,10 +547,6 @@ namespace BeanfunLogin
 
             passLabel.Visible = true;
             passwdInput.Visible = true;
-
-            extraCodeInput.Visible = false;
-            gamaotp_label.Visible = false;
-            secPassLabel.Visible = false;
 
             qrcodeImg.Visible = false;
 
@@ -688,6 +706,13 @@ namespace BeanfunLogin
             {
                 AutoMeasurement.Client.TrackEvent(this.checkBox1.Checked ? "autoLaunchOn" : "autoLaunchOff", "autoLaunchCheckbox");
             }
+        }
+
+        private void label1_Click(object sender, EventArgs e)
+        {
+            var f = new FormAccRecovery(this.accountManager);
+            f.ShowDialog();
+            refreshAccountList();
         }
 
         private void main_FormClosed(object sender, FormClosedEventArgs e)

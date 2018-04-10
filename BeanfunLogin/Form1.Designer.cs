@@ -46,15 +46,12 @@
             this.panel2 = new System.Windows.Forms.Panel();
             this.wait_qrWorker_notify = new System.Windows.Forms.Label();
             this.gamaotp_challenge_code_output = new System.Windows.Forms.Label();
-            this.gamaotp_label = new System.Windows.Forms.Label();
             this.export = new System.Windows.Forms.Button();
             this.import = new System.Windows.Forms.Button();
             this.delete = new System.Windows.Forms.Button();
             this.accounts = new System.Windows.Forms.ListBox();
             this.comboBox2 = new System.Windows.Forms.ComboBox();
             this.rememberAccount = new System.Windows.Forms.CheckBox();
-            this.extraCodeInput = new System.Windows.Forms.TextBox();
-            this.secPassLabel = new System.Windows.Forms.Label();
             this.loginMethodInput = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
             this.checkBox3 = new System.Windows.Forms.CheckBox();
@@ -239,15 +236,12 @@
             // 
             this.panel2.Controls.Add(this.wait_qrWorker_notify);
             this.panel2.Controls.Add(this.gamaotp_challenge_code_output);
-            this.panel2.Controls.Add(this.gamaotp_label);
             this.panel2.Controls.Add(this.export);
             this.panel2.Controls.Add(this.import);
             this.panel2.Controls.Add(this.delete);
             this.panel2.Controls.Add(this.accounts);
             this.panel2.Controls.Add(this.comboBox2);
             this.panel2.Controls.Add(this.rememberAccount);
-            this.panel2.Controls.Add(this.extraCodeInput);
-            this.panel2.Controls.Add(this.secPassLabel);
             this.panel2.Controls.Add(this.loginMethodInput);
             this.panel2.Controls.Add(this.label1);
             this.panel2.Controls.Add(this.checkBox3);
@@ -284,17 +278,6 @@
             this.gamaotp_challenge_code_output.Name = "gamaotp_challenge_code_output";
             this.gamaotp_challenge_code_output.Size = new System.Drawing.Size(0, 21);
             this.gamaotp_challenge_code_output.TabIndex = 42;
-            // 
-            // gamaotp_label
-            // 
-            this.gamaotp_label.AutoSize = true;
-            this.gamaotp_label.Font = new System.Drawing.Font("微軟正黑體", 11.25F);
-            this.gamaotp_label.Location = new System.Drawing.Point(30, 135);
-            this.gamaotp_label.Name = "gamaotp_label";
-            this.gamaotp_label.Size = new System.Drawing.Size(54, 19);
-            this.gamaotp_label.TabIndex = 41;
-            this.gamaotp_label.Text = "認證碼";
-            this.gamaotp_label.Visible = false;
             // 
             // export
             // 
@@ -360,27 +343,6 @@
             this.rememberAccount.UseVisualStyleBackColor = true;
             this.rememberAccount.CheckedChanged += new System.EventHandler(this.rememberAccount_CheckedChanged);
             // 
-            // extraCodeInput
-            // 
-            this.extraCodeInput.Location = new System.Drawing.Point(95, 133);
-            this.extraCodeInput.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.extraCodeInput.Name = "extraCodeInput";
-            this.extraCodeInput.PasswordChar = '*';
-            this.extraCodeInput.Size = new System.Drawing.Size(145, 23);
-            this.extraCodeInput.TabIndex = 35;
-            this.extraCodeInput.Visible = false;
-            // 
-            // secPassLabel
-            // 
-            this.secPassLabel.Font = new System.Drawing.Font("微軟正黑體", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.secPassLabel.Location = new System.Drawing.Point(21, 133);
-            this.secPassLabel.Name = "secPassLabel";
-            this.secPassLabel.Size = new System.Drawing.Size(69, 19);
-            this.secPassLabel.TabIndex = 34;
-            this.secPassLabel.Text = "安全密碼";
-            this.secPassLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.secPassLabel.Visible = false;
-            // 
             // loginMethodInput
             // 
             this.loginMethodInput.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
@@ -405,6 +367,7 @@
             this.label1.Size = new System.Drawing.Size(60, 17);
             this.label1.TabIndex = 33;
             this.label1.Text = "登入模式";
+            this.label1.Click += new System.EventHandler(this.label1_Click);
             // 
             // checkBox3
             // 
@@ -436,6 +399,7 @@
             // 
             // passwdInput
             // 
+            this.passwdInput.ImeMode = System.Windows.Forms.ImeMode.Disable;
             this.passwdInput.Location = new System.Drawing.Point(95, 93);
             this.passwdInput.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.passwdInput.Name = "passwdInput";
@@ -466,6 +430,7 @@
             // 
             // accountInput
             // 
+            this.accountInput.ImeMode = System.Windows.Forms.ImeMode.Disable;
             this.accountInput.Location = new System.Drawing.Point(95, 52);
             this.accountInput.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.accountInput.Name = "accountInput";
@@ -593,8 +558,6 @@
         private System.Windows.Forms.ComboBox loginMethodInput;
         private System.Windows.Forms.Label label1;
         private System.ComponentModel.BackgroundWorker loginWorker;
-        private System.Windows.Forms.TextBox extraCodeInput;
-        private System.Windows.Forms.Label secPassLabel;
         private System.ComponentModel.BackgroundWorker pingWorker;
         private System.Windows.Forms.CheckBox keepLogged;
         private System.Windows.Forms.ToolTip Tip;
@@ -605,7 +568,6 @@
         private System.Windows.Forms.Button delete;
         private System.Windows.Forms.ListBox accounts;
         private System.Windows.Forms.Label gamaotp_challenge_code_output;
-        private System.Windows.Forms.Label gamaotp_label;
         private System.Windows.Forms.CheckBox checkBox1;
         private System.Windows.Forms.CheckBox autoPaste;
         private System.Windows.Forms.PictureBox qrcodeImg;
