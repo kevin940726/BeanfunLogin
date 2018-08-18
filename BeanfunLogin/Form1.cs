@@ -420,8 +420,8 @@ namespace BeanfunLogin
         private void SetGamePath_ToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "新楓之谷主程式 (MapleStory.exe)|MapleStory.exe|All files (*.*)|*.*";
-            openFileDialog.Title = "Set MapleStory.exe Path.";
+            openFileDialog.Filter = "All binarys (*.exe)|*.exe";
+            openFileDialog.Title = "Set Path.";
             openFileDialog.InitialDirectory = Properties.Settings.Default.gamePath;
 
             if (openFileDialog.ShowDialog() == DialogResult.OK)

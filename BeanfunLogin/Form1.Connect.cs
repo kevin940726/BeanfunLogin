@@ -140,36 +140,77 @@ namespace BeanfunLogin
                 e.Result = -1;
             else 
             {
-                e.Result = index;
                 if (false == Properties.Settings.Default.opengame)
                 {
                     Debug.WriteLine("no open game");
                     return;
                 }
 
-                foreach (Process process in Process.GetProcesses())
+                string processName = Properties.Settings.Default.gamePath;
+                string sacc = this.bfClient.accountList[index].sacc;
+                string otp = this.otp;
+
+                if (Properties.Settings.Default.GAEnabled)
                 {
-                    if (process.ProcessName == "MapleStory")
+                    try
                     {
-                        Debug.WriteLine("find game");
-                        return;
+                        AutoMeasurement.Client.TrackEvent(Path.GetFileName(processName), "processName");
+                    }
+                    catch
+                    {
+                        Debug.WriteLine("invalid path:" + processName);
                     }
                 }
-                
-                try
+
+                e.Result = index;
+                if (processName.Contains("elsword"))
                 {
-                    Debug.WriteLine("try open game");
-                    if (File.Exists(Properties.Settings.Default.gamePath))
-                        Process.Start(Properties.Settings.Default.gamePath, "tw.login.maplestory.gamania.com 8484 BeanFun " + this.bfClient.accountList[index].sacc + " " + this.otp);
-                    Debug.WriteLine("try open game done");
+                    processStart(processName, sacc + " " + otp + " TW");
                 }
-                catch
+                else if (processName.Contains("KartRider"))
                 {
-                    errexit("啟動失敗，請嘗試手動以系統管理員身分啟動遊戲。", 2);
+                    processStart(processName, "-id:" + sacc + " -password:" + otp + " -region:1");
+                }
+                else // fallback to default strategy
+                {
+                    if(processName.Contains("MapleStory"))
+                    {
+                        foreach (Process process in Process.GetProcesses())
+                        {
+                            if (process.ProcessName == "MapleStory")
+                            {
+                                Debug.WriteLine("find game");
+                                return;
+                            }
+                        }
+                    }
+
+                    processStart(processName, "tw.login.maplestory.gamania.com 8484 BeanFun " + sacc + " " + otp);
                 }
             }
 
             return;
+        }
+
+        private void processStart(string prog, string arg)
+        {
+            try
+            {
+                Debug.WriteLine("try open game");
+                if (File.Exists(prog))
+                {
+                    ProcessStartInfo psInfo = new ProcessStartInfo();
+                    psInfo.FileName = prog;
+                    psInfo.Arguments = arg;
+                    psInfo.WorkingDirectory = Path.GetDirectoryName(prog);
+                    Process.Start(psInfo);
+                }
+                Debug.WriteLine("try open game done");
+            }
+            catch
+            {
+                errexit("啟動失敗，請嘗試手動以系統管理員身分啟動遊戲。", 2);
+            }
         }
 
         // getOTP completed.
@@ -227,9 +268,9 @@ namespace BeanfunLogin
 
                     WindowsAPI.keybd_event(VK_CONTROL, 0x9d, KEYEVENTF_EXTENDEDKEY, 0);
                     WindowsAPI.keybd_event(VK_V, 0x9e, 0, 0);
-                    Thread.Sleep(100);
+                    Thread.Sleep(200);
                     WindowsAPI.keybd_event(VK_V, 0x9e, KEYEVENTF_KEYUP, 0);
-                    Thread.Sleep(100);
+                    Thread.Sleep(200);
                     WindowsAPI.keybd_event(VK_CONTROL, 0x9d, KEYEVENTF_EXTENDEDKEY | KEYEVENTF_KEYUP, 0);
 
                     WindowsAPI.keybd_event(VK_TAB, 0, KEYEVENTF_EXTENDEDKEY, 0);
@@ -246,15 +287,15 @@ namespace BeanfunLogin
                     return;
                 }
 
-                Thread.Sleep(150);
+                Thread.Sleep(250);
 
                 if (autoPaste.Checked == true && (hWnd = WindowsAPI.FindWindow(null, "MapleStory")) != IntPtr.Zero)
                 {
                     WindowsAPI.keybd_event(VK_CONTROL, 0x9d, KEYEVENTF_EXTENDEDKEY, 0);
                     WindowsAPI.keybd_event(VK_V, 0x9e, 0, 0);
-                    Thread.Sleep(100);
+                    Thread.Sleep(200);
                     WindowsAPI.keybd_event(VK_V, 0x9e, KEYEVENTF_KEYUP, 0);
-                    Thread.Sleep(100);
+                    Thread.Sleep(200);
                     WindowsAPI.keybd_event(VK_CONTROL, 0x9d, KEYEVENTF_EXTENDEDKEY | KEYEVENTF_KEYUP, 0);
 
                     WindowsAPI.keybd_event(VK_ENTER, 0, 0, 0);

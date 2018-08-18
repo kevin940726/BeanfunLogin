@@ -157,18 +157,6 @@ namespace BeanfunLogin.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("192")]
-        public int currentVersion {
-            get {
-                return ((int)(this["currentVersion"]));
-            }
-            set {
-                this["currentVersion"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("3")]
         public int loginGame {
             get {
@@ -229,7 +217,7 @@ namespace BeanfunLogin.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("1.9.4")]
+        [global::System.Configuration.DefaultSettingValueAttribute("1.9.6")]
         public string IgnoreVersion {
             get {
                 return ((string)(this["IgnoreVersion"]));
