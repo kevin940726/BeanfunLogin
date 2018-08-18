@@ -53,5 +53,8 @@
     <Setting Name="IgnoreVersion" Type="System.String" Scope="User">
       <Value Profile="(Default)">1.9.6</Value>
     </Setting>
+    <Setting Name="gamePathDB" Type="System.String" Scope="User">
+      <Value Profile="(Default)">{}</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

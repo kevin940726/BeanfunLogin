@@ -114,6 +114,7 @@
     <Compile Include="FormAccRecovery.Designer.cs">
       <DependentUpon>FormAccRecovery.cs</DependentUpon>
     </Compile>
+    <Compile Include="GamePathDB.cs" />
     <Compile Include="ModifyRegistry.cs" />
     <Compile Include="PlaySafe.cs" />
     <Compile Include="Settings.cs" />
