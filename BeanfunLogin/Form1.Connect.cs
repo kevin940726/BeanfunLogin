@@ -71,17 +71,11 @@ namespace BeanfunLogin
 
             try
             {
-                listView1.Items.Clear();
-                foreach (var account in this.bfClient.accountList)
-                {
-                    string[] row = { WebUtility.HtmlDecode(account.sname), account.sacc };
-                    var listViewItem = new ListViewItem(row);
-                    this.listView1.Items.Add(listViewItem);
-                }
+                redrawSAccountList();
 
                 // Handle panel switching.
                 this.ActiveControl = null;
-                this.Size = new System.Drawing.Size(300, 290);
+                this.Size = new System.Drawing.Size(300, this.Size.Height);
                 this.panel2.SendToBack();
                 this.panel1.BringToFront();
                 this.AcceptButton = this.getOtpButton;
@@ -121,6 +115,17 @@ namespace BeanfunLogin
 
         }
 
+        private void redrawSAccountList()
+        {
+            listView1.Items.Clear();
+            foreach (var account in this.bfClient.accountList)
+            {
+                string[] row = { WebUtility.HtmlDecode(account.sname), account.sacc };
+                var listViewItem = new ListViewItem(row);
+                this.listView1.Items.Add(listViewItem);
+            }
+        }
+
         // getOTP do work.
         private void getOtpWorker_DoWork(object sender, DoWorkEventArgs e)
         {
@@ -150,7 +155,7 @@ namespace BeanfunLogin
                 return;
             }
 
-            string procPath = gamePaths.Get(comboBox2.SelectedText);
+            string procPath = gamePaths.Get(service_name);
             string sacc = this.bfClient.accountList[index].sacc;
             string otp = new string(this.otp.Where(c => char.IsLetter(c) || char.IsDigit(c)).ToArray());
 
@@ -169,17 +174,17 @@ namespace BeanfunLogin
                 }
             }
 
-            if (procPath.Contains("elswordsss"))
+            if (procPath.Contains("elsword.exe"))
             {
                 processStart(procPath, sacc + " " + otp + " TW");
             }
-            else if (procPath.Contains("KartRider"))
+            else if (procPath.Contains("KartRider.exe"))
             {
                 processStart(procPath, "-id:" + sacc + " -password:" + otp + " -region:1");
             }
             else // fallback to default strategy
             {
-                if (procPath.Contains("MapleStory"))
+                if (procPath.Contains("MapleStory.exe"))
                 {
                     foreach (Process process in Process.GetProcesses())
                     {
@@ -236,6 +241,7 @@ namespace BeanfunLogin
             this.getOtpButton.Text = "獲取密碼";
             this.listView1.Enabled = true;
             this.getOtpButton.Enabled = true;
+            this.comboBox2.Enabled = true;
             if (e.Error != null)
             {
                 this.textBox3.Text = "獲取失敗";

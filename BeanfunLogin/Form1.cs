@@ -39,7 +39,7 @@ namespace BeanfunLogin
 
         public BeanfunClient.QRCodeClass qrcodeClass;
 
-        private string service_code = "610074" , service_region = "T9";
+        private string service_code = "610074" , service_region = "T9" , service_name = "";
 
         public List<GameService> gameList = new List<GameService>();
 
@@ -119,7 +119,7 @@ namespace BeanfunLogin
                     msg = "登入失敗，無法取得帳號列表。";
                     break;
                 case "LoginNoAccount":
-                    msg = "登入失敗，找不到遊戲帳號。";
+                    msg = "找不到遊戲帳號。";
                     break;
                 case "LoginNoResponseVakten":
                     msg = "登入失敗，與伺服器驗證失敗，請檢查是否安裝且已執行vakten程式。";
@@ -175,7 +175,7 @@ namespace BeanfunLogin
 
         public void BackToLogin()
         {
-            this.Size = new System.Drawing.Size(459, 290);
+            this.Size = new System.Drawing.Size(459, this.Size.Height);
             panel1.SendToBack();
             panel2.BringToFront();
             Properties.Settings.Default.autoLogin = false;
@@ -399,6 +399,7 @@ namespace BeanfunLogin
             this.textBox3.Text = "獲取密碼中...";
             this.listView1.Enabled = false;
             this.getOtpButton.Enabled = false;
+            this.comboBox2.Enabled = false;
             if (Properties.Settings.Default.GAEnabled)
             {
                 timedActivity = new CSharpAnalytics.Activities.AutoTimedEventActivity("GetOTP", Properties.Settings.Default.loginMethod.ToString());
@@ -425,14 +426,17 @@ namespace BeanfunLogin
         private void SetGamePath_ToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "All binarys (*.exe)|*.exe";
+            string identName = comboBox2.SelectedItem.ToString();
+            string binaryName = gamePaths.GetAlias(identName);
+            if (binaryName == identName) binaryName = "*.exe";
+            openFileDialog.Filter = String.Format("{0} ({1})|{1}|All files (*.*)|*.*", identName, binaryName);
             openFileDialog.Title = "Set Path.";
-            openFileDialog.InitialDirectory = gamePaths.Get(comboBox2.SelectedText);
+            openFileDialog.InitialDirectory = gamePaths.Get(identName);
 
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
                 string file = openFileDialog.FileName;
-                gamePaths.Set(comboBox2.SelectedText, file);
+                gamePaths.Set(identName, file);
                 gamePaths.Save();
             }
 
@@ -610,22 +614,6 @@ namespace BeanfunLogin
             Properties.Settings.Default.Save();
         }
 
-        private void comboBox2_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            Properties.Settings.Default.loginGame = this.comboBox2.SelectedIndex;
-            try
-            {
-                service_code = gameList[this.comboBox2.SelectedIndex].service_code;
-                service_region = gameList[this.comboBox2.SelectedIndex].service_region;
-            }
-            catch
-            {
-
-            }
-            
-            //Properties.Settings.Default.Save();
-       }
-
         private void delete_Click(object sender, EventArgs e)
         {
             ListBox.SelectedObjectCollection selectedItems = new ListBox.SelectedObjectCollection(accounts);
@@ -720,8 +708,38 @@ namespace BeanfunLogin
             refreshAccountList();
         }
 
+        // game changed event
+        private void comboBox2_SelectedIndexChanged_1(object sender, EventArgs e)
+        {
+            Properties.Settings.Default.loginGame = this.comboBox2.SelectedIndex;
+            try
+            {
+                service_code = gameList[this.comboBox2.SelectedIndex].service_code;
+                service_region = gameList[this.comboBox2.SelectedIndex].service_region;
+                service_name = comboBox2.SelectedItem.ToString();
+            }
+            catch
+            {
+                return;
+            }
+
+            if (this.bfClient != null && !loginWorker.IsBusy && !getOtpWorker.IsBusy)
+            {
+                comboBox2.Enabled = false;
+                this.bfClient.GetAccounts(service_code, service_region);
+                redrawSAccountList();
+                comboBox2.Enabled = true;
+                if (this.bfClient.errmsg != null)
+                {
+                    errexit(this.bfClient.errmsg, 2);
+                    this.bfClient.errmsg = null;
+                }
+            }
+        }
+
         private void main_FormClosed(object sender, FormClosedEventArgs e)
         {
+            gamePaths.Save();
             Properties.Settings.Default.Save();
         }
     }
