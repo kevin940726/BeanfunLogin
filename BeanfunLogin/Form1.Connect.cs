@@ -182,6 +182,10 @@ namespace BeanfunLogin
             {
                 processStart(procPath, "-id:" + sacc + " -password:" + otp + " -region:1");
             }
+            else if (procPath.Contains("mabinogi.exe"))
+            {
+                processStart(procPath, "/N:" + sacc + " /V:" + otp + " /T:gamania");
+            }
             else // fallback to default strategy
             {
                 if (procPath.Contains("MapleStory.exe"))
