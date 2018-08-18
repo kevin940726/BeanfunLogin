@@ -226,5 +226,17 @@ namespace BeanfunLogin.Properties {
                 this["IgnoreVersion"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("{}")]
+        public string gamePathDB {
+            get {
+                return ((string)(this["gamePathDB"]));
+            }
+            set {
+                this["gamePathDB"] = value;
+            }
+        }
     }
 }

@@ -40,7 +40,7 @@ namespace BeanfunLogin
             }
             catch (Exception ex)
             {
-                e.Result = "登入失敗，未知的錯誤。\n\n" + ex.Message + "\n" + ex.StackTrace; 
+                e.Result = "登入失敗，未知的錯誤。\n\n" + ex.Message + "\n" + ex.StackTrace;
             }
         }
 
@@ -98,8 +98,9 @@ namespace BeanfunLogin
                     this.listView1.Enabled = false;
                     this.getOtpButton.Enabled = false;
                     timedActivity = new CSharpAnalytics.Activities.AutoTimedEventActivity("GetOTP", Properties.Settings.Default.loginMethod.ToString());
-                    if (Properties.Settings.Default.GAEnabled) {
-                        AutoMeasurement.Client.TrackEvent("GetOTP" + Properties.Settings.Default.loginMethod.ToString(), "GetOTP"); 
+                    if (Properties.Settings.Default.GAEnabled)
+                    {
+                        AutoMeasurement.Client.TrackEvent("GetOTP" + Properties.Settings.Default.loginMethod.ToString(), "GetOTP");
                     }
                     this.getOtpWorker.RunWorkerAsync(Properties.Settings.Default.autoSelectIndex);
                 }
@@ -117,7 +118,7 @@ namespace BeanfunLogin
             {
                 errexit("登入失敗，無法取得帳號列表。", 1);
             }
-            
+
         }
 
         // getOTP do work.
@@ -128,6 +129,7 @@ namespace BeanfunLogin
             Debug.WriteLine("getOtpWorker start");
             Thread.CurrentThread.Name = "GetOTP Worker";
             int index = (int)e.Argument;
+            e.Result = index;
             Debug.WriteLine("Count = " + this.bfClient.accountList.Count + " | index = " + index);
             if (this.bfClient.accountList.Count <= index)
             {
@@ -137,57 +139,61 @@ namespace BeanfunLogin
             this.otp = this.bfClient.GetOTP(Properties.Settings.Default.loginMethod, this.bfClient.accountList[index], this.service_code, this.service_region);
             Debug.WriteLine("call GetOTP done");
             if (this.otp == null)
-                e.Result = -1;
-            else 
             {
-                if (false == Properties.Settings.Default.opengame)
-                {
-                    Debug.WriteLine("no open game");
-                    return;
-                }
+                e.Result = -1;
+                return;
+            }
 
-                string processName = Properties.Settings.Default.gamePath;
-                string sacc = this.bfClient.accountList[index].sacc;
-                string otp = this.otp;
+            if (false == Properties.Settings.Default.opengame)
+            {
+                Debug.WriteLine("no open game");
+                return;
+            }
 
-                if (Properties.Settings.Default.GAEnabled)
-                {
-                    try
-                    {
-                        AutoMeasurement.Client.TrackEvent(Path.GetFileName(processName), "processName");
-                    }
-                    catch
-                    {
-                        Debug.WriteLine("invalid path:" + processName);
-                    }
-                }
+            string procPath = gamePaths.Get(comboBox2.SelectedText);
+            string sacc = this.bfClient.accountList[index].sacc;
+            string otp = new string(this.otp.Where(c => char.IsLetter(c) || char.IsDigit(c)).ToArray());
 
-                e.Result = index;
-                if (processName.Contains("elsword"))
-                {
-                    processStart(processName, sacc + " " + otp + " TW");
-                }
-                else if (processName.Contains("KartRider"))
-                {
-                    processStart(processName, "-id:" + sacc + " -password:" + otp + " -region:1");
-                }
-                else // fallback to default strategy
-                {
-                    if(processName.Contains("MapleStory"))
-                    {
-                        foreach (Process process in Process.GetProcesses())
-                        {
-                            if (process.ProcessName == "MapleStory")
-                            {
-                                Debug.WriteLine("find game");
-                                return;
-                            }
-                        }
-                    }
+            if (!File.Exists(procPath))
+                return;
 
-                    processStart(processName, "tw.login.maplestory.gamania.com 8484 BeanFun " + sacc + " " + otp);
+            if (Properties.Settings.Default.GAEnabled)
+            {
+                try
+                {
+                    AutoMeasurement.Client.TrackEvent(Path.GetFileName(procPath), "processName");
+                }
+                catch
+                {
+                    Debug.WriteLine("invalid path:" + procPath);
                 }
             }
+
+            if (procPath.Contains("elswordsss"))
+            {
+                processStart(procPath, sacc + " " + otp + " TW");
+            }
+            else if (procPath.Contains("KartRider"))
+            {
+                processStart(procPath, "-id:" + sacc + " -password:" + otp + " -region:1");
+            }
+            else // fallback to default strategy
+            {
+                if (procPath.Contains("MapleStory"))
+                {
+                    foreach (Process process in Process.GetProcesses())
+                    {
+                        if (process.ProcessName == "MapleStory")
+                        {
+                            Debug.WriteLine("find game");
+                            return;
+                        }
+                    }
+                }
+
+                processStart(procPath, "tw.login.maplestory.gamania.com 8484 BeanFun " + sacc + " " + otp);
+            }
+
 
             return;
         }
@@ -197,14 +203,11 @@ namespace BeanfunLogin
             try
             {
                 Debug.WriteLine("try open game");
-                if (File.Exists(prog))
-                {
-                    ProcessStartInfo psInfo = new ProcessStartInfo();
-                    psInfo.FileName = prog;
-                    psInfo.Arguments = arg;
-                    psInfo.WorkingDirectory = Path.GetDirectoryName(prog);
-                    Process.Start(psInfo);
-                }
+                ProcessStartInfo psInfo = new ProcessStartInfo();
+                psInfo.FileName = prog;
+                psInfo.Arguments = arg;
+                psInfo.WorkingDirectory = Path.GetDirectoryName(prog);
+                Process.Start(psInfo);
                 Debug.WriteLine("try open game done");
             }
             catch
@@ -334,7 +337,7 @@ namespace BeanfunLogin
                     continue;
                 }
 
-                if(this.bfClient != null)
+                if (this.bfClient != null)
                     this.bfClient.Ping();
 
                 for (int i = 0; i < WaitSecs; ++i)
@@ -345,7 +348,7 @@ namespace BeanfunLogin
                 }
             }
         }
-        
+
         private void pingWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             Debug.WriteLine("ping.done");

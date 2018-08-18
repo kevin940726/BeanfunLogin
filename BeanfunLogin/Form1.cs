@@ -47,6 +47,8 @@ namespace BeanfunLogin
 
         private string currentVersion = Assembly.GetExecutingAssembly().GetName().Version.ToString();
 
+        private GamePathDB gamePaths = new GamePathDB();
+
         public main()
         {
             currentVersion = currentVersion.Remove(currentVersion.Length - 2);
@@ -234,13 +236,16 @@ namespace BeanfunLogin
                     this.loginButton.Text = "請稍後...";
                     this.loginWorker.RunWorkerAsync(Properties.Settings.Default.loginMethod);
                 }
-                if (Properties.Settings.Default.gamePath == "")
+                if (gamePaths.Get("新楓之谷") == "")
                 {
                     ModifyRegistry myRegistry = new ModifyRegistry();
                     myRegistry.BaseRegistryKey = Registry.CurrentUser;
                     myRegistry.SubKey = "Software\\Gamania\\MapleStory";
                     if (myRegistry.Read("Path") != "")
-                        Properties.Settings.Default.gamePath = myRegistry.Read("Path");
+                    {
+                        gamePaths.Set("新楓之谷", myRegistry.Read("Path"));
+                        gamePaths.Save();
+                    }
                 }
 
                 this.loginMethodInput.SelectedIndex = Properties.Settings.Default.loginMethod;
@@ -422,13 +427,13 @@ namespace BeanfunLogin
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Filter = "All binarys (*.exe)|*.exe";
             openFileDialog.Title = "Set Path.";
-            openFileDialog.InitialDirectory = Properties.Settings.Default.gamePath;
+            openFileDialog.InitialDirectory = gamePaths.Get(comboBox2.SelectedText);
 
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
                 string file = openFileDialog.FileName;
-                Properties.Settings.Default.gamePath = file;
-                Properties.Settings.Default.Save();
+                gamePaths.Set(comboBox2.SelectedText, file);
+                gamePaths.Save();
             }
 
             if (Properties.Settings.Default.GAEnabled)
