@@ -14,6 +14,7 @@ namespace BeanfunLogin
                 {"新楓之谷", "MapleStory.exe"},
                 {"艾爾之光", "elsword.exe"},
                 {"跑跑", "KartRider.exe"},
+                {"mabinogi", "mabinogi.exe" },
             };
 
         Dictionary<string, string> db;
