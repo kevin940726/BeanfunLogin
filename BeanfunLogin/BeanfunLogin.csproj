@@ -96,6 +96,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AccountManager.cs" />
+    <Compile Include="BeanfunClient.Account.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="BeanfunClient.cs">
       <SubType>Component</SubType>
     </Compile>

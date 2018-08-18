@@ -352,10 +352,11 @@ namespace BeanfunLogin
 
         public void Login(string id, string pass, int loginMethod, QRCodeClass qrcodeClass = null, string service_code = "610074", string service_region = "T9")
         {
+            this.cardid = null;
+            this.webtoken = null;
             try
             {
                 string response = null;
-                Regex regex;
                 string skey = null;
                 string akey = null;
                 string cardid = null;
@@ -385,6 +386,7 @@ namespace BeanfunLogin
                         { this.errmsg = "LoginPlaySafeResultError"; return; }
                         cardid = temp[0];
                         akey = temp[1];
+                        this.cardid = cardid;
                         break;
                     case (int)LoginMethod.QRCode:
                         akey = QRCodeLogin(qrcodeClass);
@@ -410,41 +412,8 @@ namespace BeanfunLogin
                 this.webtoken = this.GetCookie("bfWebToken");
                 if (this.webtoken == "")
                 { this.errmsg = "LoginNoWebtoken"; return; }
-                if (loginMethod == (int)LoginMethod.PlaySafe)
-                    response = this.DownloadString("https://tw.beanfun.com/beanfun_block/auth.aspx?channel=game_zone&page_and_query=game_start.aspx%3Fservice_code_and_region%3D"+service_code+"_"+service_region+"&web_token=" + webtoken + "&cardid=" + cardid, Encoding.UTF8);
-                else
-                    response = this.DownloadString("https://tw.beanfun.com/beanfun_block/auth.aspx?channel=game_zone&page_and_query=game_start.aspx%3Fservice_code_and_region%3D"+service_code+"_"+service_region+"&web_token=" + webtoken, Encoding.UTF8);
 
-                if (loginMethod == (int)LoginMethod.PlaySafe)
-                {
-                    regex = new Regex("id=\"__VIEWSTATE\" value=\"(.*)\" />");
-                    if (!regex.IsMatch(response))
-                    { this.errmsg = "LoginNoViewstate"; return; }
-                    string viewstate = regex.Match(response).Groups[1].Value;
-                    regex = new Regex("id=\"__EVENTVALIDATION\" value=\"(.*)\" />");
-                    if (!regex.IsMatch(response))
-                    { this.errmsg = "LoginNoEventvalidation"; return; }
-                    string eventvalidation = regex.Match(response).Groups[1].Value;
-                    payload = new NameValueCollection();
-                    payload.Add("__VIEWSTATE", viewstate);
-                    payload.Add("__EVENTVALIDATION", eventvalidation);
-                    payload.Add("btnCheckPLASYSAFE", "Hidden+Button");
-                    response = Encoding.UTF8.GetString(this.UploadValues("https://tw.beanfun.com/beanfun_block/auth.aspx?channel=game_zone&page_and_query=game_start.aspx%3Fservice_code_and_region%3D"+service_code+"_"+service_region+"&web_token=" + webtoken + "&cardid=" + cardid, payload));
-                }
-
-                // Add account list to ListView.
-                regex = new Regex("<div id=\"(\\w+)\" sn=\"(\\d+)\" name=\"([^\"]+)\"");
-                this.accountList.Clear();
-                foreach (Match match in regex.Matches(response))
-                {
-                    if (match.Groups[1].Value == "" || match.Groups[2].Value == "" || match.Groups[3].Value == "")
-                    { continue; }
-                    accountList.Add(new AccountList(match.Groups[1].Value, match.Groups[2].Value, match.Groups[3].Value));
-                }
-                if (accountList.Count == 0)
-                { this.errmsg = "LoginNoAccount"; return; }
-
-                this.errmsg = null;
+                GetAccounts(service_code, service_region, false);
             }
             catch (Exception e)
             {
