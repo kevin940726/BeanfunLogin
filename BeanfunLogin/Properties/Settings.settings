@@ -35,9 +35,6 @@
     <Setting Name="showTip" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
-    <Setting Name="currentVersion" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">192</Value>
-    </Setting>
     <Setting Name="loginGame" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">3</Value>
     </Setting>
@@ -54,7 +51,7 @@
       <Value Profile="(Default)">True</Value>
     </Setting>
     <Setting Name="IgnoreVersion" Type="System.String" Scope="User">
-      <Value Profile="(Default)">1.9.4</Value>
+      <Value Profile="(Default)">1.9.6</Value>
     </Setting>
   </Settings>
 </SettingsFile>

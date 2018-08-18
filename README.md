@@ -1,15 +1,16 @@
 ﻿# BeanfunLogin
+
 New Beanfun MapleStory OTP login.
 
-## This project is not maintained anymore. You are aware of that any changes may be or may not be implemented. Use at your own risk.
+[Website](https://kevin940726.github.io/BeanfunLogin)
 
-#### This project is for self practicing/learning ``C#`` ``.NET`` on Windows.
+
 ========================
+
 Login to Beanfun and MapleStory without browsers, using 3DES to encrypt the storing password. Use DES to decrypt and get the OTP.
 
-[Download](https://github.com/kevin940726/BeanfunLogin/releases/download/v1.9.3/BeanfunLogin-1.9.3.zip): Current Version 1.9.3.
-
 ========================
+
 ### Collaborators
 - [@xnum](https://github.com/xnum)
 
@@ -17,7 +18,24 @@ Login to Beanfun and MapleStory without browsers, using 3DES to encrypt the stor
 
 ### Version Log
 
-Version 1.9.1 (Current)
+Version 1.9.7
+- Support KartRider/elsword
+
+Version 1.9.5
+- UI/UX optimization
+- minor bug fixes
+- recover password
+
+Version 1.9.4
+- Fix delay
+
+Version 1.9.3
+- Support QRCode login
+
+Version 1.9.2
+- Fix issue
+
+Version 1.9.1
 - Add QR Code login
 - Add GA
 - Remove unsupported login method

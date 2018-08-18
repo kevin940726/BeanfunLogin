@@ -11,7 +11,7 @@ using System.Resources;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("BeanfunLogin")]
-[assembly: AssemblyCopyright("Copyright Kai 2015")]
+[assembly: AssemblyCopyright("Copyright Kai 2018")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -35,6 +35,6 @@ using System.Resources;
 // [assembly: AssemblyVersion("1.0.*")]
 
 // 要更新程式版本號的話，這邊才是真正會抓取值的地方
-[assembly: AssemblyVersion("1.9.5.0")]
-[assembly: AssemblyFileVersion("1.9.5.0")]
+[assembly: AssemblyVersion("1.9.7.0")]
+[assembly: AssemblyFileVersion("1.9.7.0")]
 [assembly: NeutralResourcesLanguageAttribute("zh-Hant")]
