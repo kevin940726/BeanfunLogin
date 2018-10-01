@@ -32,7 +32,7 @@ namespace BeanfunLogin
             {
                 if (Properties.Settings.Default.loginMethod != (int)LoginMethod.QRCode)
                     this.bfClient = new BeanfunClient();
-                this.bfClient.Login(this.accountInput.Text, this.passwdInput.Text, Properties.Settings.Default.loginMethod, this.extraCodeInput.Text, this.gamaotpClass, this.qrcodeClass, this.service_code, this.service_region);
+                this.bfClient.Login(this.accountInput.Text, this.passwdInput.Text, Properties.Settings.Default.loginMethod, this.qrcodeClass, this.service_code, this.service_region);
                 if (this.bfClient.errmsg != null)
                     e.Result = this.bfClient.errmsg;
                 else
@@ -47,7 +47,7 @@ namespace BeanfunLogin
         // Login completed.
         private void loginWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            if (this.timedActivity != null)
+            if (Properties.Settings.Default.GAEnabled && this.timedActivity != null)
             {
                 AutoMeasurement.Client.Track(this.timedActivity);
                 this.timedActivity = null;
@@ -90,8 +90,17 @@ namespace BeanfunLogin
                 this.listView1.Select();
                 if (Properties.Settings.Default.autoSelect == true && Properties.Settings.Default.autoSelectIndex < this.bfClient.accountList.Count())
                 {
+                    if (this.pingWorker.IsBusy)
+                    {
+                        this.pingWorker.CancelAsync();
+                    }
                     this.textBox3.Text = "獲取密碼中...";
                     this.listView1.Enabled = false;
+                    this.getOtpButton.Enabled = false;
+                    timedActivity = new CSharpAnalytics.Activities.AutoTimedEventActivity("GetOTP", Properties.Settings.Default.loginMethod.ToString());
+                    if (Properties.Settings.Default.GAEnabled) {
+                        AutoMeasurement.Client.TrackEvent("GetOTP" + Properties.Settings.Default.loginMethod.ToString(), "GetOTP"); 
+                    }
                     this.getOtpWorker.RunWorkerAsync(Properties.Settings.Default.autoSelectIndex);
                 }
                 if (Properties.Settings.Default.keepLogged && !this.pingWorker.IsBusy)
@@ -166,7 +175,7 @@ namespace BeanfunLogin
         // getOTP completed.
         private void getOtpWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            if (this.timedActivity != null)
+            if (Properties.Settings.Default.GAEnabled && this.timedActivity != null)
             {
                 AutoMeasurement.Client.Track(this.timedActivity);
                 this.timedActivity = null;
@@ -200,7 +209,16 @@ namespace BeanfunLogin
             {
                 int accIndex = listView1.SelectedItems[0].Index;
                 string acc = this.bfClient.accountList[index].sacc;
-                Clipboard.SetText(acc);
+                this.Text = "進行遊戲 - " + WebUtility.HtmlDecode(this.bfClient.accountList[index].sname);
+
+                try
+                {
+                    Clipboard.SetText(acc);
+                }
+                catch
+                {
+                    return;
+                }
 
                 IntPtr hWnd;
                 if (autoPaste.Checked == true && (hWnd = WindowsAPI.FindWindow(null, "MapleStory")) != IntPtr.Zero)
@@ -219,8 +237,16 @@ namespace BeanfunLogin
                 }
 
                 this.textBox3.Text = this.otp;
-                Clipboard.SetText(textBox3.Text);
-                this.Text = "進行遊戲 - " + WebUtility.HtmlDecode(this.bfClient.accountList[index].sname);
+                try
+                {
+                    Clipboard.SetText(textBox3.Text);
+                }
+                catch
+                {
+                    return;
+                }
+
+                Thread.Sleep(150);
 
                 if (autoPaste.Checked == true && (hWnd = WindowsAPI.FindWindow(null, "MapleStory")) != IntPtr.Zero)
                 {

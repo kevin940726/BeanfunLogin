@@ -48,18 +48,10 @@ namespace BeanfunLogin
                 payload.Add("t_AccountID", id);
                 payload.Add("t_Password", pass);
                 payload.Add("CodeTextBox", "");
-                payload.Add("btn_login.x", "0");
-                payload.Add("btn_login.y", "0");
+                payload.Add("btn_login", "登入");
                 payload.Add("LBD_VCID_c_login_idpass_form_samplecaptcha", samplecaptcha);
 
                 response = Encoding.UTF8.GetString(this.UploadValues("https://tw.newlogin.beanfun.com/login/id-pass_form.aspx?skey=" + skey, payload));
-                //Debug.WriteLine(response);
-                //regex = new Regex("akey%3d(.*)\"");
-                //if (!regex.IsMatch(response.ToString()))
-                //{ this.errmsg = "LoginNoAkey"; return null; }
-                //string akey = regex.Match(response).Groups[1].Value;
-                //string s = this.DownloadString("https://tw.newlogin.beanfun.com/login/final_step.aspx?akey=" + akey);
-                //Debug.WriteLine(s);
 
                 regex = new Regex("akey=(.*)");
                 if (!regex.IsMatch(this.ResponseUri.ToString()))
@@ -111,7 +103,9 @@ namespace BeanfunLogin
                 if (!regex.IsMatch(response))
                 { this.errmsg = "LoginNoEventvalidation"; return null; }
                 string eventvalidation = regex.Match(response).Groups[1].Value;
-                regex = new Regex("lblSID\"><font color=\"White\">(\\w+)</font></span>");
+                // lblSID" style=\"color:White;\">31yf35fkkyi5pd55fvkts345</span>
+                //regex = new Regex("lblSID\"><font color=\"White\">(\\w+)</font></span>");
+                regex = new Regex("lblSID\" style=\"color:White;\">(\\w+)</span>");
                 if (!regex.IsMatch(response))
                 { this.errmsg = "LoginNoLblSID"; return null; }
                 string lblSID = regex.Match(response).Groups[1].Value;
@@ -142,177 +136,6 @@ namespace BeanfunLogin
             }
         }
 
-        public class GamaotpClass
-        {
-            public string skey;
-            public string sotp;
-            public string motp;
-            public string viewstate;
-            public string eventvalidation;
-
-            public GamaotpClass(string skey, string sotp, string motp, string viewstate, string eventvalidation)
-            { this.skey = skey; this.sotp = sotp; this.motp = motp; this.viewstate = viewstate; this.eventvalidation = eventvalidation; }
-        }
-
-        [Obsolete("Method1 is deprecated, unsupport login method", true)]
-        public GamaotpClass GetGamaotpPassCode(string skey)
-        {
-            string response = this.DownloadString("https://tw.newlogin.beanfun.com/login/gamaotp_form.aspx?skey=" + skey);
-            Regex regex = new Regex("id=\"__VIEWSTATE\" value=\"(.*)\" />");
-            if (!regex.IsMatch(response))
-            { this.errmsg = "LoginNoViewstate"; return null; }
-            string viewstate = regex.Match(response).Groups[1].Value;
-            regex = new Regex("id=\"__EVENTVALIDATION\" value=\"(.*)\" />");
-            if (!regex.IsMatch(response))
-            { this.errmsg = "LoginNoEventvalidation"; return null; }
-            string eventvalidation = regex.Match(response).Groups[1].Value;
-            regex = new Regex("motp_challenge_code\" value=\"(\\d+)\" />");
-            if (!regex.IsMatch(response))
-            { this.errmsg = "LoginNoMotp"; return null; }
-            string motp = regex.Match(response).Groups[1].Value;
-            response = this.DownloadString("https://tw.newlogin.beanfun.com/generic_handlers/get_security_otp.ashx?d=" + GetCurrentTime(1));
-            regex = new Regex("<playsafe_otp>(\\w+)</playsafe_otp>");
-            if (!regex.IsMatch(response))
-            { this.errmsg = "LoginNoSotp"; return null; }
-            string sotp = regex.Match(response).Groups[1].Value;
-
-            return new GamaotpClass(skey, sotp, motp, viewstate, eventvalidation);
-        }
-
-        [Obsolete("Method1 is deprecated, unsupport login method", true)]
-        private string GamaotpLogin(string id, string pass, GamaotpClass gamaotpClass)
-        {
-            try
-            {
-                string skey = gamaotpClass.skey;
-                string sotp = gamaotpClass.sotp;
-                string motp = gamaotpClass.motp;
-                string viewstate = gamaotpClass.viewstate;
-                string eventvalidation = gamaotpClass.eventvalidation;
-
-                NameValueCollection payload = new NameValueCollection();
-                payload.Add("__EVENTTARGET", "");
-                payload.Add("__EVENTARGUMENT", "");
-                payload.Add("__VIEWSTATE", viewstate);
-                payload.Add("__EVENTVALIDATION", eventvalidation);
-                payload.Add("original", "M~" + sotp + "~" + id + "~" + pass + "|" + motp);
-                payload.Add("signature", "");
-                payload.Add("serverotp", sotp);
-                payload.Add("motp_challenge_code", motp);
-                payload.Add("t_AccountID", id);
-                payload.Add("t_Password", pass);
-                payload.Add("btn_login", "Login");
-                string response = Encoding.UTF8.GetString(this.UploadValues("https://tw.newlogin.beanfun.com/login/gamaotp_form.aspx?skey=" + skey, payload));
-                Regex regex = new Regex("akey=(.*)");
-                if (!regex.IsMatch(this.ResponseUri.ToString()))
-                { this.errmsg = "LoginNoAkey"; return null; }
-                string Akey = regex.Match(this.ResponseUri.ToString()).Groups[1].Value;
-
-                // Thanks 小艾 for the testing and code.
-                //要求寫入 Cookies 資料
-                regex = new Regex("<script type=\"text/javascript\">var strWriteUrl = \"(.*)\";</script>");
-                if (!regex.IsMatch(response))
-                { this.errmsg = "LoginNoCookies"; return null; }
-                response = DownloadString(regex.Match(response).Groups[1].Value);
-
-                return Akey;
-            }
-            catch (Exception e)
-            {
-                this.errmsg = "LoginUnknown\n\n" + e.Message + "\n" + e.StackTrace;
-                return null;
-            }
-        }
-
-        [Obsolete("Method1 is deprecated, unsupport login method", true)]
-        private string OtpLogin(string userID, string pass, string skey)
-        {
-            try
-            {
-                string response = this.DownloadString("https://tw.newlogin.beanfun.com/login/otp_form.aspx?skey=" + skey);
-                Regex regex = new Regex("id=\"__VIEWSTATE\" value=\"(.*)\" />");
-                if (!regex.IsMatch(response))
-                { this.errmsg = "LoginNoViewstate"; return null; }
-                string viewstate = regex.Match(response).Groups[1].Value;
-                regex = new Regex("id=\"__EVENTVALIDATION\" value=\"(.*)\" />");
-                if (!regex.IsMatch(response))
-                { this.errmsg = "LoginNoEventvalidation"; return null; }
-                string eventvalidation = regex.Match(response).Groups[1].Value;
-                response = this.DownloadString("https://tw.newlogin.beanfun.com/generic_handlers/get_security_otp.ashx?d=" + GetCurrentTime(1));
-                regex = new Regex("<playsafe_otp>(\\w+)</playsafe_otp>");
-                if (!regex.IsMatch(response))
-                { this.errmsg = "LoginNoSotp"; return null; }
-                string sotp = regex.Match(response).Groups[1].Value;
-
-                NameValueCollection payload = new NameValueCollection();
-                payload.Add("__EVENTTARGET", "");
-                payload.Add("__EVENTARGUMENT", "");
-                payload.Add("__VIEWSTATE", viewstate);
-                payload.Add("__EVENTVALIDATION", eventvalidation);
-                payload.Add("original", "O~" + sotp + "~" + userID + "~" + pass);
-                payload.Add("signature", "");
-                payload.Add("serverotp", sotp);
-                payload.Add("t_AccountID", userID);
-                payload.Add("t_Password", pass);
-                payload.Add("btn_login", "Login");
-                response = Encoding.UTF8.GetString(this.UploadValues("https://tw.newlogin.beanfun.com/login/otp_form.aspx?skey=" + skey, payload));
-                regex = new Regex("akey=(.*)");
-                if (!regex.IsMatch(this.ResponseUri.ToString()))
-                { this.errmsg = "LoginNoAkey"; return null; }
-                return regex.Match(this.ResponseUri.ToString()).Groups[1].Value;
-            }
-            catch (Exception e)
-            {
-                this.errmsg = "LoginUnknown\n\n" + e.Message + "\n" + e.StackTrace;
-                return null;
-            }
-        }
-
-        [Obsolete("Method1 is deprecated, unsupport login method", true)]
-        private string OtpELogin(string id, string pass, string securePass, string skey)
-        {
-            try
-            {
-                string response = this.DownloadString("https://tw.newlogin.beanfun.com/login/otp_form.aspx?type=E&skey=" + skey);
-                Regex regex = new Regex("id=\"__VIEWSTATE\" value=\"(.*)\" />");
-                if (!regex.IsMatch(response))
-                { this.errmsg = "LoginNoViewstate"; return null; }
-                string viewstate = regex.Match(response).Groups[1].Value;
-                regex = new Regex("id=\"__EVENTVALIDATION\" value=\"(.*)\" />");
-                if (!regex.IsMatch(response))
-                { this.errmsg = "LoginNoEventvalidation"; return null; }
-                string eventvalidation = regex.Match(response).Groups[1].Value;
-                response = this.DownloadString("https://tw.newlogin.beanfun.com/generic_handlers/get_security_otp.ashx?d=" + GetCurrentTime(1));
-                regex = new Regex("<playsafe_otp>(\\w+)</playsafe_otp>");
-                if (!regex.IsMatch(response))
-                { this.errmsg = "LoginNoSotp"; return null; }
-                string sotp = regex.Match(response).Groups[1].Value;
-
-                NameValueCollection payload = new NameValueCollection();
-                payload.Add("__EVENTTARGET", "");
-                payload.Add("__EVENTARGUMENT", "");
-                payload.Add("__VIEWSTATE", viewstate);
-                payload.Add("__EVENTVALIDATION", eventvalidation);
-                payload.Add("original", "E~" + sotp + "~" + id + "~" + securePass);
-                payload.Add("signature", "");
-                payload.Add("serverotp", sotp);
-                payload.Add("t_AccountID", id);
-                payload.Add("t_MainAccountPassword", pass);
-                payload.Add("t_Password", securePass);
-                payload.Add("btn_login", "Login");
-                response = Encoding.UTF8.GetString(this.UploadValues("https://tw.newlogin.beanfun.com/login/otp_form.aspx?type=E&skey=" + skey, payload));
-                regex = new Regex("akey=(.*)");
-                if (!regex.IsMatch(this.ResponseUri.ToString()))
-                { this.errmsg = "LoginNoAkey"; return null; }
-                return regex.Match(this.ResponseUri.ToString()).Groups[1].Value;
-            }
-            catch (Exception e)
-            {
-                this.errmsg = "LoginUnknown\n\n" + e.Message + "\n" + e.StackTrace; 
-                return null;
-            }
-        }
-
         private string playsafeLogin(string id, string pass, string skey)
         {
             try
@@ -332,7 +155,16 @@ namespace BeanfunLogin
                 { this.errmsg = "LoginNoSotp"; return null; }
                 string sotp = regex.Match(response).Groups[1].Value;
 
-                PlaySafe ps = new PlaySafe();
+                PlaySafe ps = null;
+                try
+                {
+                    ps = new PlaySafe();
+                }
+                catch (Exception e)
+                {
+                    this.errmsg = "LoginNoPSDriver";
+                    return null;
+                }
                 var readername = ps.GetReader();
                 if (readername == null)
                 { this.errmsg = "LoginNoReaderName"; return null; }
@@ -375,7 +207,7 @@ namespace BeanfunLogin
                 response = Encoding.UTF8.GetString(this.UploadValues("https://tw.newlogin.beanfun.com/login/playsafe_form.aspx?skey=" + skey, payload));
                 regex = new Regex("akey=(.*)");
                 if (!regex.IsMatch(this.ResponseUri.ToString()))
-                { this.errmsg = signature; return null; }
+                { this.errmsg = "LoginNoAkey"; return null; }
                 return ps.cardid + " " + regex.Match(this.ResponseUri.ToString()).Groups[1].Value;
             }
             catch (Exception e)
@@ -440,11 +272,17 @@ namespace BeanfunLogin
                 this.redirect = true;
                 string response2 = Encoding.UTF8.GetString(tmp2);
                 Debug.Write(response2);
-                Regex regex2 = new Regex("akey%3d(.*)%26authkey");
+                Regex regex2 = new Regex("akey=(.*)&authkey");
                 if (!regex2.IsMatch(response2))
                 { this.errmsg = "AKeyParseFailed"; return null; }
                 string akey = regex2.Match(response2).Groups[1].Value;
-                string test = this.DownloadString("https://tw.newlogin.beanfun.com/login/final_step.aspx?akey="+akey+"&authkey=N&bfapp=1");
+
+                regex2 = new Regex("authkey=(.*)&");
+                if (!regex2.IsMatch(response2))
+                { this.errmsg = "authkeyParseFailed"; return null; }
+                string authkey = regex2.Match(response2).Groups[1].Value;
+                Debug.WriteLine(authkey);
+                string test = this.DownloadString("https://tw.newlogin.beanfun.com/login/final_step.aspx?akey="+akey+"&authkey="+ authkey+"&bfapp=1");
                 return akey;
             }
             catch (Exception e)
@@ -473,7 +311,7 @@ namespace BeanfunLogin
                 { this.errmsg = "LoginJsonParseFailed"; return -1; }
 
                 result = regex.Match(response).Groups[1].Value;
-                //Debug.WriteLine(result);
+                Debug.WriteLine(result);
                 if (result == "Failed")
                     return 0;
                 else if (result == "Token Expired")
@@ -512,7 +350,7 @@ namespace BeanfunLogin
             return regex.Match(response).Groups[1].Value;
         }
 
-        public void Login(string id, string pass, int loginMethod, string securePass = null, GamaotpClass gamaotpClass = null, QRCodeClass qrcodeClass = null, string service_code = "610074", string service_region = "T9")
+        public void Login(string id, string pass, int loginMethod, QRCodeClass qrcodeClass = null, string service_code = "610074", string service_region = "T9")
         {
             try
             {
@@ -600,7 +438,7 @@ namespace BeanfunLogin
                 foreach (Match match in regex.Matches(response))
                 {
                     if (match.Groups[1].Value == "" || match.Groups[2].Value == "" || match.Groups[3].Value == "")
-                    { this.errmsg = "LoginNoAccountMatch"; return; }
+                    { continue; }
                     accountList.Add(new AccountList(match.Groups[1].Value, match.Groups[2].Value, match.Groups[3].Value));
                 }
                 if (accountList.Count == 0)
@@ -610,7 +448,14 @@ namespace BeanfunLogin
             }
             catch (Exception e)
             {
-                this.errmsg = "LoginUnknown\n\n" + e.Message + "\n" + e.StackTrace; 
+                if (e is WebException)
+                {
+                    this.errmsg = "網路連線錯誤，請檢查官方網站連線是否正常。" + e.Message;
+                }
+                else
+                {
+                    this.errmsg = "LoginUnknown\n\n" + e.Message + "\n" + e.StackTrace;
+                }
                 return;
             }
         }

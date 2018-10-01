@@ -121,7 +121,7 @@ namespace BeanfunLogin.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("1")]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
         public int loginMethod {
             get {
                 return ((int)(this["loginMethod"]));
@@ -157,7 +157,7 @@ namespace BeanfunLogin.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("191")]
+        [global::System.Configuration.DefaultSettingValueAttribute("192")]
         public int currentVersion {
             get {
                 return ((int)(this["currentVersion"]));
@@ -212,6 +212,30 @@ namespace BeanfunLogin.Properties {
             }
             set {
                 this["autoPaste"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool GAEnabled {
+            get {
+                return ((bool)(this["GAEnabled"]));
+            }
+            set {
+                this["GAEnabled"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1.9.4")]
+        public string IgnoreVersion {
+            get {
+                return ((string)(this["IgnoreVersion"]));
+            }
+            set {
+                this["IgnoreVersion"] = value;
             }
         }
     }
