@@ -5,13 +5,19 @@ title: BeanfunLogin - 新楓之谷Beanfun登入器
 
 # 新楓之谷 Beanfun 登入器
 
-[**程式下載**](https://github.com/kevin940726/BeanfunLogin/releases/download/v1.9.6/BeanfunLogin-v1.9.6.zip) - Version 1.9.6
+[**程式下載**](https://github.com/kevin940726/BeanfunLogin/releases/download/v1.9.7/BeanfunLogin-v1.9.7.zip) - Version 1.9.7
 
 [其餘各版本連結](https://github.com/kevin940726/BeanfunLogin/releases)
 
-此版本更新
+版本更新紀錄
 
-* 修復延遲問題
+v1.9.7
+
+* 登入更新 (thanks to @alanting850420)
+* 支援艾爾之光、跑跑卡丁車、新瑪奇
+* 切換遊戲免重新登入
+* 內部記憶功能優化
+
 
 ### 目錄
 * [程式介紹](#程式介紹)
