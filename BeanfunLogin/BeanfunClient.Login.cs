@@ -228,8 +228,6 @@ namespace BeanfunLogin
 
         public QRCodeClass GetQRCodeValue(string skey)
         {
-            string resp = this.DownloadString("https://tw.newlogin.beanfun.com/login/id-pass_form.aspx?skey=" + skey);
-
             string response = this.DownloadString("https://tw.newlogin.beanfun.com/login/qr_form.aspx?skey=" + skey );
             Regex regex = new Regex("id=\"__VIEWSTATE\" value=\"(.*)\" />");
             if (!regex.IsMatch(response))
@@ -243,10 +241,11 @@ namespace BeanfunLogin
 
             //Thread.Sleep(3000);
 
-            regex = new Regex("u=(.*)\" style");
-            if (!regex.IsMatch(response))
-            { this.errmsg = "LoginNoHash"; return null; }
-            string value = regex.Match(response).Groups[1].Value;
+            string qrdata = this.DownloadString("https://tw.newlogin.beanfun.com/generic_handlers/get_qrcodeData.ashx?skey=" + skey + "&startGame=");
+            regex = new Regex("\"strEncryptData\": \"(.*)\"}");
+            if (!regex.IsMatch(qrdata))
+            { this.errmsg = "LoginNoQrcodedata"; return null; }
+            string value = regex.Match(qrdata).Groups[1].Value;
 
             Stream stream = this.OpenRead("http://tw.newlogin.beanfun.com/qrhandler.ashx?u="  + value);
 
