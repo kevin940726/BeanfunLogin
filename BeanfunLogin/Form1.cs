@@ -708,6 +708,34 @@ namespace BeanfunLogin
             refreshAccountList();
         }
 
+        private void button1_Click(object sender, EventArgs e)
+        {
+            BackToLogin();
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            string identName = comboBox2.SelectedItem.ToString();
+            string binaryName = gamePaths.GetAlias(identName);
+            if (binaryName == identName) binaryName = "*.exe";
+            openFileDialog.Filter = String.Format("{0} ({1})|{1}|All files (*.*)|*.*", identName, binaryName);
+            openFileDialog.Title = "Set Path.";
+            openFileDialog.InitialDirectory = gamePaths.Get(identName);
+
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                string file = openFileDialog.FileName;
+                gamePaths.Set(identName, file);
+                gamePaths.Save();
+            }
+
+            if (Properties.Settings.Default.GAEnabled)
+            {
+                AutoMeasurement.Client.TrackEvent("set game path", "set game path");
+            }
+        }
+
         // game changed event
         private void comboBox2_SelectedIndexChanged_1(object sender, EventArgs e)
         {

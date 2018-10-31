@@ -296,7 +296,6 @@ namespace BeanfunLogin
             try
             {
                 string skey = qrcodeclass.skey;
-                int errorCount = 0;
                 string result;
                 this.Headers.Set("Referer", @"https://tw.newlogin.beanfun.com/login/qr_form.aspx?skey=" + skey);
 
