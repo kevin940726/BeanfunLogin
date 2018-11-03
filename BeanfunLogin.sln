@@ -6,11 +6,11 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSharpAnalytics.Net45", "CSharpAnalytics\Source\CSharpAnalytics\CSharpAnalytics.Net45.csproj", "{0334B071-1FB1-4372-B500-4BC58A11EE59}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeanfunLogin", "BeanfunLogin\BeanfunLogin.csproj", "{AE885E1D-D21F-4810-9F82-EF797DD7845A}"
+	ProjectSection(ProjectDependencies) = postProject
+		{0334B071-1FB1-4372-B500-4BC58A11EE59} = {0334B071-1FB1-4372-B500-4BC58A11EE59}
+	EndProjectSection
 EndProject
 Global
-	GlobalSection(Performance) = preSolution
-		HasPerformanceSessions = true
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU

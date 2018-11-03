@@ -1,0 +1,37 @@
+version: '{build}'
+pull_requests:
+  do_not_increment_build_number: true
+skip_non_tags: true
+platform: Any CPU
+assembly_info:
+  patch: true
+  file: '**\AssemblyInfo.*'
+  assembly_version: $(appveyor_repo_tag_name).{build}
+  assembly_file_version: $(appveyor_repo_tag_name).{build}
+  assembly_informational_version: $(appveyor_repo_tag_name).{build}
+before_build:
+- cmd: >-
+    git submodule init
+
+    git submodule update
+
+    nuget restore
+build:
+  project: BeanfunLogin.sln
+  verbosity: minimal
+before_package:
+- cmd: >-
+    move BeanfunLogin\bin\Debug\BeanfunLogin.exe BeanfunLogin.exe
+
+    7z a BeanfunLogin-v%APPVEYOR_REPO_TAG_NAME%.zip BeanfunLogin.exe
+artifacts:
+- path: BeanfunLogin-*.zip
+  name: BeanfunLogin
+deploy:
+- provider: GitHub
+  release: $(appveyor_repo_tag_name)
+  auth_token:
+    secure: cQZ4LdC6ouImg7hZpXhi44OLcMjrD+tmowA5MDwNeMXmVO9P/sUtUU5/EJVxt253
+  draft: false
+  on:
+    appveyor_repo_tag: true

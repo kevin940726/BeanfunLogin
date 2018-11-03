@@ -45,21 +45,19 @@ namespace BeanfunLogin
 
         private CSharpAnalytics.Activities.AutoTimedEventActivity timedActivity = null;
 
-        private string currentVersion = Assembly.GetExecutingAssembly().GetName().Version.ToString();
+        private Version currentVersion = Assembly.GetExecutingAssembly().GetName().Version;
 
         private GamePathDB gamePaths = new GamePathDB();
 
         public main()
         {
-            currentVersion = currentVersion.Remove(currentVersion.Length - 2);
-
             if (Properties.Settings.Default.GAEnabled)
             {
                 try
                 {
                     AutoMeasurement.Instance = new WinFormAutoMeasurement();
                     AutoMeasurement.DebugWriter = d => Debug.WriteLine(d);
-                    AutoMeasurement.Start(new MeasurementConfiguration("UA-75983216-4", Assembly.GetExecutingAssembly().GetName().Name, currentVersion));
+                    AutoMeasurement.Start(new MeasurementConfiguration("UA-75983216-4", Assembly.GetExecutingAssembly().GetName().Name, currentVersion.ToString()));
                 }
                 catch
                 {
@@ -312,8 +310,8 @@ namespace BeanfunLogin
                 if (!regex.IsMatch(response))
                     return;
                 string versionStr = regex.Match(response).Groups[1].Value;
-
-                if (versionStr != Properties.Settings.Default.IgnoreVersion && versionStr != currentVersion)
+                Version webVersion = new Version(versionStr);
+                if (versionStr != Properties.Settings.Default.IgnoreVersion && webVersion > currentVersion)
                 {
                     Properties.Settings.Default.IgnoreVersion = versionStr;
                     Properties.Settings.Default.Save();
