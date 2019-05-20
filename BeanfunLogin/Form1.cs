@@ -67,6 +67,10 @@ namespace BeanfunLogin
                 }
             }
 
+            this.FormClosing += new FormClosingEventHandler((sender, e) => {
+                if (this.bfClient != null) this.bfClient.Logout();
+            });
+
             timedActivity = new CSharpAnalytics.Activities.AutoTimedEventActivity("FormLoad", Properties.Settings.Default.loginMethod.ToString());
             InitializeComponent();
             init();
@@ -708,6 +712,7 @@ namespace BeanfunLogin
 
         private void button1_Click(object sender, EventArgs e)
         {
+            this.bfClient.Logout();
             BackToLogin();
         }
 
