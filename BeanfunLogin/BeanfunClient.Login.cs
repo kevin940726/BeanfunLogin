@@ -304,11 +304,11 @@ namespace BeanfunLogin
                 //Debug.WriteLine(qrcodeclass.value);
 
                 string response = Encoding.UTF8.GetString(this.UploadValues("https://tw.bfapp.beanfun.com/api/Check/CheckLoginStatus", payload));
-                Regex regex = new Regex("\"ResultMessage\":\"(.*)\",\"ResultDat");
-                if (!regex.IsMatch(response))
-                { this.errmsg = "LoginJsonParseFailed"; return -1; }
+                JObject jsonData;
+                try { jsonData = JObject.Parse(response); }
+                catch { this.errmsg = "LoginJsonParseFailed"; return -1; }
 
-                result = regex.Match(response).Groups[1].Value;
+                result = (string)jsonData["ResultMessage"];
                 Debug.WriteLine(result);
                 if (result == "Failed")
                     return 0;
