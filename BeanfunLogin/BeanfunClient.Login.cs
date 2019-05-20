@@ -8,6 +8,7 @@ using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
+using Newtonsoft.Json.Linq;
 using System.Threading;
 using System.Web;
 
@@ -241,19 +242,26 @@ namespace BeanfunLogin
 
             //Thread.Sleep(3000);
 
-            string qrdata = this.DownloadString("https://tw.newlogin.beanfun.com/generic_handlers/get_qrcodeData.ashx?skey=" + skey + "&startGame=");
-            regex = new Regex("\"strEncryptData\": \"(.*)\"}");
-            if (!regex.IsMatch(qrdata))
-            { this.errmsg = "LoginNoQrcodedata"; return null; }
-            string value = regex.Match(qrdata).Groups[1].Value;
+            regex = new Regex("\\$\\(\"#theQrCodeImg\"\\).attr\\(\"src\", \"../(.*)\" \\+ obj.strEncryptData\\);");
+            if (!regex.IsMatch(response))
+            { this.errmsg = "LoginNoHash"; return null; }
+            string value = regex.Match(response).Groups[1].Value;
 
-            Stream stream = this.OpenRead("http://tw.newlogin.beanfun.com/qrhandler.ashx?u="  + value);
+            response = this.DownloadString("https://tw.newlogin.beanfun.com/generic_handlers/get_qrcodeData.ashx?skey=" + skey);
+            regex = new Regex("\"strEncryptData\": \"(.*)\"}");
+            if (!regex.IsMatch(response))
+            { this.errmsg = "LoginIntResultError"; return null; }
+
+            string strEncryptData = regex.Match(response).Groups[1].Value;
+            value += strEncryptData;
+
+            Stream stream = this.OpenRead("https://tw.newlogin.beanfun.com/" + value);
 
             QRCodeClass res = new QRCodeClass();
             res.skey = skey;
             res.viewstate = viewstate;
             res.eventvalidation = eventvalidation;
-            res.value = Uri.UnescapeDataString(value);
+            res.value = strEncryptData;
             res.bitmap = new Bitmap(stream);
 
             return res;
@@ -300,10 +308,10 @@ namespace BeanfunLogin
                 this.Headers.Set("Referer", @"https://tw.newlogin.beanfun.com/login/qr_form.aspx?skey=" + skey);
 
                 NameValueCollection payload = new NameValueCollection();
-                payload.Add("data", qrcodeclass.value);
+                payload.Add("status", qrcodeclass.value);
                 //Debug.WriteLine(qrcodeclass.value);
 
-                string response = Encoding.UTF8.GetString(this.UploadValues("https://tw.bfapp.beanfun.com/api/Check/CheckLoginStatus", payload));
+                string response = Encoding.UTF8.GetString(this.UploadValues("https://tw.newlogin.beanfun.com/generic_handlers/CheckLoginStatus.ashx", payload));
                 JObject jsonData;
                 try { jsonData = JObject.Parse(response); }
                 catch { this.errmsg = "LoginJsonParseFailed"; return -1; }
@@ -427,5 +435,13 @@ namespace BeanfunLogin
             }
         }
 
+        public void Logout()
+        {
+            string response = this.DownloadString("https://tw.beanfun.com/generic_handlers/remove_bflogin_session.ashx");
+            //response = this.DownloadString("https://tw.newlogin.beanfun.com/logout.aspx?service=999999_T0");
+            NameValueCollection payload = new NameValueCollection();
+            payload.Add("web_token", "1");
+            this.UploadValues("https://tw.newlogin.beanfun.com/generic_handlers/erase_token.ashx", payload);
+        }
     }
 }
