@@ -225,9 +225,10 @@ namespace BeanfunLogin
             public string viewstate;
             public string eventvalidation;
             public Bitmap bitmap;
+            public bool oldAppQRCode;
         }
 
-        public QRCodeClass GetQRCodeValue(string skey)
+        public QRCodeClass GetQRCodeValue(string skey, bool oldAppQRCode)
         {
             string response = this.DownloadString("https://tw.newlogin.beanfun.com/login/qr_form.aspx?skey=" + skey );
             Regex regex = new Regex("id=\"__VIEWSTATE\" value=\"(.*)\" />");
@@ -242,20 +243,36 @@ namespace BeanfunLogin
 
             //Thread.Sleep(3000);
 
-            regex = new Regex("\\$\\(\"#theQrCodeImg\"\\).attr\\(\"src\", \"../(.*)\" \\+ obj.strEncryptData\\);");
-            if (!regex.IsMatch(response))
-            { this.errmsg = "LoginNoHash"; return null; }
-            string value = regex.Match(response).Groups[1].Value;
+            string value;
+            string strEncryptData;
+            Stream stream;
+            if (oldAppQRCode)
+            {
+                string qrdata = this.DownloadString($"https://tw.newlogin.beanfun.com/generic_handlers/get_qrcodeData.ashx?skey={skey}&startGame=");
+                regex = new Regex("\"strEncryptData\": \"(.*)\"}");
+                if (!regex.IsMatch(qrdata))
+                { this.errmsg = "LoginNoQrcodedata"; return null; }
+                value = regex.Match(qrdata).Groups[1].Value;
+                strEncryptData = Uri.UnescapeDataString(value);
 
-            response = this.DownloadString("https://tw.newlogin.beanfun.com/generic_handlers/get_qrcodeData.ashx?skey=" + skey);
-            regex = new Regex("\"strEncryptData\": \"(.*)\"}");
-            if (!regex.IsMatch(response))
-            { this.errmsg = "LoginIntResultError"; return null; }
+                stream = this.OpenRead($"http://tw.newlogin.beanfun.com/qrhandler.ashx?u={value}");
+            }
+            else
+            {
+                regex = new Regex("\\$\\(\"#theQrCodeImg\"\\).attr\\(\"src\", \"../(.*)\" \\+ obj.strEncryptData\\);");
+                if (!regex.IsMatch(response))
+                { this.errmsg = "LoginNoHash"; return null; }
+                value = regex.Match(response).Groups[1].Value;
 
-            string strEncryptData = regex.Match(response).Groups[1].Value;
-            value += strEncryptData;
+                response = this.DownloadString($"https://tw.newlogin.beanfun.com/generic_handlers/get_qrcodeData.ashx?skey={skey}");
+                regex = new Regex("\"strEncryptData\": \"(.*)\"}");
+                if (!regex.IsMatch(response))
+                { this.errmsg = "LoginIntResultError"; return null; }
 
-            Stream stream = this.OpenRead("https://tw.newlogin.beanfun.com/" + value);
+                strEncryptData = regex.Match(response).Groups[1].Value;
+
+                stream = this.OpenRead($"https://tw.newlogin.beanfun.com/{value}{strEncryptData}");
+            }
 
             QRCodeClass res = new QRCodeClass();
             res.skey = skey;
@@ -263,6 +280,7 @@ namespace BeanfunLogin
             res.eventvalidation = eventvalidation;
             res.value = strEncryptData;
             res.bitmap = new Bitmap(stream);
+            res.oldAppQRCode = oldAppQRCode;
 
             return res;
         }
@@ -308,10 +326,10 @@ namespace BeanfunLogin
                 this.Headers.Set("Referer", @"https://tw.newlogin.beanfun.com/login/qr_form.aspx?skey=" + skey);
 
                 NameValueCollection payload = new NameValueCollection();
-                payload.Add("status", qrcodeclass.value);
+                payload.Add(qrcodeclass.oldAppQRCode ? "data" : "status", qrcodeclass.value);
                 //Debug.WriteLine(qrcodeclass.value);
 
-                string response = Encoding.UTF8.GetString(this.UploadValues("https://tw.newlogin.beanfun.com/generic_handlers/CheckLoginStatus.ashx", payload));
+                string response = Encoding.UTF8.GetString(this.UploadValues(qrcodeclass.oldAppQRCode ? "https://tw.bfapp.beanfun.com/api/Check/CheckLoginStatus" : "https://tw.newlogin.beanfun.com/generic_handlers/CheckLoginStatus.ashx", payload));
                 JObject jsonData;
                 try { jsonData = JObject.Parse(response); }
                 catch { this.errmsg = "LoginJsonParseFailed"; return -1; }

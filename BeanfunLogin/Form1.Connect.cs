@@ -368,7 +368,7 @@ namespace BeanfunLogin
         {
             this.bfClient = new BeanfunClient();
             string skey = this.bfClient.GetSessionkey();
-            this.qrcodeClass = this.bfClient.GetQRCodeValue(skey);
+            this.qrcodeClass = this.bfClient.GetQRCodeValue(skey, (bool)e.Argument);
         }
 
         private void qrWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)

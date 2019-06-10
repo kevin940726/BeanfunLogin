@@ -238,5 +238,17 @@ namespace BeanfunLogin.Properties {
                 this["gamePathDB"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool useNewQRCode {
+            get {
+                return ((bool)(this["useNewQRCode"]));
+            }
+            set {
+                this["useNewQRCode"] = value;
+            }
+        }
     }
 }

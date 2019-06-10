@@ -60,6 +60,7 @@
             this.accountLabel = new System.Windows.Forms.Label();
             this.accountInput = new System.Windows.Forms.TextBox();
             this.loginButton = new System.Windows.Forms.Button();
+            this.useNewQRCode = new System.Windows.Forms.CheckBox();
             this.qrcodeImg = new System.Windows.Forms.PictureBox();
             this.getOtpWorker = new System.ComponentModel.BackgroundWorker();
             this.loginWorker = new System.ComponentModel.BackgroundWorker();
@@ -256,6 +257,7 @@
             this.panel2.Controls.Add(this.accountLabel);
             this.panel2.Controls.Add(this.accountInput);
             this.panel2.Controls.Add(this.loginButton);
+            this.panel2.Controls.Add(this.useNewQRCode);
             this.panel2.Controls.Add(this.qrcodeImg);
             this.panel2.Location = new System.Drawing.Point(0, 0);
             this.panel2.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
@@ -445,9 +447,22 @@
             this.loginButton.UseVisualStyleBackColor = true;
             this.loginButton.Click += new System.EventHandler(this.loginButton_Click);
             // 
+            // useNewQRCode
+            // 
+            this.useNewQRCode.AutoSize = true;
+            this.useNewQRCode.Checked = global::BeanfunLogin.Properties.Settings.Default.useNewQRCode;
+            this.useNewQRCode.DataBindings.Add(new System.Windows.Forms.Binding("Checked", global::BeanfunLogin.Properties.Settings.Default, "useNewQRCode", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.useNewQRCode.Location = new System.Drawing.Point(46, 48);
+            this.useNewQRCode.Name = "useNewQRCode";
+            this.useNewQRCode.Size = new System.Drawing.Size(296, 34);
+            this.useNewQRCode.TabIndex = 45;
+            this.useNewQRCode.Text = "使用新版 QRCode 圖片";
+            this.useNewQRCode.UseVisualStyleBackColor = true;
+            this.useNewQRCode.CheckedChanged += new System.EventHandler(this.useNewQRCode_CheckedChanged);
+            // 
             // qrcodeImg
             // 
-            this.qrcodeImg.Location = new System.Drawing.Point(46, 48);
+            this.qrcodeImg.Location = new System.Drawing.Point(46, 70);
             this.qrcodeImg.Name = "qrcodeImg";
             this.qrcodeImg.Size = new System.Drawing.Size(190, 190);
             this.qrcodeImg.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -565,6 +580,7 @@
         private System.Windows.Forms.ComboBox comboBox2;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.CheckBox useNewQRCode;
     }
 }
 
