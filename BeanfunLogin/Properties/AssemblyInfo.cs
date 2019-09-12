@@ -35,6 +35,6 @@ using System.Resources;
 // [assembly: AssemblyVersion("1.0.*")]
 
 // 要更新程式版本號的話，這邊才是真正會抓取值的地方
-[assembly: AssemblyVersion("1.9.8.0")]
-[assembly: AssemblyFileVersion("1.9.8.0")]
+[assembly: AssemblyVersion("1.9.9.*")]
+//[assembly: AssemblyFileVersion("0.0.0.0")]
 [assembly: NeutralResourcesLanguageAttribute("zh-Hant")]

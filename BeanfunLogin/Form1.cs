@@ -198,7 +198,7 @@ namespace BeanfunLogin
         {
             try
             {
-                this.Text = "BeanfunLogin - v" + currentVersion;
+                this.Text = $"BeanfunLogin - v{ currentVersion.Major }.{ currentVersion.Minor }.{ currentVersion.Build }({ currentVersion.Revision })";
                 this.AcceptButton = this.loginButton;
                 this.bfClient = null;
                 this.accountManager = new AccountManager();
@@ -304,7 +304,15 @@ namespace BeanfunLogin
 
                 try
                 {
-                    this.comboBox2.SelectedIndex = Properties.Settings.Default.loginGame;
+                    string gameCode;
+                    int gameIndex = 0;
+                    foreach (GameService gs in gameList)
+                    {
+                        gameCode = $"{ gs.service_code }_{ gs.service_region }";
+                        if (gameCode.Equals(Properties.Settings.Default.loginGame)) break;
+                        gameIndex++;
+                    }
+                    if (gameList.Count > gameIndex) this.comboBox2.SelectedIndex = gameIndex;
                 }
                 catch { /* ignore out of range */ }
 
@@ -753,7 +761,9 @@ namespace BeanfunLogin
         // game changed event
         private void comboBox2_SelectedIndexChanged_1(object sender, EventArgs e)
         {
-            Properties.Settings.Default.loginGame = this.comboBox2.SelectedIndex;
+            GameService selectedGS = gameList[this.comboBox2.SelectedIndex];
+            string gameCode = $"{ selectedGS.service_code }_{ selectedGS.service_region }";
+            Properties.Settings.Default.loginGame = gameCode;
             try
             {
                 service_code = gameList[this.comboBox2.SelectedIndex].service_code;
