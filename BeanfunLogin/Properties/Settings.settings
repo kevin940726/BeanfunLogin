@@ -35,8 +35,8 @@
     <Setting Name="showTip" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
-    <Setting Name="loginGame" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">3</Value>
+    <Setting Name="loginGame" Type="System.String" Scope="User">
+      <Value Profile="(Default)">610074_T9</Value>
     </Setting>
     <Setting Name="entropyForList" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
