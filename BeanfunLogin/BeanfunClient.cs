@@ -36,9 +36,9 @@ namespace BeanfunLogin
 
         static BeanfunClient()
         {
-            // 原本預設的協定為 SSL3.0 + TLS1.0
-            // 由於Beanfun現在(2019/09/19)要求需要使用TLS1.2以上才能進入
-            // 在此將協定設定為 SSL3.0 + TLS1.2
+            // Default value of SecurityProtocol are SSL3.0 and TLS1.0
+            // Beanfun requires TLS1.2 after Sep 19 2019
+            // Set SecurityProtocol to SSL3.0 and TLS1.2
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Ssl3 | SecurityProtocolType.Tls12;
         }
 
