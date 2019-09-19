@@ -1,4 +1,6 @@
-﻿# BeanfunLogin
+﻿# [Archived] BeanfunLogin
+ 
+ ## This repo has been migrated to [BeanfunLogin/BeanfunLogin](https://github.com/BeanfunLogin/BeanfunLogin).
 
 New Beanfun MapleStory OTP login.
 
