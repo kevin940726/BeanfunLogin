@@ -34,6 +34,14 @@ namespace BeanfunLogin
             { this.sacc = sacc; this.sotp = sotp; this.sname = sname; this.screatetime = screatetime; }
         }
 
+        static BeanfunClient()
+        {
+            // 原本預設的協定為 SSL3.0 + TLS1.0
+            // 由於Beanfun現在(2019/09/19)要求需要使用TLS1.2以上才能進入
+            // 在此將協定設定為 SSL3.0 + TLS1.2
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Ssl3 | SecurityProtocolType.Tls12;
+        }
+
         public BeanfunClient()
         {
             this.redirect = true;
