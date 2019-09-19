@@ -34,6 +34,14 @@ namespace BeanfunLogin
             { this.sacc = sacc; this.sotp = sotp; this.sname = sname; this.screatetime = screatetime; }
         }
 
+        static BeanfunClient()
+        {
+            // Default value of SecurityProtocol are SSL3.0 and TLS1.0
+            // Beanfun requires TLS1.2 after Sep 19 2019
+            // Set SecurityProtocol to SSL3.0 and TLS1.2
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Ssl3 | SecurityProtocolType.Tls12;
+        }
+
         public BeanfunClient()
         {
             this.redirect = true;
